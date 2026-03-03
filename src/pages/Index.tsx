@@ -10,11 +10,16 @@ const fadeUp = {
 
 const categories = ["Robotics", "AI/ML", "Cybersecurity", "Design", "FinTech", "BioTech"];
 
+// Robot image URL from the design
+const robotImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuB5odDv-Fgvs2fNLGWwMw5E52gwKAhD-GSEcuiJ5YBCYvA1N49jm-NP6ILq7_eCZjKdOVLhLYnfHQjjWtnXv3CkPekAdp6to1M8xtQWy4zeh11726V_FT-BUHmrscy5gj_IcDc3gYYM_G-UK6g60fpTGGQA7hbW2LIXx7heQxO5e-sn_g6WqwtvXxEG1RGoVB-TmqHO9jGHp22Kx65mnkZeXx_Ah7Spufd3N5ZrDWfbFMK5JNoGBGmXvgt5zOO8OpRACW70HtrCyhs";
+
+const backgroundImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXuB3GLb6Dg6WLWyzbK5JJgUAryWdiX4Ei0b4_NzeFMzoqgJCBJiJ8Vpna_X2sU_rZOeSt81qJc1zdtyUIxJClxohi0T7mF2xlkbK9Cg9QgGy8QVKIlRHP3LxMC_SC4CApzkvpCOrI2U6se4o0kabiJbFaREIElMBVE9ZYNUz11Vk_IYgIvNpEyNxlFubu8Wiq0Q91qoe-7IMwVXZIBzfZ0wWTGsnSufx2Psz_aWjCqLfP62IBPu0sMMix5Aif87U7Yrn9VyvM6Dh_-4";
+
 const Index = () => {
   return (
     <div className="min-h-screen grid-bg">
       {/* Main Bento Grid */}
-      <main className="px-4 md:px-8 pt-24 pb-8">
+      <main className="px-4 md:px-8 pb-8">
         <div className="grid grid-cols-12 gap-4 md:gap-6">
 
           {/* Hero Card - Large */}
@@ -22,8 +27,28 @@ const Index = () => {
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.6 }}
-            className="col-span-12 lg:col-span-8 bg-card rounded-large border border-border relative overflow-hidden min-h-[500px] md:min-h-[600px] flex flex-col justify-between"
+            className="col-span-12 lg:col-span-8 bg-card rounded-large border border-border relative overflow-hidden min-h-[500px] md:min-h-[600px] flex flex-col justify-between group"
           >
+            {/* Background Image */}
+            <div className="absolute inset-0 z-0 overflow-hidden">
+              <img
+                src={backgroundImageUrl}
+                alt="Cybernetic Interface Background"
+                className="w-full h-full object-cover opacity-20 grayscale scale-110 group-hover:scale-100 transition-transform duration-1000"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
+            </div>
+
+            {/* Floating Robot */}
+            <div className="absolute right-0 bottom-0 w-2/3 h-full z-10 floating pointer-events-none hidden md:block">
+              <img
+                src={robotImageUrl}
+                alt="Futuristic Robot"
+                className="w-full h-full object-contain object-bottom mix-blend-lighten dark:mix-blend-lighten"
+              />
+            </div>
+
+            {/* Decorative circles */}
             <div className="absolute inset-0 z-0 opacity-[0.03]">
               <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <circle cx="70" cy="50" r="40" fill="none" stroke="currentColor" strokeWidth="0.3" />
@@ -35,7 +60,7 @@ const Index = () => {
               KPRC
             </div>
 
-            <div className="relative z-10 p-8 md:p-12 flex flex-col h-full justify-between">
+            <div className="relative z-20 p-8 md:p-12 flex flex-col h-full justify-between">
               <div>
                 <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-muted-foreground mb-4 block">
                   KMEA Engineering College Presents
