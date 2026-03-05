@@ -5,7 +5,7 @@ import { useSearchParams } from "react-router-dom";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { toast } from "sonner";
 import { z } from "zod";
-import { User, Mail, Phone, GraduationCap, Layers, Calendar, CheckCircle2, CreditCard, ShieldCheck, ArrowRight, Trophy, Sparkles, Zap } from "lucide-react";
+import { User, Mail, Phone, GraduationCap, Layers, Calendar, CheckCircle2, CreditCard, ShieldCheck, ArrowRight, Trophy, Sparkles, Zap, Users } from "lucide-react";
 import { flagshipEvents, getEventById, culturalEvents, cseEvents, ceEvents, meEvents, eeeEvents, raEvents, sfEvents, eceEvents } from "@/data/events/index";
 
 const FLAGSHIP_DEPT_ID = "flagship";
@@ -69,16 +69,35 @@ const AnimatedGrid = () => {
 const Register = () => {
   const [searchParams] = useSearchParams();
   const preselectedEvent = searchParams.get("event") || "";
+  // Support both 'dept' and 'department' params for compatibility
+  const preselectedDeptParam = searchParams.get("dept") || searchParams.get("department") || "";
 
   const preselectedFlagship = getEventById(preselectedEvent);
   const preselectedCultural = culturalEvents.find(ev => ev.id === preselectedEvent);
-  const initialDept = preselectedFlagship ? FLAGSHIP_DEPT_ID : preselectedCultural ? CULTURAL_DEPT_ID : "";
+  
+  // Check department events and find which department the event belongs to
+  const allDeptEvents = [...cseEvents, ...ceEvents, ...meEvents, ...eeeEvents, ...raEvents, ...sfEvents, ...eceEvents];
+  const preselectedDeptEvent = allDeptEvents.find(ev => ev.id === preselectedEvent);
+  
+  const getInitialDept = () => {
+    if (preselectedFlagship) return FLAGSHIP_DEPT_ID;
+    if (preselectedCultural) return CULTURAL_DEPT_ID;
+    // If dept param is provided, use it
+    if (preselectedDeptParam) return preselectedDeptParam;
+    // Otherwise, try to find department from event's department code
+    if (preselectedDeptEvent && preselectedDeptEvent.department) {
+      return preselectedDeptEvent.department;
+    }
+    return "";
+  };
 
-  const [selectedDept, setSelectedDept] = useState(initialDept);
-  const [selectedEvent, setSelectedEvent] = useState(preselectedFlagship || preselectedCultural ? preselectedEvent : "");
+  const [selectedDept, setSelectedDept] = useState(getInitialDept());
+  const [selectedEvent, setSelectedEvent] = useState(preselectedFlagship || preselectedCultural || preselectedDeptEvent ? preselectedEvent : "");
   const [form, setForm] = useState({ name: "", email: "", phone: "", college: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [registered, setRegistered] = useState(false);
+  const [selectedTeamSize, setSelectedTeamSize] = useState(1);
+  const [teamMembers, setTeamMembers] = useState<string[]>([]);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start end", "end start"] });
@@ -88,8 +107,11 @@ const Register = () => {
     if (preselectedFlagship) {
       setSelectedDept(FLAGSHIP_DEPT_ID);
       setSelectedEvent(preselectedEvent);
+    } else if (preselectedCultural) {
+      setSelectedDept(CULTURAL_DEPT_ID);
+      setSelectedEvent(preselectedEvent);
     }
-  }, [preselectedEvent, preselectedFlagship]);
+  }, [preselectedEvent, preselectedFlagship, preselectedCultural]);
 
   const { data: departments } = useQuery({
     queryKey: ["departments"],
@@ -99,6 +121,37 @@ const Register = () => {
       return data;
     },
   });
+
+  // When departments load, resolve department code to UUID if needed
+  useEffect(() => {
+    if (!departments || !preselectedEvent) return;
+    
+    // Skip if already resolved or if it's flagship/cultural
+    if (selectedDept === FLAGSHIP_DEPT_ID || selectedDept === CULTURAL_DEPT_ID) return;
+    
+    // If selectedDept is a department code (like "CSE"), convert to UUID
+    if (preselectedDeptEvent && preselectedDeptEvent.department) {
+      const deptByCode = departments.find(d => d.code === preselectedDeptEvent.department);
+      if (deptByCode && selectedDept !== deptByCode.id) {
+        setSelectedDept(deptByCode.id);
+        setSelectedEvent(preselectedEvent);
+      }
+    }
+    
+    // Also check if preselectedDeptParam is a code and selectedDept is not yet a valid UUID
+    if (preselectedDeptParam) {
+      // Check if selectedDept is already a valid department UUID
+      const isValidUUID = departments.some(d => d.id === selectedDept);
+      if (!isValidUUID) {
+        // selectedDept might be a code, try to find the UUID
+        const deptByCode = departments.find(d => d.code === preselectedDeptParam || d.code === selectedDept);
+        if (deptByCode) {
+          setSelectedDept(deptByCode.id);
+          setSelectedEvent(preselectedEvent);
+        }
+      }
+    }
+  }, [departments, preselectedEvent, preselectedDeptEvent, preselectedDeptParam, selectedDept]);
 
   // Fetch ALL database events to map titles to IDs
   const { data: allDbEvents } = useQuery({
@@ -147,6 +200,31 @@ const Register = () => {
 
   const selectedEventDetails = getSelectedEventDetails();
 
+  // Team event detection
+  const isTeamEvent = selectedEventDetails && 'teamSize' in selectedEventDetails && (selectedEventDetails as any).teamSize > 1;
+  const maxTeamSize = isTeamEvent ? (selectedEventDetails as any).teamSize : 1;
+
+  // Update team members array when team size changes
+  useEffect(() => {
+    if (selectedTeamSize > 1) {
+      setTeamMembers(prev => {
+        const needed = selectedTeamSize - 1; // -1 because leader is separate
+        if (prev.length < needed) {
+          return [...prev, ...Array(needed - prev.length).fill("")];
+        }
+        return prev.slice(0, needed);
+      });
+    } else {
+      setTeamMembers([]);
+    }
+  }, [selectedTeamSize]);
+
+  // Reset team size when event changes
+  useEffect(() => {
+    setSelectedTeamSize(1);
+    setTeamMembers([]);
+  }, [selectedEvent]);
+
   // Helper: find DB event UUID by matching title
   const findDbEventId = (eventTitle: string): string | null => {
     if (!allDbEvents) return null;
@@ -193,6 +271,8 @@ const Register = () => {
         college: validated.college,
         event_id: dbEventId,
         department_id: dbDeptId,
+        team_size: isTeamEvent ? selectedTeamSize : 1,
+        team_members: selectedTeamSize > 1 ? teamMembers.filter(m => m.trim()) : null,
       }]).select("id").single();
       
       if (error) {
@@ -449,18 +529,13 @@ const Register = () => {
                 <div>
                   <label className={labelClass}>Category</label>
                   <div className="relative">
-                    {selectedDept === FLAGSHIP_DEPT_ID ? (
-                      <Trophy className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-accent" />
-                    ) : (
-                      <Layers className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
-                    )}
+                    <Layers className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
                     <select
                       value={selectedDept}
                       onChange={(e) => { setSelectedDept(e.target.value); setSelectedEvent(""); }}
                       className={selectClass}
                     >
                       <option value="">Select</option>
-                      <option value={FLAGSHIP_DEPT_ID}>⭐ Flagship Events</option>
                       <optgroup label="Department Events">
                         {departments?.filter(d => !['CULTURAL', 'FLAGSHIP'].includes(d.code)).map((d) => (
                           <option key={d.id} value={d.id}>{d.name} ({d.code})</option>
@@ -490,14 +565,14 @@ const Register = () => {
               </div>
 
               {/* Event Details Banner */}
-              {(selectedDept === FLAGSHIP_DEPT_ID || selectedDept === CULTURAL_DEPT_ID) && selectedEvent && selectedEventDetails && (
+              {selectedEvent && selectedEventDetails && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="mt-4 rounded-2xl bg-secondary/50 border border-border p-4"
                 >
                   <div className="flex items-start gap-4">
-                    {selectedDept === FLAGSHIP_DEPT_ID && ('image' in selectedEventDetails) && (
+                    {('image' in selectedEventDetails) && (selectedEventDetails as any).image && (
                       <img
                         src={(selectedEventDetails as any).image}
                         alt={selectedEventDetails.title}
@@ -507,17 +582,25 @@ const Register = () => {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-[10px] font-bold tracking-wider uppercase text-accent">
-                          {selectedDept === FLAGSHIP_DEPT_ID ? "Flagship Event" : "Cultural Event"}
+                          {selectedDept === FLAGSHIP_DEPT_ID ? "Flagship Event" : selectedDept === CULTURAL_DEPT_ID ? "Cultural Event" : "Department Event"}
                         </span>
                       </div>
                       <h4 className="font-display font-bold text-foreground truncate">{selectedEventDetails.title}</h4>
-                      {selectedDept === FLAGSHIP_DEPT_ID && ('category' in selectedEventDetails) && (
+                      {('category' in selectedEventDetails) && (
                         <p className="text-xs text-muted-foreground">{(selectedEventDetails as any).category}</p>
                       )}
+                      {('departmentName' in selectedEventDetails) && (
+                        <p className="text-xs text-muted-foreground">{(selectedEventDetails as any).departmentName}</p>
+                      )}
                       <div className="flex flex-wrap gap-3 mt-2">
-                        {selectedDept === FLAGSHIP_DEPT_ID && ('prize' in selectedEventDetails) && (
+                        {('prize' in selectedEventDetails) && (
                           <span className="text-[10px] bg-card rounded-full px-2 py-1 border border-border text-muted-foreground">
                             Prize: <span className="text-foreground font-bold">{(selectedEventDetails as any).prize}</span>
+                          </span>
+                        )}
+                        {('prizePool' in selectedEventDetails) && (
+                          <span className="text-[10px] bg-card rounded-full px-2 py-1 border border-border text-muted-foreground">
+                            Prize Pool: <span className="text-foreground font-bold">{(selectedEventDetails as any).prizePool}</span>
                           </span>
                         )}
                         {('date' in selectedEventDetails) && (
@@ -530,18 +613,56 @@ const Register = () => {
                   </div>
                 </motion.div>
               )}
+
+              {/* Team Size Selection for Team Events */}
+              {isTeamEvent && selectedEvent && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-4"
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <Users className="w-4 h-4 text-accent" />
+                    <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground">Team Size</span>
+                  </div>
+                  <div className="relative">
+                    <Users className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                    <select
+                      value={selectedTeamSize}
+                      onChange={(e) => setSelectedTeamSize(Number(e.target.value))}
+                      className={selectClass}
+                    >
+                      {Array.from({ length: maxTeamSize }, (_, i) => i + 1).map((size) => (
+                        <option key={size} value={size}>
+                          {size} {size === 1 ? "Member (Individual)" : "Members"}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <p className="text-[10px] text-muted-foreground mt-1">
+                    Maximum team size: {maxTeamSize} members
+                  </p>
+                </motion.div>
+              )}
             </div>
 
-            {/* Personal Info */}
+            {/* Personal Info - Team Leader */}
             <div className="p-6 md:p-8 space-y-4 border-b border-border">
               <div className="flex items-center gap-2 mb-2">
                 <User className="w-4 h-4 text-accent" />
-                <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground">Personal Details</span>
+                <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground">
+                  {isTeamEvent && selectedTeamSize > 1 ? "Team Leader Details" : "Personal Details"}
+                </span>
+                {isTeamEvent && selectedTeamSize > 1 && (
+                  <span className="text-[9px] bg-accent/10 text-accent px-2 py-0.5 rounded-full">
+                    Coupon will be sent to leader
+                  </span>
+                )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="sm:col-span-2">
-                  <label className={labelClass}>Full Name</label>
+                  <label className={labelClass}>{isTeamEvent && selectedTeamSize > 1 ? "Leader's Full Name" : "Full Name"}</label>
                   <div className="relative">
                     <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
                     <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputClass} placeholder="John Doe" />
@@ -549,7 +670,7 @@ const Register = () => {
                   {errors.name && <p className="text-xs text-destructive mt-1">{errors.name}</p>}
                 </div>
                 <div>
-                  <label className={labelClass}>Email</label>
+                  <label className={labelClass}>{isTeamEvent && selectedTeamSize > 1 ? "Leader's Email" : "Email"}</label>
                   <div className="relative">
                     <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
                     <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputClass} placeholder="you@example.com" />
@@ -557,7 +678,7 @@ const Register = () => {
                   {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
                 </div>
                 <div>
-                  <label className={labelClass}>Phone</label>
+                  <label className={labelClass}>{isTeamEvent && selectedTeamSize > 1 ? "Leader's Phone" : "Phone"}</label>
                   <div className="relative">
                     <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
                     <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={inputClass} placeholder="+91 XXXXX XXXXX" />
@@ -574,6 +695,43 @@ const Register = () => {
                 </div>
               </div>
             </div>
+
+            {/* Team Members Section */}
+            {isTeamEvent && selectedTeamSize > 1 && (
+              <div className="p-6 md:p-8 space-y-4 border-b border-border">
+                <div className="flex items-center gap-2 mb-2">
+                  <Users className="w-4 h-4 text-accent" />
+                  <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground">Team Members</span>
+                </div>
+                
+                <div className="space-y-3">
+                  {teamMembers.map((member, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <label className={labelClass}>Member {index + 2} Name</label>
+                      <div className="relative">
+                        <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                        <input
+                          type="text"
+                          value={member}
+                          onChange={(e) => {
+                            const newMembers = [...teamMembers];
+                            newMembers[index] = e.target.value;
+                            setTeamMembers(newMembers);
+                          }}
+                          className={inputClass}
+                          placeholder={`Team member ${index + 2} name`}
+                        />
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Payment Placeholder */}
             <div className="p-6 md:p-8 border-b border-border">

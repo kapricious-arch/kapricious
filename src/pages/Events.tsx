@@ -1,65 +1,13 @@
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { ArrowRight, Play, Sparkles } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { cseEvents, ceEvents, meEvents, eeeEvents, raEvents, sfEvents, eceEvents, culturalEvents } from "@/data/events/index";
 
-// Video/image backgrounds for each event (mapped by event ID)
-const eventMedia: Record<string, { type: "video" | "image"; src: string }> = {
-  // CSE
-  "prompt-wars": { type: "video", src: "https://videos.pexels.com/video-files/6963744/6963744-uhd_2560_1440_25fps.mp4" },
-  "bug-bounty": { type: "image", src: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&h=500&fit=crop" },
-  "css-royale": { type: "video", src: "https://videos.pexels.com/video-files/5474455/5474455-uhd_2560_1440_30fps.mp4" },
-  "no-run-ninja": { type: "image", src: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800&h=500&fit=crop" },
-  "code-catastrophe": { type: "image", src: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=800&h=500&fit=crop" },
-  "tech-escape-room": { type: "video", src: "https://videos.pexels.com/video-files/7562368/7562368-uhd_2560_1440_30fps.mp4" },
+// Video backgrounds for specific events (only videos, images use event.image from data files)
+const eventMedia: Record<string, { type: "video"; src: string }> = {
   "hackathon": { type: "video", src: "https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_30fps.mp4" },
-  // CE
-  "bridgit": { type: "image", src: "https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=800&h=500&fit=crop" },
-  "cad-illumina": { type: "image", src: "https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=800&h=500&fit=crop" },
-  "movethon": { type: "image", src: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&h=500&fit=crop" },
-  "quizzard": { type: "image", src: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&h=500&fit=crop" },
-  "infrahunt": { type: "image", src: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=800&h=500&fit=crop" },
-  "structra": { type: "image", src: "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=800&h=500&fit=crop" },
-  // ME
-  "assemble-x": { type: "video", src: "https://videos.pexels.com/video-files/8721926/8721926-uhd_2560_1440_24fps.mp4" },
-  "rc-trails": { type: "image", src: "https://images.unsplash.com/photo-1594787318286-3d835c1d207f?w=800&h=500&fit=crop" },
-  "cad-combat": { type: "image", src: "https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&h=500&fit=crop" },
-  "technical-quiz": { type: "image", src: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&h=500&fit=crop" },
-  "sustainable-innovation-pitching": { type: "image", src: "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=800&h=500&fit=crop" },
-  "lathe-master": { type: "image", src: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=800&h=500&fit=crop" },
-  // EEE
-  "arduino-crafters": { type: "image", src: "https://images.unsplash.com/photo-1553406830-ef2513450d76?w=800&h=500&fit=crop" },
   "zap-free-zone": { type: "video", src: "https://videos.pexels.com/video-files/3141208/3141208-uhd_2560_1440_25fps.mp4" },
-  "defuse-x": { type: "image", src: "https://images.unsplash.com/photo-1489389944381-3471b5b30f04?w=800&h=500&fit=crop" },
-  "seated-scooter": { type: "image", src: "https://images.unsplash.com/photo-1461896836934-28e4189d2aee?w=800&h=500&fit=crop" },
-  "stacker-blocks": { type: "image", src: "https://images.unsplash.com/photo-1611996575749-79a3a250f948?w=800&h=500&fit=crop" },
-  "power-play-arena": { type: "video", src: "https://videos.pexels.com/video-files/3190203/3190203-uhd_2560_1440_30fps.mp4" },
-  "find-the-suspect": { type: "image", src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&h=500&fit=crop" },
-  // ECE
-  "laser-heist": { type: "video", src: "https://videos.pexels.com/video-files/6963744/6963744-uhd_2560_1440_25fps.mp4" },
-  "electro-hunt": { type: "image", src: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&h=500&fit=crop" },
-  "solder-master": { type: "image", src: "https://images.unsplash.com/photo-1588508065123-287b28e013da?w=800&h=500&fit=crop" },
-  "code-red": { type: "image", src: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800&h=500&fit=crop" },
-  "electrodex": { type: "image", src: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=800&h=500&fit=crop" },
-  // RAE
-  "robo-soccer": { type: "video", src: "https://videos.pexels.com/video-files/8721926/8721926-uhd_2560_1440_24fps.mp4" },
-  "line-tracer": { type: "image", src: "https://images.unsplash.com/photo-1561557944-6e7860d1a7eb?w=800&h=500&fit=crop" },
-  "vibe-coding-ideathon": { type: "image", src: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=800&h=500&fit=crop" },
-  "circuit-rush": { type: "image", src: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&h=500&fit=crop" },
-  // SF
-  "emergency-drill": { type: "image", src: "https://images.unsplash.com/photo-1582139329536-e7284fece509?w=800&h=500&fit=crop" },
-  "hazard-hunt": { type: "image", src: "https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&h=500&fit=crop" },
-  "ppe-race": { type: "image", src: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=500&fit=crop" },
-  "safety-quiz": { type: "image", src: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=800&h=500&fit=crop" },
-  "poster-paper-presentation": { type: "image", src: "https://images.unsplash.com/photo-1559223607-a43c990c692c?w=800&h=500&fit=crop" },
-  "technical-debate": { type: "image", src: "https://images.unsplash.com/photo-1475721027785-f74ec9c0bc26?w=800&h=500&fit=crop" },
-  // Cultural
-  "fashion-show": { type: "video", src: "https://videos.pexels.com/video-files/3015510/3015510-uhd_2560_1440_24fps.mp4" },
-  "group-dance": { type: "video", src: "https://videos.pexels.com/video-files/4549538/4549538-uhd_2560_1440_25fps.mp4" },
-  "step-in-synchro": { type: "image", src: "https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=800&h=500&fit=crop" },
-  "spot-photography": { type: "image", src: "https://images.unsplash.com/photo-1502982720700-bfff97f2ecac?w=800&h=500&fit=crop" },
-  "star-of-kapricious": { type: "video", src: "https://videos.pexels.com/video-files/3015510/3015510-uhd_2560_1440_24fps.mp4" },
 };
 
 const departmentEvents = [
@@ -75,8 +23,17 @@ const departmentEvents = [
 
 const EventCard = ({ event, index }: { event: any; index: number }) => {
   const ref = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
   const media = eventMedia[event.id];
+  const [videoError, setVideoError] = useState(false);
+  const [videoLoaded, setVideoLoaded] = useState(false);
+
+  // Fallback image
+  const fallbackImage = "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=500&fit=crop";
+  
+  // Always use event.image for consistency across cards, detail pages, and registration
+  const eventImage = event.image || fallbackImage;
 
   return (
     <motion.div
@@ -88,26 +45,32 @@ const EventCard = ({ event, index }: { event: any; index: number }) => {
       className="group relative bg-card rounded-large border border-border overflow-hidden hover:border-accent/40 transition-all duration-500 hover:shadow-[0_0_40px_-10px_hsl(var(--accent)/0.2)]"
     >
       {/* Media Background */}
-      <div className="relative h-48 overflow-hidden">
-        {media?.type === "video" ? (
+      <div className="relative h-48 overflow-hidden bg-muted">
+        {media?.type === "video" && !videoError ? (
           <>
+            {!videoLoaded && (
+              <div className="absolute inset-0 w-full h-full bg-muted animate-pulse" />
+            )}
             <video
+              ref={videoRef}
               autoPlay
               loop
               muted
               playsInline
-              className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-700"
-            >
-              <source src={media.src} type="video/mp4" />
-            </video>
+              preload="metadata"
+              src={media.src}
+              onError={() => setVideoError(true)}
+              onLoadedData={() => setVideoLoaded(true)}
+              className={`w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+            />
             <div className="absolute top-3 right-3 z-10 bg-background/60 backdrop-blur-sm rounded-full p-1.5">
               <Play className="w-3 h-3 text-foreground fill-foreground" />
             </div>
           </>
         ) : (
           <img
-            src={media?.src || event.image}
-            alt={event.title}
+            src={eventImage}
+            alt=""
             className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-700"
             loading="lazy"
           />
