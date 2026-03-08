@@ -55,7 +55,18 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
           canvas.style.width = `${w}px`;
           canvas.style.height = `${h}px`;
           ctx.scale(dpr, dpr);
-          ctx.drawImage(img, 0, 0, w, h);
+          // Use same aspect-ratio-preserving draw
+          const imgR = img.naturalWidth / img.naturalHeight;
+          const cR = w / h;
+          let dW: number, dH: number, dX: number, dY: number;
+          if (isMobile()) {
+            if (cR > imgR) { dH = h; dW = h * imgR; } else { dW = w; dH = w / imgR; }
+          } else {
+            if (cR > imgR) { dW = w * 0.85; dH = dW / imgR; } else { dH = h * 0.85; dW = dH * imgR; }
+          }
+          dX = (w - dW) / 2;
+          dY = (h - dH) / 2;
+          ctx.drawImage(img, dX, dY, dW, dH);
         }
       };
       img.onerror = () => {
