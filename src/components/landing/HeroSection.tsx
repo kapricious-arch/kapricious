@@ -212,38 +212,38 @@ const HeroSection = () => {
       </div>
     </div>
 
-      {/* Mobile Featured Events - single auto-rotating card */}
-      <div className="md:hidden relative z-10 -mt-4 px-4 pb-6">
-        <div className="flex items-center justify-between mb-3 px-1">
-          <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Featured Events</h3>
-          <div className="flex gap-1.5">
-            {topEvents.map((_, i) => (
-              <span
-                key={i}
-                className={`w-1.5 h-1.5 rounded-full transition-colors duration-300 ${i === featuredIndex ? 'bg-foreground' : 'bg-muted-foreground/30'}`}
-              />
-            ))}
-          </div>
+      {/* Mobile Featured Events - horizontally scrollable */}
+      <div className="md:hidden relative z-10 -mt-4 pb-6">
+        <div className="flex items-center justify-between mb-3 px-5">
+          <h3 className="text-xs font-semibold text-accent uppercase tracking-widest">Featured Events</h3>
         </div>
-        <Link
-          to={topEvents[featuredIndex].link}
-          className="block bg-card border border-border rounded-2xl p-4 active:scale-[0.98] transition-all duration-300"
-        >
-          <motion.div
-            key={featuredIndex}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            <h4 className="text-sm font-bold text-foreground font-display tracking-tight">{topEvents[featuredIndex].title}</h4>
-            <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed">{topEvents[featuredIndex].description}</p>
-            <div className="flex items-center gap-2 mt-2">
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">{topEvents[featuredIndex].prize}</span>
-              <span className="text-[10px] text-muted-foreground">{topEvents[featuredIndex].department}</span>
-            </div>
-          </motion.div>
-        </Link>
+        <div className="flex gap-3 overflow-x-auto px-5 pb-2 snap-x snap-mandatory scrollbar-hide">
+          {topEvents.map((event, i) => (
+            <Link
+              key={event.id}
+              to={event.link}
+              className="featured-event-card min-w-[75vw] snap-start block rounded-2xl p-4 active:scale-[0.98] transition-all duration-300 border"
+            >
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-[9px] px-2 py-0.5 rounded-full bg-accent/20 text-accent font-semibold uppercase tracking-wider">
+                  {event.department}
+                </span>
+              </div>
+              <h4 className="text-sm font-bold font-display tracking-tight text-accent-foreground">
+                {event.title}
+              </h4>
+              <p className="text-xs mt-1 line-clamp-2 leading-relaxed opacity-70">
+                {event.description}
+              </p>
+              <div className="flex items-center gap-2 mt-3">
+                <span className="text-[10px] px-2.5 py-1 rounded-full bg-accent text-accent-foreground font-bold">
+                  {event.prize}
+                </span>
+                <span className="text-[10px] opacity-60">{event.date}</span>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
     </>
   );
