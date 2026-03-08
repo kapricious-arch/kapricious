@@ -19,7 +19,7 @@ const topEvents = [...allDepartmentEvents]
     date: e.date, link: `/events/${e.id}`, department: e.departmentName,
   }));
 
-const topEvents = getTopEvents();
+
 
 const HeroSection = () => {
   const [featuredIndex, setFeaturedIndex] = useState(0);
