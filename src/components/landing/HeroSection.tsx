@@ -8,7 +8,30 @@ import { allDepartmentEvents } from "@/data/events/index";
 const HeroSection = () => {
   const heroRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const filteredEvents = searchQuery.trim()
+    ? allDepartmentEvents.filter(
+        (event) =>
+          event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          event.department.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          event.departmentName.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : [];
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setIsSearchOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 100);
