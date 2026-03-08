@@ -21,41 +21,6 @@ const fadeUp = {
 const ScrollCards = () => {
   return (
     <div className="grid-bg">
-      {/* Scroll reveal cards */}
-      <section className="px-4 md:px-8 py-16 max-w-[1200px] mx-auto space-y-6">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="bg-card/60 backdrop-blur-xl border border-border rounded-[20px] p-8 md:p-12"
-        >
-          <h2 className="font-display text-2xl md:text-3xl font-bold mb-3 text-foreground">Unleash Your Potential</h2>
-          <p className="text-muted-foreground leading-relaxed">Experience ground-breaking AI challenges and code sprints.</p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.1 }}
-          className="bg-card/60 backdrop-blur-xl border border-border rounded-[20px] p-8 md:p-12"
-        >
-          <h2 className="font-display text-2xl md:text-3xl font-bold mb-3 text-foreground">Network with the Best</h2>
-          <p className="text-muted-foreground leading-relaxed">Connect with peers, mentors, and industry icons.</p>
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="bg-card/60 backdrop-blur-xl border border-border rounded-[20px] p-8 md:p-12"
-        >
-          <h2 className="font-display text-2xl md:text-3xl font-bold mb-3 text-foreground">Innovate the Future</h2>
-          <p className="text-muted-foreground leading-relaxed">Build the next generation of tech solutions.</p>
-        </motion.div>
-      </section>
 
       {/* Departments & Events */}
       <section className="px-4 md:px-8 pb-16">
