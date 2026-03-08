@@ -332,6 +332,7 @@
   .cutout-tl {
     right: 10px;
     border-bottom-right-radius: 0;
+    padding: 1rem;
   }
   .cutout-tl-right {
     top: auto;
@@ -343,6 +344,7 @@
   .cutout-tr {
     background: transparent;
     border-bottom-left-radius: 0;
+    padding: 1rem;
     padding-left: 0;
   }
   .cutout-tr-left,
@@ -350,10 +352,24 @@
     display: none;
   }
   .brand-pill-inner {
-    padding: 0.6rem 1.2rem;
+    padding: 0.5rem 1rem;
   }
   .brand-pill-inner h1 {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
+  }
+}
+
+/* Safe area for mobile featured events */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 
