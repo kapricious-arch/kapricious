@@ -668,7 +668,7 @@ export const eeeEvents: DepartmentEvent[] = [
     type: "team",
     department: "EEE",
     departmentName: "Electrical & Electronics Engineering",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&h=600&fit=crop",
+    image: "https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=1200&h=600&fit=crop",
     date: "March 28, 2026",
     time: "2:00 PM - 4:00 PM",
     venue: "Campus Wide, KMEA Engineering College",
