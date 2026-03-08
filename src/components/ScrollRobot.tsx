@@ -61,6 +61,15 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
       if (!canvas) return;
       const ctx = canvas.getContext("2d");
       if (!ctx) return;
+      
+      // Resize canvas to fill container
+      const container = canvas.parentElement;
+      const w = container?.clientWidth || window.innerWidth;
+      const h = container?.clientHeight || window.innerHeight;
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w;
+        canvas.height = h;
+      }
 
       const track = document.querySelector(".hero-scroll-track");
       const stickyDistance = track
