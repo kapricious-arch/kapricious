@@ -147,43 +147,28 @@ const HeroSection = () => {
               transition={{ duration: 0.6, delay: 0.4 }}
               className="cutout-br hidden md:block"
             >
-              <div className="w-[280px]">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Featured Events</h3>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setFeaturedIndex((prev) => (prev - 1 + topEvents.length) % topEvents.length)}
-                      className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-foreground hover:text-background transition-colors"
+              <div className="w-[520px]">
+                <h3 className="text-xs font-semibold text-accent uppercase tracking-widest mb-3">Featured Events</h3>
+                <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1">
+                  {topEvents.map((event) => (
+                    <Link
+                      key={event.id}
+                      to={event.link}
+                      className="featured-event-card min-w-[220px] max-w-[220px] rounded-2xl p-4 border block group transition-all duration-300 hover:scale-[1.02]"
                     >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <button
-                      onClick={() => setFeaturedIndex((prev) => (prev + 1) % topEvents.length)}
-                      className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-foreground hover:text-background transition-colors"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-                <Link to={topEvents[featuredIndex].link} className="block group">
-                  <h4 className="text-base font-bold text-foreground font-display tracking-tight group-hover:text-primary transition-colors">
-                    {topEvents[featuredIndex].title}
-                  </h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed mt-1 line-clamp-2">
-                    {topEvents[featuredIndex].description}
-                  </p>
-                  <div className="flex items-center gap-3 mt-3">
-                    <span className="text-xs px-2 py-1 rounded-full bg-secondary text-muted-foreground">{topEvents[featuredIndex].prize}</span>
-                    <span className="text-xs text-muted-foreground">{topEvents[featuredIndex].date}</span>
-                  </div>
-                </Link>
-                <div className="flex gap-1.5 mt-3">
-                  {topEvents.map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setFeaturedIndex(i)}
-                      className={`w-1.5 h-1.5 rounded-full transition-colors ${i === featuredIndex ? 'bg-foreground' : 'bg-muted-foreground/30'}`}
-                    />
+                      <h4 className="text-sm font-bold text-foreground font-display tracking-tight group-hover:text-accent transition-colors">
+                        {event.title}
+                      </h4>
+                      <p className="text-xs text-muted-foreground leading-relaxed mt-1 line-clamp-2">
+                        {event.description}
+                      </p>
+                      <div className="flex items-center gap-2 mt-3">
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-accent text-accent-foreground font-bold">
+                          {event.prize}
+                        </span>
+                        <span className="text-[10px] text-muted-foreground">{event.date}</span>
+                      </div>
+                    </Link>
                   ))}
                 </div>
               </div>
