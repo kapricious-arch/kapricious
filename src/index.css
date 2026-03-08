@@ -152,11 +152,18 @@
 
 .main-inner-canvas {
   position: absolute;
-  inset: 10px;
+  inset: 6px;
   background: radial-gradient(circle at center, #0a1030 0%, #01040f 100%);
-  border-radius: 40px;
+  border-radius: 28px;
   overflow: hidden;
   z-index: 1;
+}
+
+@media (min-width: 768px) {
+  .main-inner-canvas {
+    inset: 10px;
+    border-radius: 40px;
+  }
 }
 
 /* Cutout Groups */
