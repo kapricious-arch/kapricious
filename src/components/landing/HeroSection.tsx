@@ -5,7 +5,11 @@ import { ChevronLeft, ChevronRight, Search, X } from "lucide-react";
 import ScrollRobot from "@/components/ScrollRobot";
 import { allDepartmentEvents } from "@/data/events/index";
 
+import { flagshipEvents } from "@/data/events/flagship";
+
 const HeroSection = () => {
+  const [featuredIndex, setFeaturedIndex] = useState(0);
+  const featured = flagshipEvents.slice(0, 3);
   const heroRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
