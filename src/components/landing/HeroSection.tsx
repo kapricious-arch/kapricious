@@ -4,12 +4,32 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { ChevronLeft, ChevronRight, Search, X } from "lucide-react";
 import ScrollRobot from "@/components/ScrollRobot";
 import { allDepartmentEvents } from "@/data/events/index";
-
 import { flagshipEvents } from "@/data/events/flagship";
+
+// Parse prize string like "₹40,000" to number
+const parsePrize = (prize: string): number => {
+  return parseInt(prize.replace(/[₹,]/g, ''), 10) || 0;
+};
+
+// Combine all events into a unified format sorted by prize
+const getTopEvents = () => {
+  const deptMapped = allDepartmentEvents.map(e => ({
+    id: e.id, title: e.title, prize: e.prizePool, description: e.details,
+    date: e.date, link: `/events/${e.id}`, department: e.departmentName,
+  }));
+  const flagMapped = flagshipEvents.map(e => ({
+    id: e.id, title: e.title, prize: e.prize, description: e.description,
+    date: e.date, link: `/event/${e.id}`, department: e.category,
+  }));
+  return [...deptMapped, ...flagMapped]
+    .sort((a, b) => parsePrize(b.prize) - parsePrize(a.prize))
+    .slice(0, 3);
+};
+
+const topEvents = getTopEvents();
 
 const HeroSection = () => {
   const [featuredIndex, setFeaturedIndex] = useState(0);
-  const featured = flagshipEvents.slice(0, 3);
   const heroRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
