@@ -1004,7 +1004,7 @@ export const ceEvents: DepartmentEvent[] = [
     type: "team",
     department: "CE",
     departmentName: "Civil Engineering",
-    image: "https://images.unsplash.com/photo-1516321497487-e288fb19713f?w=1200&h=600&fit=crop",
+    image: "https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=1200&h=600&fit=crop",
     date: "March 28, 2026",
     time: "2:00 PM - 4:00 PM",
     venue: "Campus Wide, KMEA Engineering College",
