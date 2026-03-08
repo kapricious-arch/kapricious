@@ -568,33 +568,33 @@ export const eeeEvents: DepartmentEvent[] = [
     ]
   },
   {
-    id: "seated-scooter",
-    title: "Seated Scooter",
+    id: "seated-soccer",
+    title: "Seated Soccer",
     teamSize: 1,
     registrationFee: "₹60",
     prizePool: "₹1,500",
-    details: "A subsoccer table football game designed to be played while sitting down.",
+    details: "A fun and competitive seated soccer game where players remain seated and use only their feet to control the ball and score goals. Tests agility, coordination, and quick reflexes in a unique twist on traditional football.",
     prizes: ["🥇 ₹1,000", "🥈 ₹500"],
     type: "individual",
     department: "EEE",
     departmentName: "Electrical & Electronics Engineering",
-    image: "https://images.unsplash.com/photo-1461896836934- voices?w=1200&h=600&fit=crop",
+    image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1200&h=600&fit=crop",
     date: "March 28, 2026",
     time: "10:00 AM - 2:00 PM",
     venue: "Common Area, KMEA Engineering College",
     rules: [
       "Individual participation",
-      "Tournament format",
-      "Standard table football rules",
+      "Players must remain seated throughout the game",
+      "Only feet can be used to control and kick the ball",
+      "Tournament knockout format",
       "Best of 3 games per match",
-      "Winner advances to next round",
       "Finals: Best of 5"
     ],
     highlights: [
-      "Fun table football",
-      "Tournament format",
-      "Exciting matches",
-      "Great entertainment"
+      "Unique seated football challenge",
+      "Tournament knockout format",
+      "Tests coordination and reflexes",
+      "Great fun and entertainment"
     ]
   },
   {
