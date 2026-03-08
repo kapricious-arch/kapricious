@@ -59,20 +59,27 @@ const Navbar = () => {
       </nav>
 
       {/* Mobile Top Navbar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 lg:hidden">
-        <div className="mx-4 mt-4">
-          <div className="bg-card/90 neo-bento border border-border rounded-full px-6 py-3 flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-3">
-              <div className="w-8 h-8">
+      <nav className="fixed top-0 left-0 right-0 z-50 lg:hidden" style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}>
+        <div className="mx-3 mt-3">
+          <div className="bg-card/90 neo-bento border border-border rounded-full px-4 py-2.5 flex items-center justify-between">
+            <Link to="/" className="flex items-center gap-2.5">
+              <div className="w-7 h-7">
                 <img src="/logo.png" alt="Kapricious Logo" className="w-full h-full object-contain dark:invert-0 invert" />
               </div>
-              <span className="font-display font-bold tracking-tighter text-sm text-foreground">KAPRICIOUS'26</span>
+              <span className="font-display font-bold tracking-tighter text-xs text-foreground">KAPRICIOUS'26</span>
             </Link>
 
-            {/* Mobile toggle */}
-            <button onClick={() => setOpen(!open)} className="text-foreground">
-              {open ? <X size={20} /> : <Menu size={20} />}
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-full bg-secondary hover:bg-secondary/80 active:bg-secondary/60 transition-colors"
+              >
+                {theme === "dark" ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+              </button>
+              <button onClick={() => setOpen(!open)} className="text-foreground p-1">
+                {open ? <X size={20} /> : <Menu size={20} />}
+              </button>
+            </div>
           </div>
         </div>
 
