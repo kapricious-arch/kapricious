@@ -234,19 +234,6 @@ const HeroSection = () => {
 
           {/* DARK INNER CANVAS */}
           <div ref={canvasRef} className="main-inner-canvas">
-            {/* Register pill */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              <Link
-                to="/register"
-                className="absolute top-[120px] right-[35px] z-10 bg-white text-black rounded-full px-8 py-3 font-semibold text-sm tracking-wider hover:scale-105 transition-transform shadow-lg"
-              >
-                REGISTER NOW
-              </Link>
-            </motion.div>
 
             {/* Robot in center */}
             <div className="absolute inset-0 pointer-events-none z-0">
