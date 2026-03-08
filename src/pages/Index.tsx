@@ -37,12 +37,8 @@ const backgroundImageUrl = "https://lh3.googleusercontent.com/aida-public/AB6AXu
 const Index = () => {
   const featuredEvents = getTop3Events();
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [robotVideoFailed, setRobotVideoFailed] = useState(false);
-  const [isRobotVideoActive, setIsRobotVideoActive] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
-  const robotVideoRef = useRef<HTMLVideoElement>(null);
-  const robotCanvasRef = useRef<HTMLCanvasElement>(null);
-  const robotRafRef = useRef<number | null>(null);
+  const swipeStartX = useRef<number | null>(null);
   const swipeStartX = useRef<number | null>(null);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
