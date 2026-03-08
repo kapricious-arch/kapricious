@@ -92,7 +92,7 @@ const Navbar = () => {
               exit={{ opacity: 0, y: -10 }}
               className="mx-3 mt-2"
             >
-              <div className="bg-card/95 neo-bento border border-border rounded-3xl p-4 flex flex-col gap-1">
+              <div className="bg-card/95 neo-bento border border-border rounded-3xl p-3 flex flex-col gap-0.5">
                 {navLinks.map((link) => {
                   const Icon = link.icon;
                   return (
