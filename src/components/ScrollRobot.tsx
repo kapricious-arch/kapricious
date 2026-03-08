@@ -9,9 +9,6 @@ const isMobile = () => window.innerWidth < 768;
 
 // On mobile, load every other frame to reduce memory & loading time
 const getFrameIndices = () => {
-  if (isMobile()) {
-    return Array.from({ length: 40 }, (_, i) => i * 2);
-  }
   return Array.from({ length: FRAME_COUNT }, (_, i) => i);
 };
 
@@ -121,10 +118,8 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
         maxHeight: "none",
         objectFit: "cover",
         display: "block",
-        borderRadius: isMobile() ? "28px" : "40px",
+        borderRadius: "0px",
         filter: "drop-shadow(0 0 40px rgba(0, 180, 255, 0.3))",
-        transform: isMobile() ? "scale(0.85)" : "none",
-        transformOrigin: "center center",
       }}
     />
   );
