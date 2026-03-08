@@ -206,8 +206,8 @@ const HeroSection = () => {
           </motion.div>
 
           {/* MOBILE - Featured Events horizontal scroll */}
-          <div className="md:hidden absolute bottom-0 left-0 right-0 z-10 px-4 pb-4">
-            <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2">
+          <div className="md:hidden absolute bottom-0 left-0 right-0 z-10 px-4 pb-4" style={{ touchAction: "pan-x" }}>
+            <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory scrollbar-hide pb-2 -mx-1 px-1">
               {topEvents.map((event, i) => (
                 <Link
                   key={event.id}
