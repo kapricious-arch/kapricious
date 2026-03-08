@@ -219,37 +219,48 @@ const HeroSection = () => {
       </div>
     </div>
 
-      {/* Mobile Featured Events - horizontally scrollable */}
+      {/* Mobile Featured Events - swipeable carousel */}
       <div className="md:hidden relative z-10 -mt-4 pb-6">
         <div className="flex items-center justify-between mb-3 px-5">
           <h3 className="text-xs font-semibold text-accent uppercase tracking-widest">Featured Events</h3>
+          <div className="flex gap-1.5">
+            {topEvents.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => mobileApi?.scrollTo(i)}
+                className={`w-1.5 h-1.5 rounded-full transition-colors ${i === mobileSelected ? 'bg-accent' : 'bg-muted-foreground/30'}`}
+              />
+            ))}
+          </div>
         </div>
-        <div className="flex gap-3 overflow-x-auto px-5 pb-2 snap-x snap-mandatory scrollbar-hide">
-          {topEvents.map((event, i) => (
-            <Link
-              key={event.id}
-              to={event.link}
-              className="featured-event-card min-w-[75vw] snap-start block rounded-2xl p-4 active:scale-[0.98] transition-all duration-300 border"
-            >
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-[9px] px-2 py-0.5 rounded-full bg-accent/20 text-accent font-semibold uppercase tracking-wider">
-                  {event.department}
-                </span>
-              </div>
-              <h4 className="text-sm font-bold font-display tracking-tight text-accent-foreground">
-                {event.title}
-              </h4>
-              <p className="text-xs mt-1 line-clamp-2 leading-relaxed opacity-70">
-                {event.description}
-              </p>
-              <div className="flex items-center gap-2 mt-3">
-                <span className="text-[10px] px-2.5 py-1 rounded-full bg-accent text-accent-foreground font-bold">
-                  {event.prize}
-                </span>
-                <span className="text-[10px] opacity-60">{event.date}</span>
-              </div>
-            </Link>
-          ))}
+        <div className="overflow-hidden px-5" ref={mobileRef}>
+          <div className="flex gap-3">
+            {topEvents.map((event) => (
+              <Link
+                key={event.id}
+                to={event.link}
+                className="featured-event-card min-w-0 flex-[0_0_85%] rounded-2xl p-4 active:scale-[0.98] transition-all duration-300 border block"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-[9px] px-2 py-0.5 rounded-full bg-accent/20 text-accent font-semibold uppercase tracking-wider">
+                    {event.department}
+                  </span>
+                </div>
+                <h4 className="text-sm font-bold font-display tracking-tight text-accent-foreground">
+                  {event.title}
+                </h4>
+                <p className="text-xs mt-1 line-clamp-2 leading-relaxed opacity-70">
+                  {event.description}
+                </p>
+                <div className="flex items-center gap-2 mt-3">
+                  <span className="text-[10px] px-2.5 py-1 rounded-full bg-accent text-accent-foreground font-bold">
+                    {event.prize}
+                  </span>
+                  <span className="text-[10px] opacity-60">{event.date}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </>
