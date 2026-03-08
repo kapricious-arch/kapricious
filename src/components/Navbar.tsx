@@ -21,8 +21,8 @@ const Navbar = () => {
       {/* Desktop Vertical Left Navbar */}
       <nav className="fixed left-6 top-1/2 -translate-y-1/2 z-50 hidden lg:flex flex-col items-center gap-8 py-10 px-4 bg-card/80 neo-bento border border-border rounded-full">
         {/* Logo */}
-        <div className="w-10 h-10 rounded-full overflow-hidden mb-4 bg-black dark:bg-white p-1.5">
-          <img src="/logo.png" alt="Kapricious Logo" className="w-full h-full object-contain dark:invert" />
+        <div className="w-10 h-10 mb-4">
+          <img src="/logo.png" alt="Kapricious Logo" className="w-full h-full object-contain dark:invert-0 invert" />
         </div>
 
         {/* Nav Links */}
@@ -63,8 +63,8 @@ const Navbar = () => {
         <div className="mx-4 mt-4">
           <div className="bg-card/90 neo-bento border border-border rounded-full px-6 py-3 flex items-center justify-between">
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full overflow-hidden bg-black dark:bg-white p-1">
-                <img src="/logo.png" alt="Kapricious Logo" className="w-full h-full object-contain dark:invert" />
+              <div className="w-8 h-8">
+                <img src="/logo.png" alt="Kapricious Logo" className="w-full h-full object-contain dark:invert-0 invert" />
               </div>
               <span className="font-display font-bold tracking-tighter text-sm text-foreground">KAPRICIOUS'26</span>
             </Link>
