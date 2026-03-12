@@ -249,17 +249,33 @@ const HeroSection = () => {
                       <Link
                         key={event.id}
                         to={event.link}
-                        className="min-w-0 flex-[0_0_100%] block group"
+                        className="featured-event-card min-w-0 flex-[0_0_100%] block group rounded-[28px] border border-border/80 bg-card p-4 shadow-[0_18px_40px_rgba(2,5,19,0.08)]"
+                        aria-label={`Open featured event ${event.title}`}
                       >
-                        <h4 className="text-base font-bold text-foreground font-display tracking-tight group-hover:text-primary transition-colors">
-                          {event.title}
-                        </h4>
-                        <p className="text-sm text-muted-foreground leading-relaxed mt-1 line-clamp-2">
-                          {event.description}
-                        </p>
-                        <div className="flex items-center gap-3 mt-3">
-                          <span className="text-xs px-2 py-1 rounded-full bg-secondary text-muted-foreground">{event.prize}</span>
-                          <span className="text-xs text-muted-foreground">{event.date}</span>
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <span className="inline-flex items-center rounded-full border border-border bg-secondary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+                              Open Event
+                            </span>
+                          </div>
+                          <div className="featured-event-card__icon shrink-0 rounded-full border border-border bg-background p-2 text-foreground">
+                            <ArrowRight className="h-4 w-4" />
+                          </div>
+                        </div>
+                        <div className="mt-4">
+                          <h4 className="text-base font-bold text-foreground font-display tracking-tight transition-colors group-hover:text-primary">
+                            {event.title}
+                          </h4>
+                          <p className="text-sm text-muted-foreground leading-relaxed mt-1.5 line-clamp-2">
+                            {event.description}
+                          </p>
+                        </div>
+                        <div className="mt-4 flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="text-xs px-2 py-1 rounded-full bg-secondary text-muted-foreground whitespace-nowrap">{event.prize}</span>
+                            <span className="text-xs text-muted-foreground truncate">{event.department}</span>
+                          </div>
+                          <span className="text-[11px] font-medium text-foreground/75 whitespace-nowrap">{event.date}</span>
                         </div>
                       </Link>
                     ))}
@@ -318,13 +334,27 @@ const HeroSection = () => {
               <Link
                 key={event.id}
                 to={event.link}
-                className="min-w-0 flex-[0_0_100%] block bg-card border border-border rounded-2xl p-4 active:scale-[0.98] transition-all duration-300"
+                className="featured-event-card min-w-0 flex-[0_0_100%] block rounded-[24px] border border-border bg-card p-4 shadow-[0_18px_36px_rgba(2,5,19,0.08)] active:scale-[0.985] transition-all duration-300"
+                aria-label={`Open featured event ${event.title}`}
               >
-                <h4 className="text-sm font-bold text-foreground font-display tracking-tight">{event.title}</h4>
-                <p className="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed">{event.description}</p>
-                <div className="flex items-center gap-2 mt-2">
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground">{event.prize}</span>
-                  <span className="text-[10px] text-muted-foreground">{event.department}</span>
+                <div className="flex items-start justify-between gap-3">
+                  <span className="inline-flex items-center rounded-full border border-border bg-secondary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+                    Featured Link
+                  </span>
+                  <div className="featured-event-card__icon shrink-0 rounded-full border border-border bg-background p-2 text-foreground">
+                    <ArrowRight className="h-4 w-4" />
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <h4 className="text-sm font-bold text-foreground font-display tracking-tight">{event.title}</h4>
+                  <p className="text-xs text-muted-foreground mt-1.5 line-clamp-2 leading-relaxed">{event.description}</p>
+                </div>
+                <div className="flex items-center justify-between gap-2 mt-3">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-secondary text-muted-foreground whitespace-nowrap">{event.prize}</span>
+                    <span className="text-[10px] text-muted-foreground truncate">{event.department}</span>
+                  </div>
+                  <span className="text-[10px] font-medium text-foreground/75 whitespace-nowrap">{event.date}</span>
                 </div>
               </Link>
             ))}

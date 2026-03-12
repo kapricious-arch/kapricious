@@ -122,6 +122,16 @@ const Register = () => {
     },
   });
 
+  const visibleDepartments = departments?.filter((d) => {
+    const normalizedCode = (d.code || "").toUpperCase();
+    const normalizedName = (d.name || "").toLowerCase();
+
+    if (["CULTURAL", "FLAGSHIP", "AI"].includes(normalizedCode)) return false;
+    if (normalizedName.includes("artificial intelligence")) return false;
+
+    return true;
+  });
+
   // When departments load, resolve department code to UUID if needed
   useEffect(() => {
     if (!departments || !preselectedEvent) return;
@@ -330,6 +340,14 @@ const Register = () => {
           registrationId: regData.id,
           eventDate,
           venue,
+          teamCount: isTeamEvent ? selectedTeamSize : 1,
+          eventImage: selectedEventDetails && "image" in selectedEventDetails ? (selectedEventDetails as any).image ?? "" : "",
+          eventCategory:
+            selectedDept === FLAGSHIP_DEPT_ID
+              ? "Flagship Event"
+              : selectedDept === CULTURAL_DEPT_ID
+                ? "Cultural Event"
+                : "Department Event",
         },
       }).catch((err) => { console.error("Email send failed:", err); return null; });
 
@@ -475,7 +493,7 @@ const Register = () => {
               <div className="space-y-4">
                 {[
                   { icon: Trophy, label: "₹2L+ in Prizes", desc: "Across all events" },
-                  { icon: Sparkles, label: "40+ Events", desc: "8 departments" },
+                  { icon: Sparkles, label: "40+ Events", desc: "7 departments" },
                   { icon: Calendar, label: "March 27-28", desc: "Two day festival" },
                 ].map((item, i) => (
                   <motion.div
@@ -557,7 +575,7 @@ const Register = () => {
                     >
                       <option value="">Select</option>
                       <optgroup label="Department Events">
-                        {departments?.filter(d => !['CULTURAL', 'FLAGSHIP'].includes(d.code)).map((d) => (
+                        {visibleDepartments?.map((d) => (
                           <option key={d.id} value={d.id}>{d.name} ({d.code})</option>
                         ))}
                       </optgroup>
