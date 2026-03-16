@@ -65,7 +65,7 @@ const EventCard = memo(({ event, index }: { event: any; index: number }) => {
         ) : (
           <img
             src={eventImage}
-            alt=""
+            alt={`${event.title} at Kapricious 2026`}
             className="w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-700"
             loading="lazy"
           />

@@ -5,7 +5,9 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/use-theme";
+import RouteSeo from "@/components/RouteSeo";
 import Navbar from "./components/Navbar";
+import LoadingScreen from "./components/LoadingScreen";
 import SmoothScroll from "./components/SmoothScroll";
 import Index from "./pages/Index";
 
@@ -24,9 +26,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const queryClient = new QueryClient();
 
 const PageLoader = () => (
-  <div className="min-h-screen flex items-center justify-center">
-    <div className="w-8 h-8 border-2 border-foreground/20 border-t-foreground rounded-full animate-spin" />
-  </div>
+  <LoadingScreen progress={0.72} cached label="Loading page" />
 );
 
 const App = () => (
@@ -36,6 +36,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <RouteSeo />
           <SmoothScroll />
           <Navbar />
           <main className="lg:pl-24">

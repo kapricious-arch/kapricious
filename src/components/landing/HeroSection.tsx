@@ -152,9 +152,9 @@ const HeroSection = () => {
               className="cutout-tl hidden md:block"
             >
               <div className="brand-pill-inner">
-                <h1 className="text-base md:text-lg font-bold tracking-wide text-white font-display">
+                <span className="text-base md:text-lg font-bold tracking-wide text-white font-display">
                   KAPRICIOUS'26
-                </h1>
+                </span>
               </div>
               <div className="cutout-corner cutout-tl-right" />
               <div className="cutout-corner cutout-tl-bottom" />
@@ -304,9 +304,14 @@ const HeroSection = () => {
                   REGISTER NOW
                   <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
                 </Link>
-                <h2 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold font-display leading-[1.1] hero-gradient-text">
+                <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold font-display leading-[1.1] hero-gradient-text">
                   KAPRICIOUS'26
-                </h2>
+                </h1>
+                <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white/70 md:mx-0 md:text-base">
+                  Kapricious 2026 is the flagship tech fest of KMEA Engineering College, Edathala, Aluva,
+                  bringing together flagship challenges, department events, and cultural programs on March
+                  27-28, 2026.
+                </p>
               </motion.div>
             </div>
           </div>

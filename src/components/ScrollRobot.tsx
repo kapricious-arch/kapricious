@@ -48,7 +48,6 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
     const dprCap = 2;
     const dpr = Math.min(window.devicePixelRatio || 1, dprCap);
     const width = Math.max(1, Math.round(rect.width * dpr));
@@ -95,10 +94,13 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
       drawWidth = canvasHeight * imageAspect;
       dx = (canvasWidth - drawWidth) * 0.5;
     }
+
     if (alpha < 1) {
       ctx.globalAlpha = alpha;
     }
+
     ctx.drawImage(img, dx, dy, drawWidth, drawHeight);
+
     if (alpha < 1) {
       ctx.globalAlpha = 1;
     }
@@ -126,7 +128,7 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
         }
       }
     },
-    [drawImageCover]
+    [drawImageCover],
   );
 
   const computeFrameFloat = useCallback(() => {
@@ -155,7 +157,6 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
     rafRef.current = window.requestAnimationFrame(renderIfNeeded);
   }, [renderIfNeeded]);
 
-  // Load images and track readiness
   useEffect(() => {
     const images: HTMLImageElement[] = [];
     loadedCountRef.current = 0;
@@ -165,11 +166,10 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
       const img = new Image();
       img.decoding = "async";
       if ("fetchPriority" in img) {
-        (img as HTMLImageElement & { fetchPriority?: string }).fetchPriority = i < 12 ? "high" : "auto";
+        (img as HTMLImageElement & { fetchPriority?: string }).fetchPriority = i < 16 ? "high" : "auto";
       }
       img.onload = () => {
-        loadedCountRef.current++;
-        // Draw the first frame as soon as it's ready
+        loadedCountRef.current += 1;
         if (i === 0 && !initialDrawDoneRef.current) {
           initialDrawDoneRef.current = true;
           resizeCanvas();
@@ -180,8 +180,7 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
           }
           setImagesReady(true);
         }
-        // When enough frames loaded, do a full render
-        if (loadedCountRef.current >= 12) {
+        if (loadedCountRef.current >= 16) {
           scheduleRender();
         }
       };
@@ -196,7 +195,7 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
     return () => {
       window.cancelAnimationFrame(rafRef.current);
     };
-  }, [resizeCanvas, scheduleRender, updateTrackMetrics, drawImageCover]);
+  }, [drawImageCover, resizeCanvas, scheduleRender, updateTrackMetrics]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -207,7 +206,7 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
     };
 
     const handleScroll = () => {
-      if (!isActiveRef.current) return;
+      if (!isActiveRef.current || !imagesReady) return;
       scheduleRender();
     };
 
@@ -219,7 +218,7 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
           scheduleRender();
         }
       },
-      { root: null, rootMargin: "100% 0px 100% 0px", threshold: 0 }
+      { root: null, rootMargin: "100% 0px 100% 0px", threshold: 0 },
     );
 
     if (trackRef.current) {
@@ -227,14 +226,16 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
     }
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("lenis:scroll", handleScroll);
     window.addEventListener("resize", handleResize, { passive: true });
 
     return () => {
       observer.disconnect();
       window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("lenis:scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
     };
-  }, [resizeCanvas, scheduleRender, updateTrackMetrics]);
+  }, [imagesReady, resizeCanvas, scheduleRender, updateTrackMetrics]);
 
   return (
     <canvas
