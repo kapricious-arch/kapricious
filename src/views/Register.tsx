@@ -1,7 +1,9 @@
+"use client";
+
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams } from "next/navigation";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -69,7 +71,7 @@ const AnimatedGrid = () => {
 type Step = "details" | "payment";
 
 const Register = () => {
-  const [searchParams] = useSearchParams();
+  const searchParams = useSearchParams();
   const preselectedEvent = searchParams.get("event") || "";
   const preselectedDeptParam = searchParams.get("dept") || searchParams.get("department") || "";
 

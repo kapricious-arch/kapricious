@@ -1,6 +1,21 @@
-import { useParams, Link, useNavigate } from "react-router-dom";
+"use client";
+
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Calendar, MapPin, ArrowLeft, Users, Trophy, Phone, Clock, CreditCard, Star, ArrowRight, CheckCircle2 } from "lucide-react";
+import {
+  Calendar,
+  MapPin,
+  ArrowLeft,
+  Users,
+  Trophy,
+  Phone,
+  Clock,
+  CreditCard,
+  Star,
+  ArrowRight,
+  CheckCircle2,
+} from "lucide-react";
 import { getEventById } from "@/data/events/index";
 
 const fadeUp = {
@@ -9,9 +24,9 @@ const fadeUp = {
 };
 
 const FlagshipEventDetail = () => {
-  const { eventId } = useParams<{ eventId: string }>();
-  const navigate = useNavigate();
-
+  const params = useParams<{ eventId: string }>();
+  const router = useRouter();
+  const eventId = Array.isArray(params?.eventId) ? params.eventId[0] : params?.eventId;
   const event = eventId ? getEventById(eventId) : null;
 
   if (!event) {
@@ -20,7 +35,9 @@ const FlagshipEventDetail = () => {
         <div className="text-center">
           <h2 className="font-display text-2xl font-bold text-foreground mb-4">Event Not Found</h2>
           <p className="text-muted-foreground mb-6">The event you're looking for doesn't exist.</p>
-          <Link to="/events" className="text-accent hover:underline">← Back to Events</Link>
+          <Link href="/events" className="text-accent hover:underline">
+            Back to Events
+          </Link>
         </div>
       </div>
     );
@@ -31,28 +48,28 @@ const FlagshipEventDetail = () => {
   return (
     <div className="min-h-screen pt-24 pb-16 grid-bg px-4 md:px-8">
       <div className="max-w-5xl mx-auto">
-        {/* Breadcrumb */}
-        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-2 text-sm text-muted-foreground mb-8">
-          <button onClick={() => navigate("/events")} className="flex items-center gap-1 hover:text-foreground transition-colors">
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-2 text-sm text-muted-foreground mb-8"
+        >
+          <button
+            onClick={() => router.push("/events")}
+            className="flex items-center gap-1 hover:text-foreground transition-colors"
+          >
             <ArrowLeft className="w-4 h-4" /> Events
           </button>
           <span className="text-border">/</span>
           <span className="text-foreground">{event.title}</span>
         </motion.div>
 
-        {/* Hero Section */}
         <motion.div
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           className="bg-card rounded-large border border-border overflow-hidden mb-6"
         >
-          {/* Event Image */}
           <div className="relative h-64 md:h-80 overflow-hidden">
-            <img 
-              src={event.image} 
-              alt={event.title}
-              className="w-full h-full object-cover"
-            />
+            <img src={event.image} alt={event.title} className="w-full h-full object-cover" />
             <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
             <div className="absolute bottom-0 left-0 right-0 p-8">
               <span className="inline-block rounded-full border border-border bg-card/80 backdrop-blur-sm px-4 py-1 text-[10px] font-bold uppercase tracking-widest text-muted-foreground mb-3">
@@ -64,7 +81,6 @@ const FlagshipEventDetail = () => {
             </div>
           </div>
 
-          {/* Event Quick Info */}
           <div className="p-8 border-t border-border">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="flex items-center gap-3 bg-secondary/50 rounded-2xl p-4">
@@ -99,11 +115,8 @@ const FlagshipEventDetail = () => {
           </div>
         </motion.div>
 
-        {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Details */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Description */}
             <motion.div
               variants={fadeUp}
               custom={0}
@@ -118,7 +131,6 @@ const FlagshipEventDetail = () => {
               <p className="text-muted-foreground leading-relaxed">{event.description}</p>
             </motion.div>
 
-            {/* Highlights */}
             <motion.div
               variants={fadeUp}
               custom={1}
@@ -140,7 +152,6 @@ const FlagshipEventDetail = () => {
               </div>
             </motion.div>
 
-            {/* Rules */}
             <motion.div
               variants={fadeUp}
               custom={2}
@@ -162,7 +173,6 @@ const FlagshipEventDetail = () => {
             </motion.div>
           </div>
 
-          {/* Right Column - Registration Card */}
           <div className="space-y-6">
             <motion.div
               variants={fadeUp}
@@ -172,7 +182,7 @@ const FlagshipEventDetail = () => {
               className="bg-foreground text-background rounded-large p-8 sticky top-28"
             >
               <h3 className="font-display text-lg font-bold mb-6">Register Now</h3>
-              
+
               <div className="space-y-4 mb-6">
                 <div className="flex items-center justify-between pb-4 border-b border-background/20">
                   <div className="flex items-center gap-2">
@@ -197,7 +207,7 @@ const FlagshipEventDetail = () => {
               </div>
 
               <Link
-                to={`/register?event=${event.id}`}
+                href={`/register?event=${event.id}`}
                 className="w-full flex items-center justify-center gap-2 bg-background text-foreground px-6 py-4 rounded-2xl font-bold hover:opacity-90 transition-all group"
               >
                 Register for this Event

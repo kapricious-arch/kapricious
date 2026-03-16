@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 const Footer = () => (
   <footer className="border-t border-border bg-card/50 py-16">
@@ -23,7 +23,7 @@ const Footer = () => (
               { l: "Register", p: "/register" },
               { l: "Certificates", p: "/certificate" },
             ].map((x) => (
-              <Link key={x.p} to={x.p} className="text-sm text-foreground/60 hover:text-foreground transition-colors">
+              <Link key={x.p} href={x.p} className="text-sm text-foreground/60 hover:text-foreground transition-colors">
                 {x.l}
               </Link>
             ))}

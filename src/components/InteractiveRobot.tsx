@@ -167,7 +167,7 @@ const InteractiveRobot = ({ containerRef }: InteractiveRobotProps) => {
     <div ref={robotRef} className="relative w-full h-full">
       {/* Robot Base Image */}
       <img
-        src={robotImage}
+        src={robotImage.src}
         alt="Kapricious AI Robot Assistant"
         className="w-full h-full object-contain object-bottom opacity-80 md:opacity-100"
       />

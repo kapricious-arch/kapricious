@@ -1,6 +1,8 @@
+"use client";
+
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { toast } from "sonner";
 
@@ -8,7 +10,7 @@ const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +31,7 @@ const AdminLogin = () => {
       return;
     }
     toast.success("Welcome, Admin!");
-    navigate("/admin/dashboard");
+    router.push("/admin/dashboard");
   };
 
   return (

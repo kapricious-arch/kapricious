@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import CountdownTimer from "@/components/CountdownTimer";
 
@@ -45,7 +45,7 @@ const ScrollCards = () => {
               </div>
               <div className="flex flex-wrap gap-1.5 md:gap-2">
                 {culturalEvents.map((ev) => (
-                  <Link key={ev.id} to="/cultural-register" className="px-3 md:px-4 py-1.5 md:py-2 rounded-full border border-border text-[10px] md:text-xs font-medium uppercase tracking-wider text-muted-foreground hover:bg-accent hover:text-background active:bg-accent active:text-background transition-colors cursor-pointer">
+                  <Link key={ev.id} href="/cultural-register" className="px-3 md:px-4 py-1.5 md:py-2 rounded-full border border-border text-[10px] md:text-xs font-medium uppercase tracking-wider text-muted-foreground hover:bg-accent hover:text-background active:bg-accent active:text-background transition-colors cursor-pointer">
                     {ev.title}
                   </Link>
                 ))}

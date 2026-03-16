@@ -1,4 +1,6 @@
-import { useNavigate } from "react-router-dom";
+"use client";
+
+import { useRouter } from "next/navigation";
 import { Search, X } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { allDepartmentEvents } from "@/data/events/index";
@@ -7,7 +9,7 @@ const TopHeader = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // Filter events based on search query
   const filteredEvents = searchQuery.trim()
@@ -31,7 +33,7 @@ const TopHeader = () => {
   }, []);
 
   const handleEventClick = (eventId: string) => {
-    navigate(`/events/${eventId}`);
+    router.push(`/events/${eventId}`);
     setSearchQuery("");
     setIsOpen(false);
   };

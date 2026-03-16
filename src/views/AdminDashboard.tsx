@@ -1,5 +1,7 @@
+"use client";
+
 import { useEffect, useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -17,7 +19,7 @@ type SortKey = "name" | "email" | "college" | "created_at" | "payment_status";
 type SortDir = "asc" | "desc";
 
 const AdminDashboard = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [expandedEvents, setExpandedEvents] = useState<Record<string, boolean>>({});
   const [sortConfig, setSortConfig] = useState<Record<string, { key: SortKey; dir: SortDir }>>({});
@@ -31,15 +33,15 @@ const AdminDashboard = () => {
   useEffect(() => {
     const check = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { navigate("/admin"); return; }
+      if (!user) { router.push("/admin"); return; }
       const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", user.id);
       if (!roles?.some((r) => r.role === "admin")) {
         await supabase.auth.signOut();
-        navigate("/admin");
+        router.push("/admin");
       }
     };
     check();
-  }, [navigate]);
+  }, [router]);
 
   const { data: events } = useQuery({
     queryKey: ["admin-events"],
@@ -169,7 +171,7 @@ const AdminDashboard = () => {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
-    navigate("/admin");
+    router.push("/admin");
   };
 
   const SortHeader = ({ eventId, sortKey, children }: { eventId: string; sortKey: SortKey; children: React.ReactNode }) => {

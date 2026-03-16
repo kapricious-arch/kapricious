@@ -1,9 +1,11 @@
+"use client";
+
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 
 const SmoothScroll = () => {
-  const { pathname } = useLocation();
+  const pathname = usePathname();
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

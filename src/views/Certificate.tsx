@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
@@ -33,8 +35,8 @@ const Certificate = () => {
   const handleDownload = async (file: DriveFile) => {
     setDownloading(file.id);
     try {
-      const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
-      const anonKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+      const projectId = process.env.NEXT_PUBLIC_SUPABASE_PROJECT_ID;
+      const anonKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
       const res = await fetch(
         `https://${projectId}.supabase.co/functions/v1/download-certificate`,
         {

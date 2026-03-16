@@ -1,5 +1,8 @@
+"use client";
+
 import { useState, useRef, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { Menu, X, Home, Calendar, ClipboardList, Award, Sun, Moon, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/hooks/use-theme";
@@ -17,8 +20,8 @@ const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const { theme, toggleTheme } = useTheme();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const pathname = usePathname();
+  const router = useRouter();
   const searchRef = useRef<HTMLDivElement>(null);
 
   const filteredEvents = searchQuery.trim()
@@ -54,11 +57,11 @@ const Navbar = () => {
         </div>
         {navLinks.map((link) => {
           const Icon = link.icon;
-          const isActive = location.pathname === link.path;
+          const isActive = pathname === link.path;
           return (
             <Link
               key={link.path}
-              to={link.path}
+              href={link.path}
               className={`flex items-center gap-3 px-2 py-2 rounded-xl transition-colors w-full min-w-0 ${
                 isActive ? "bg-secondary" : "hover:bg-secondary"
               }`}
@@ -84,7 +87,7 @@ const Navbar = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 lg:hidden" style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}>
         <div className="mx-3 mt-3">
           <div className="bg-card/90 neo-bento border border-border rounded-full px-4 py-2.5 flex items-center justify-between">
-            <Link to="/" className="flex items-center gap-2.5">
+            <Link href="/" className="flex items-center gap-2.5">
               <div className="w-7 h-7">
                 <img src="/logo.png" alt="Kapricious Logo" className="w-full h-full object-contain dark:invert-0 invert" />
               </div>
@@ -143,7 +146,11 @@ const Navbar = () => {
                     {filteredEvents.slice(0, 6).map((event) => (
                       <button
                         key={event.id}
-                        onClick={() => { navigate(`/events/${event.id}`); setSearchQuery(""); setIsSearchOpen(false); }}
+                        onClick={() => {
+                          router.push(`/events/${event.id}`);
+                          setSearchQuery("");
+                          setIsSearchOpen(false);
+                        }}
                         className="w-full px-3 py-2.5 text-left hover:bg-secondary active:bg-secondary/80 transition-colors rounded-xl flex items-center justify-between gap-2"
                       >
                         <div className="min-w-0">
@@ -180,10 +187,10 @@ const Navbar = () => {
                   return (
                     <Link
                       key={link.path}
-                      to={link.path}
+                      href={link.path}
                       onClick={() => setOpen(false)}
                       className={`px-4 py-3 rounded-2xl text-sm font-medium uppercase tracking-wider transition-colors flex items-center gap-3 active:scale-[0.98] ${
-                        location.pathname === link.path
+                        pathname === link.path
                           ? "bg-foreground text-background"
                           : "text-muted-foreground active:bg-secondary"
                       }`}

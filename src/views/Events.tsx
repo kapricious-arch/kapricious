@@ -1,13 +1,30 @@
-import { memo, useRef, useEffect, useState, useCallback } from "react";
-import { motion, useScroll, useTransform, useInView } from "framer-motion";
-import { Link, useLocation } from "react-router-dom";
-import { ArrowRight, Play, Sparkles } from "lucide-react";
-import { cseEvents, ceEvents, meEvents, eeeEvents, raEvents, sfEvents, eceEvents, culturalEvents } from "@/data/events/index";
+"use client";
 
-// Video backgrounds for specific events
+import { memo, useRef, useEffect, useState } from "react";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { ArrowRight, Play, Sparkles } from "lucide-react";
+import {
+  cseEvents,
+  ceEvents,
+  meEvents,
+  eeeEvents,
+  raEvents,
+  sfEvents,
+  eceEvents,
+  culturalEvents,
+} from "@/data/events/index";
+
 const eventMedia: Record<string, { type: "video"; src: string }> = {
-  "hackathon": { type: "video", src: "https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_30fps.mp4" },
-  "zap-free-zone": { type: "video", src: "https://videos.pexels.com/video-files/3141208/3141208-uhd_2560_1440_25fps.mp4" },
+  hackathon: {
+    type: "video",
+    src: "https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_30fps.mp4",
+  },
+  "zap-free-zone": {
+    type: "video",
+    src: "https://videos.pexels.com/video-files/3141208/3141208-uhd_2560_1440_25fps.mp4",
+  },
 };
 
 const departmentEvents = [
@@ -28,7 +45,8 @@ const EventCard = memo(({ event, index }: { event: any; index: number }) => {
   const [videoError, setVideoError] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
 
-  const fallbackImage = "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=500&fit=crop";
+  const fallbackImage =
+    "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=500&fit=crop";
   const eventImage = event.image || fallbackImage;
 
   return (
@@ -40,13 +58,10 @@ const EventCard = memo(({ event, index }: { event: any; index: number }) => {
       id={event.id}
       className="group relative bg-card rounded-large border border-border overflow-hidden hover:border-accent/40 transition-all duration-500 hover:shadow-[0_0_40px_-10px_hsl(var(--accent)/0.2)]"
     >
-      {/* Media Background */}
       <div className="relative h-48 overflow-hidden bg-muted">
         {media?.type === "video" && !videoError ? (
           <>
-            {!videoLoaded && (
-              <div className="absolute inset-0 w-full h-full bg-muted animate-pulse" />
-            )}
+            {!videoLoaded && <div className="absolute inset-0 w-full h-full bg-muted animate-pulse" />}
             <video
               autoPlay
               loop
@@ -56,7 +71,9 @@ const EventCard = memo(({ event, index }: { event: any; index: number }) => {
               src={media.src}
               onError={() => setVideoError(true)}
               onLoadedData={() => setVideoLoaded(true)}
-              className={`w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-700 ${videoLoaded ? 'opacity-100' : 'opacity-0'}`}
+              className={`w-full h-full object-cover scale-110 group-hover:scale-100 transition-transform duration-700 ${
+                videoLoaded ? "opacity-100" : "opacity-0"
+              }`}
             />
             <div className="absolute top-3 right-3 z-10 bg-background/60 backdrop-blur-sm rounded-full p-1.5">
               <Play className="w-3 h-3 text-foreground fill-foreground" />
@@ -71,7 +88,7 @@ const EventCard = memo(({ event, index }: { event: any; index: number }) => {
           />
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
-        
+
         <div className="absolute top-3 left-3 z-10">
           <span className="px-3 py-1 rounded-full bg-background/60 backdrop-blur-sm border border-border/50 text-[10px] font-bold uppercase tracking-widest text-foreground">
             {event.type === "team" ? `Team (${event.teamSize} max)` : "Individual"}
@@ -79,7 +96,6 @@ const EventCard = memo(({ event, index }: { event: any; index: number }) => {
         </div>
       </div>
 
-      {/* Content */}
       <div className="p-6">
         <h3 className="font-display text-lg font-bold text-foreground mb-2 group-hover:text-accent transition-colors duration-300">
           {event.title}
@@ -98,7 +114,7 @@ const EventCard = memo(({ event, index }: { event: any; index: number }) => {
         </div>
 
         <Link
-          to={`/events/${event.id}`}
+          href={`/events/${event.id}`}
           className="mt-4 group/btn flex items-center justify-center gap-2 w-full bg-foreground text-background px-5 py-3 rounded-2xl hover:opacity-90 transition-all text-xs font-bold tracking-wider uppercase"
         >
           View Details
@@ -111,7 +127,7 @@ const EventCard = memo(({ event, index }: { event: any; index: number }) => {
 
 EventCard.displayName = "EventCard";
 
-const DepartmentSection = memo(({ dept, deptIndex }: { dept: typeof departmentEvents[0]; deptIndex: number }) => {
+const DepartmentSection = memo(({ dept }: { dept: (typeof departmentEvents)[0] }) => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
@@ -124,7 +140,9 @@ const DepartmentSection = memo(({ dept, deptIndex }: { dept: typeof departmentEv
         className="mb-10 flex items-end justify-between"
       >
         <div>
-          <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-muted-foreground mb-2 block">{dept.name}</span>
+          <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-muted-foreground mb-2 block">
+            {dept.name}
+          </span>
           <h2 className="font-display text-2xl md:text-4xl font-bold">
             <span className="text-accent">{dept.code}</span> EVENTS
           </h2>
@@ -149,32 +167,38 @@ const DepartmentSection = memo(({ dept, deptIndex }: { dept: typeof departmentEv
 DepartmentSection.displayName = "DepartmentSection";
 
 const Events = () => {
-  const location = useLocation();
+  const pathname = usePathname();
   const { scrollYProgress } = useScroll();
   const headerY = useTransform(scrollYProgress, [0, 0.1], [0, -30]);
   const [activeFilter, setActiveFilter] = useState<string>("ALL");
 
-  const filteredDepartments = activeFilter === "ALL"
-    ? departmentEvents
-    : departmentEvents.filter(dept => dept.code === activeFilter);
+  const filteredDepartments =
+    activeFilter === "ALL"
+      ? departmentEvents
+      : departmentEvents.filter((dept) => dept.code === activeFilter);
 
   useEffect(() => {
-    if (location.hash) {
-      const elementId = location.hash.replace("#", "");
-      const element = document.getElementById(elementId);
-      if (element) {
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: "smooth", block: "center" });
-          element.classList.add("ring-2", "ring-accent");
-          setTimeout(() => element.classList.remove("ring-2", "ring-accent"), 2000);
-        }, 300);
-      }
+    if (typeof window === "undefined" || !window.location.hash) {
+      return;
     }
-  }, [location.hash]);
+
+    const elementId = window.location.hash.replace("#", "");
+    const element = document.getElementById(elementId);
+    if (!element) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
+      element.classList.add("ring-2", "ring-accent");
+      window.setTimeout(() => element.classList.remove("ring-2", "ring-accent"), 2000);
+    }, 300);
+
+    return () => window.clearTimeout(timer);
+  }, [pathname]);
 
   return (
     <div className="min-h-screen grid-bg pt-24 pb-16 px-4 md:px-8">
-      {/* Animated Header */}
       <motion.div
         style={{ y: headerY }}
         initial={{ opacity: 0, y: 40 }}
@@ -189,7 +213,9 @@ const Events = () => {
           className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-accent/30 bg-accent/5 mb-6"
         >
           <Sparkles className="w-3 h-3 text-accent" />
-          <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-accent">Compete & Create</span>
+          <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-accent">
+            Compete & Create
+          </span>
         </motion.div>
         <h1 className="font-display text-4xl md:text-6xl font-bold mb-4">
           OUR <span className="text-accent">EVENTS</span>
@@ -200,7 +226,8 @@ const Events = () => {
           transition={{ delay: 0.4 }}
           className="text-muted-foreground text-sm max-w-lg mx-auto"
         >
-          Explore events across all departments. Thousands in prizes. Choose your challenge and make your mark at Kapricious 2026.
+          Explore events across all departments. Thousands in prizes. Choose your challenge and make your
+          mark at Kapricious 2026.
         </motion.p>
 
         <motion.div
@@ -211,7 +238,6 @@ const Events = () => {
         />
       </motion.div>
 
-      {/* Department Filter Bar */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -245,9 +271,8 @@ const Events = () => {
         </div>
       </motion.div>
 
-      {/* Department Events */}
-      {filteredDepartments.map((dept, deptIndex) => (
-        <DepartmentSection key={dept.code} dept={dept} deptIndex={deptIndex} />
+      {filteredDepartments.map((dept) => (
+        <DepartmentSection key={dept.code} dept={dept} />
       ))}
     </div>
   );

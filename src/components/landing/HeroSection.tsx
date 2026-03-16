@@ -1,5 +1,8 @@
+"use client";
+
 import { useRef, useEffect, useState, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Search, X, ArrowRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
@@ -28,7 +31,7 @@ const HeroSection = () => {
   const searchRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const navigate = useNavigate();
+  const router = useRouter();
 
   // Embla carousels
   const [mobileRef, mobileApi] = useEmblaCarousel({ loop: true, align: "start", dragFree: false });
@@ -197,7 +200,11 @@ const HeroSection = () => {
                       {filteredEvents.slice(0, 6).map((event) => (
                         <button
                           key={event.id}
-                          onClick={() => { navigate(`/events/${event.id}`); setSearchQuery(""); setIsSearchOpen(false); }}
+                          onClick={() => {
+                            router.push(`/events/${event.id}`);
+                            setSearchQuery("");
+                            setIsSearchOpen(false);
+                          }}
                           className="w-full px-4 py-3 text-left hover:bg-secondary active:bg-secondary/80 transition-colors flex items-center justify-between gap-2"
                         >
                           <div className="min-w-0">
@@ -248,7 +255,7 @@ const HeroSection = () => {
                     {topEvents.map((event) => (
                       <Link
                         key={event.id}
-                        to={event.link}
+                        href={event.link}
                         className="featured-event-card min-w-0 flex-[0_0_100%] block group rounded-[28px] border border-border/80 bg-card p-4 shadow-[0_18px_40px_rgba(2,5,19,0.08)]"
                         aria-label={`Open featured event ${event.title}`}
                       >
@@ -298,7 +305,7 @@ const HeroSection = () => {
                 className="absolute bottom-6 left-0 right-0 md:bottom-10 md:left-10 md:right-auto z-10 text-center md:text-left"
               >
                 <Link
-                  to="/register"
+                  href="/register"
                   className="inline-flex items-center gap-2 bg-foreground text-background px-5 py-2.5 md:px-6 md:py-3 rounded-full font-bold text-xs md:text-sm tracking-tight hover:opacity-90 active:scale-95 transition-all mb-3 md:mb-4 border border-border/20 shadow-lg"
                 >
                   REGISTER NOW
@@ -338,7 +345,7 @@ const HeroSection = () => {
             {topEvents.map((event) => (
               <Link
                 key={event.id}
-                to={event.link}
+                href={event.link}
                 className="featured-event-card min-w-0 flex-[0_0_100%] block rounded-[24px] border border-border bg-card p-4 shadow-[0_18px_36px_rgba(2,5,19,0.08)] active:scale-[0.985] transition-all duration-300"
                 aria-label={`Open featured event ${event.title}`}
               >
