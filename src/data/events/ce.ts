@@ -6,7 +6,7 @@ export const ceEvents: DepartmentEvent[] = [
     title: "Bridgit (Bridge Modelling)",
     teamSize: 4,
     registrationFee: "₹200 per team",
-    prizePool: "₹4,500",
+    prizePool: "₹3,500",
     details:
       "Design and construct a bridge using limited materials. The structure will be tested for load bearing capacity and efficiency.",
     prizes: ["🥇 ₹3,000", "🥈 ₹1,500"],
@@ -68,7 +68,7 @@ export const ceEvents: DepartmentEvent[] = [
     title: "Movethon",
     teamSize: 4,
     registrationFee: "₹200",
-    prizePool: "₹4,500",
+    prizePool: "₹3,500",
     details:
       "Teams develop creative solutions for real-world civil engineering problems and present their innovations.",
     prizes: ["🥇 ₹3,000", "🥈 ₹1,500"],

@@ -11,6 +11,7 @@ import { User, Mail, Phone, GraduationCap, Layers, Calendar, CheckCircle2, Credi
 import { flagshipEvents, getEventById, mainEvents, cseEvents, ceEvents, meEvents, eeeEvents, raEvents, sfEvents, eceEvents } from "@/data/events/index";
 
 const FLAGSHIP_DEPT_ID = "flagship";
+const LIMITED_EVENT_IDS = new Set(["hackathon"]);
 const RAZORPAY_CHECKOUT_SRC = "https://checkout.razorpay.com/v1/checkout.js";
 
 type RazorpayPaymentProof = {
@@ -445,6 +446,7 @@ const Register = () => {
   };
 
   const selectedEventDetails = getSelectedEventDetails();
+  const isCapacityLimitedEvent = LIMITED_EVENT_IDS.has(selectedEvent);
 
   const selectedEventLabel =
     selectedDept === FLAGSHIP_DEPT_ID
@@ -500,7 +502,7 @@ const Register = () => {
     return allHardcoded.find(ev => ev.id === selectedEvent)?.title || "";
   };
 
-  // Step 1: Validate details and check slot availability
+  // Step 1: Validate details and proceed to payment. Only hackathon is capacity-limited.
   const handleProceedToPayment = async () => {
     setErrors({});
     const result = schema.safeParse(form);
@@ -539,27 +541,34 @@ const Register = () => {
         return;
       }
 
-      const [countResult, eventResult] = await Promise.all([
-        supabase.from("registrations").select("*", { count: "exact", head: true }).eq("event_id", dbEventId),
-        supabase.from("events").select("max_participants").eq("id", dbEventId).single(),
-      ]);
+      if (isCapacityLimitedEvent) {
+        const [countResult, eventResult] = await Promise.all([
+          supabase.from("registrations").select("*", { count: "exact", head: true }).eq("event_id", dbEventId),
+          supabase.from("events").select("max_participants").eq("id", dbEventId).single(),
+        ]);
 
-      if (countResult.error) throw countResult.error;
+        if (countResult.error) throw countResult.error;
 
-      const max = eventResult.data?.max_participants ?? 10;
-      const current = countResult.count ?? 0;
-      const remaining = max - current;
+        const max = eventResult.data?.max_participants ?? 10;
+        const current = countResult.count ?? 0;
+        const remaining = max - current;
 
-      setMaxSlots(max);
-      setSlotsAvailable(remaining);
+        setMaxSlots(max);
+        setSlotsAvailable(remaining);
 
-      if (remaining <= 0) {
-        toast.error(`Registrations for this event are full (${max}/${max}). Please try another event.`);
-        return;
+        if (remaining <= 0) {
+          toast.error(`Registrations for this event are full (${max}/${max}). Please try another event.`);
+          return;
+        }
+
+        toast.success(`${remaining} slot${remaining > 1 ? "s" : ""} available! Proceed to payment.`);
+      } else {
+        setMaxSlots(null);
+        setSlotsAvailable(null);
+        toast.success("Registration is open. Proceed to payment.");
       }
 
       setCurrentStep("payment");
-      toast.success(`${remaining} slot${remaining > 1 ? 's' : ''} available! Proceed to payment.`);
     } catch (err: any) {
       toast.error(err.message || "Failed to check availability.");
     } finally {
@@ -579,24 +588,25 @@ const Register = () => {
         throw new Error("Event not found in database. Please try again later.");
       }
 
-      // Double-check slot availability before inserting
-      const { count: regCount, error: countError } = await supabase
-        .from("registrations")
-        .select("*", { count: "exact", head: true })
-        .eq("event_id", dbEventId);
+      if (LIMITED_EVENT_IDS.has(selectedEvent)) {
+        const { count: regCount, error: countError } = await supabase
+          .from("registrations")
+          .select("*", { count: "exact", head: true })
+          .eq("event_id", dbEventId);
 
-      if (countError) throw countError;
+        if (countError) throw countError;
 
-      const { data: eventInfo } = await supabase
-        .from("events")
-        .select("max_participants")
-        .eq("id", dbEventId)
-        .single();
+        const { data: eventInfo } = await supabase
+          .from("events")
+          .select("max_participants")
+          .eq("id", dbEventId)
+          .single();
 
-      const maxParticipants = eventInfo?.max_participants ?? 10;
+        const maxParticipants = eventInfo?.max_participants ?? 10;
 
-      if (regCount !== null && regCount >= maxParticipants) {
-        throw new Error(`Registrations for this event are full (${maxParticipants}/${maxParticipants}). Please try another event.`);
+        if (regCount !== null && regCount >= maxParticipants) {
+          throw new Error(`Registrations for this event are full (${maxParticipants}/${maxParticipants}). Please try another event.`);
+        }
       }
 
       const { data: regData, error } = await supabase.from("registrations").insert([{
@@ -1250,11 +1260,11 @@ const Register = () => {
                     {slotCheckLoading ? (
                       <span className="flex items-center gap-2">
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        Checking availability...
+                        {isCapacityLimitedEvent ? "Checking availability..." : "Preparing registration..."}
                       </span>
                     ) : (
                       <>
-                        Check Availability & Proceed
+                        {isCapacityLimitedEvent ? "Check Availability & Proceed" : "Proceed to Payment"}
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </>
                     )}
@@ -1276,10 +1286,13 @@ const Register = () => {
                   <div className="rounded-2xl bg-accent/5 border border-accent/20 p-4 flex items-start gap-3">
                     <CheckCircle2 className="w-5 h-5 text-accent mt-0.5 shrink-0" />
                     <div>
-                      <p className="text-sm font-bold text-foreground">Slots Available!</p>
+                      <p className="text-sm font-bold text-foreground">
+                        {isCapacityLimitedEvent ? "Slots Available!" : "Registration Open"}
+                      </p>
                       <p className="text-xs text-muted-foreground mt-1">
-                        {slotsAvailable} of {maxSlots} slots remaining for <span className="font-bold text-foreground">{selectedEventDetails?.title}</span>.
-                        Complete payment to confirm your registration.
+                        {isCapacityLimitedEvent
+                          ? <>{slotsAvailable} of {maxSlots} slots remaining for <span className="font-bold text-foreground">{selectedEventDetails?.title}</span>. Complete payment to confirm your registration.</>
+                          : <>Registrations are open for <span className="font-bold text-foreground">{selectedEventDetails?.title}</span>. Complete payment to confirm your registration.</>}
                       </p>
                     </div>
                   </div>

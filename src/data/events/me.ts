@@ -6,7 +6,7 @@ export const meEvents: DepartmentEvent[] = [
     title: "Assemble-X (EV Edition)",
     teamSize: 1,
     registrationFee: "₹100 per team",
-    prizePool: "₹7,500",
+    prizePool: "₹4,500",
     details:
       "A VR-based Electric Vehicle assembly challenge where participants assemble EV components in a simulated factory. The event tests speed, precision, technical knowledge, and innovation.",
     prizes: ["🥇 ₹5,000", "🥈 ₹2,500"],
@@ -37,7 +37,7 @@ export const meEvents: DepartmentEvent[] = [
     title: "RC Trails",
     teamSize: 1,
     registrationFee: "₹200 per team",
-    prizePool: "₹4,500",
+    prizePool: "₹3,000",
     details:
       "A high-speed remote-control vehicle lap-time challenge where participants race against the clock while maintaining control and precision.",
     prizes: ["🥇 ₹3,000", "🥈 ₹1,500"],
@@ -68,7 +68,7 @@ export const meEvents: DepartmentEvent[] = [
     title: "CAD Combat",
     teamSize: 1,
     registrationFee: "₹100 per participant",
-    prizePool: "₹3,000",
+    prizePool: "₹2,500",
     details:
       "Create accurate and creative CAD models within a limited time. The judges evaluate design clarity, engineering understanding, and finishing skills.",
     prizes: ["🥇 ₹2,000", "🥈 ₹1,000"],
@@ -99,7 +99,7 @@ export const meEvents: DepartmentEvent[] = [
     title: "Technical Quiz",
     teamSize: 2,
     registrationFee: "₹50 per participant",
-    prizePool: "₹1,500",
+    prizePool: "₹2,500",
     details:
       "A rapid-fire quiz covering core mechanical engineering concepts. Teams are tested on speed, accuracy, and depth of knowledge.",
     prizes: ["🥇 ₹1,000", "🥈 ₹500"],
@@ -130,7 +130,7 @@ export const meEvents: DepartmentEvent[] = [
     title: "Sustainable Innovation Pitching",
     teamSize: 4,
     registrationFee: "₹100 per participant",
-    prizePool: "₹3,000",
+    prizePool: "₹2,500",
     details:
       "Pitch eco-friendly engineering solutions to real challenges. Teams present the idea, prototype, and impact roadmap to industry judges.",
     prizes: ["🥇 ₹2,000", "🥈 ₹1,000"],
@@ -154,37 +154,6 @@ export const meEvents: DepartmentEvent[] = [
       "Connect with industry mentors",
       "Showcase prototypes",
       "Networking opportunity"
-    ]
-  },
-  {
-    id: "lathe-master",
-    title: "Lathe Master",
-    teamSize: 1,
-    registrationFee: "₹100",
-    prizePool: "₹3,000",
-    details:
-      "A hands-on machining contest that challenges participants to convert raw material into a precision component using a lathe machine.",
-    prizes: ["🥇 ₹2,000", "🥈 ₹1,000"],
-    type: "individual",
-    department: "ME",
-    departmentName: "Mechanical Engineering",
-    image: "https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
-    time: "10:00 AM - 1:00 PM",
-    venue: "Mechanical Workshop, KMEA Engineering College",
-    rules: [
-      "Solo participation only",
-      "Safety gear must be worn at all times",
-      "Time limit: 45 minutes",
-      "Raw material and tools provided",
-      "Judging: accuracy, surface finish, time",
-      "Safety violations lead to disqualification"
-    ],
-    highlights: [
-      "Real machining experience",
-      "Work on industrial lathe",
-      "Precision-focused challenge",
-      "Certificates for all"
     ]
   }
 ];

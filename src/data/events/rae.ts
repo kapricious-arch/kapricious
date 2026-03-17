@@ -6,7 +6,7 @@ export const raEvents: DepartmentEvent[] = [
     title: "Robosoccer",
     teamSize: 4,
     registrationFee: "₹50 per member",
-    prizePool: "₹1,000",
+    prizePool: "₹10,000",
     details:
       "Teams deliver autonomous robots that play soccer on a mini pitch. Strategy, agility, and teamwork decide the score.",
     prizes: ["🥇 ₹1,000"],
@@ -37,7 +37,7 @@ export const raEvents: DepartmentEvent[] = [
     title: "Line Tracer",
     teamSize: 4,
     registrationFee: "₹80 per member",
-    prizePool: "₹1,000",
+    prizePool: "₹10,000",
     details:
       "Build and program a robot that follows a complex line track with speed and accuracy.",
     prizes: ["🥇 ₹1,000"],
