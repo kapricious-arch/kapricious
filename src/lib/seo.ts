@@ -14,12 +14,13 @@ export const SITE_NAME = "Kapricious 2026";
 export const SITE_TITLE =
   "Kapricious 2026 | Tech Fest at KMEA Engineering College, Edathala, Aluva, Ernakulam";
 export const SITE_TAGLINE = "Where Innovation Meets Excellence";
+export const SITE_URL = "https://kapricious.in";
 
 export const DEFAULT_DESCRIPTION =
-  "Kapricious 2026 is the flagship tech fest of KMEA Engineering College, Edathala, Aluva, Ernakulam, Kerala. Experience 12-hour Hackathon, Star of Kapricious, Auto Show, coding competitions, robotics, cultural events & more on March 26-28, 2026. Register now for Kerala's biggest engineering college fest!";
+  "Kapricious 2026 is the flagship tech fest of KMEA Engineering College, Edathala, Aluva, Ernakulam, Kerala. Explore the 12-hour Hackathon, Star of Kapricious personality title event, Auto Show, coding competitions, robotics, workshops, and cultural events from March 26-28, 2026.";
 
 export const SHORT_DESCRIPTION =
-  "KMEA Engineering College's flagship tech fest featuring Hackathon, Star of Kapricious, Auto Show & 50+ events. March 26-28, 2026 at Edathala, Aluva.";
+  "KMEA Engineering College's flagship tech fest featuring the 12-hour Hackathon, Star of Kapricious personality title event, Auto Show, and 50+ events from March 26-28, 2026 in Edathala, Aluva.";
 
 // ============================================================================
 // KEYWORDS - Comprehensive & Location-Optimized
@@ -32,8 +33,9 @@ export const DEFAULT_KEYWORDS = [
   "Kapricious KMEA",
   "Kapricious tech fest",
 
-  "kapricious .in",
-  "kapricious .com",
+  "kapricious.in",
+  "Kapricious website",
+  "Kapricious registration",
   "kapricious fest",
   "KMEA",
   "kmea",
@@ -64,6 +66,7 @@ export const DEFAULT_KEYWORDS = [
   "12 hour hackathon Kerala",
   "hackathon Ernakulam 2026",
   "Star of Kapricious",
+  "Star of Kapricious 2026",
   "auto show college fest",
   "college auto expo Kerala",
   "coding competition Kerala",
@@ -80,6 +83,11 @@ export const DEFAULT_KEYWORDS = [
   "flagship events",
   "department events",
   "cultural fest Kerala",
+  "KMEA fest registration",
+  "Kapricious events",
+  "Kapricious Edathala",
+  "Kapricious Aluva",
+  "Kapricious Ernakulam",
 ];
 
 export const HACKATHON_KEYWORDS = [
@@ -101,13 +109,25 @@ export const HACKATHON_KEYWORDS = [
 export const STAR_OF_KAPRICIOUS_KEYWORDS = [
   ...DEFAULT_KEYWORDS,
   "Star of Kapricious",
-  "talent hunt Kerala",
-  "college talent show",
-  "main stage event",
-  "singing competition Kerala",
-  "dance competition Ernakulam",
-  "fashion show college",
+  "Star of Kapricious 2026",
+  "Star of Kapricious registration",
+  "Star of Kapricious KMEA",
+  "personality title event",
   "personality contest",
+  "personality competition Kerala",
+  "college personality competition",
+  "college title event",
+  "student title competition",
+  "campus personality event",
+  "individual stage event",
+  "main stage event",
+  "self expression competition",
+  "best personality contest college",
+  "intercollegiate personality competition",
+  "forenoon prelims",
+  "afternoon mains",
+  "+2 UG PG PhD event",
+  "March 28 2026 college event",
   "college star competition",
 ];
 
@@ -130,10 +150,14 @@ export const AUTO_SHOW_KEYWORDS = [
 
 const DEFAULT_IMAGE_PATH = "/logo.png";
 const LOGO_PATH = "/logo.png";
+const SEARCH_ICON_PATH = "/favicon-search.png";
 const ORGANIZATION_NAME = "KMEA Engineering College";
 const ORGANIZATION_EMAIL = "kapricious@kmeacollege.ac.in";
 const ORGANIZATION_PHONE = "+91-XXXXXXXXXX"; // Add actual phone
 const ORGANIZATION_WEBSITE = "https://kmeacollege.ac.in";
+const STAR_OF_KAPRICIOUS_PATH = "/events/star-of-kapricious";
+const STAR_OF_KAPRICIOUS_IMAGE =
+  getDepartmentEventById("star-of-kapricious")?.image || DEFAULT_IMAGE_PATH;
 
 const ORGANIZATION_ADDRESS = {
   "@type": "PostalAddress",
@@ -175,7 +199,17 @@ const trimTrailingSlash = (value: string) => value.replace(/\/+$/, "");
 
 export const getSiteUrl = () =>
   trimTrailingSlash(
-    process.env.NEXT_PUBLIC_SITE_URL?.trim() || "http://localhost:3000"
+    process.env.NEXT_PUBLIC_SITE_URL?.trim() || SITE_URL
+  );
+
+const mergeKeywords = (...groups: Array<string[] | undefined>) =>
+  Array.from(
+    new Set(
+      groups
+        .flatMap((group) => group ?? [])
+        .map((keyword) => keyword.trim())
+        .filter(Boolean)
+    )
   );
 
 export const buildAbsoluteUrl = (path: string) => {
@@ -234,6 +268,7 @@ const createWebsiteSchema = () => ({
   alternateName: "Kapricious",
   url: getSiteUrl(),
   description: DEFAULT_DESCRIPTION,
+  inLanguage: "en-IN",
   publisher: {
     "@id": `${getSiteUrl()}/#organization`,
   },
@@ -341,14 +376,14 @@ const createHackathonSchema = () => ({
 const createStarOfKapriciousSchema = () => ({
   "@context": "https://schema.org",
   "@type": "Event",
-  "@id": `${getSiteUrl()}/event/star-of-kapricious#event`,
+  "@id": `${getSiteUrl()}${STAR_OF_KAPRICIOUS_PATH}#event`,
   name: "Star of Kapricious 2026",
-  alternateName: "The Ultimate Talent Hunt",
+  alternateName: "The Personality Title Event",
   description:
-    "Star of Kapricious is the flagship talent hunt competition at Kapricious 2026, KMEA Engineering College, Edathala. Showcase your talents in singing, dancing, fashion, and personality on the main stage!",
-  url: buildAbsoluteUrl("/event/star-of-kapricious"),
-  image: buildAbsoluteUrl("/images/star-of-kapricious-banner.jpg"),
-  startDate: "2026-03-27",
+    "Star of Kapricious is an individual personality title event at Kapricious 2026, KMEA Engineering College, Edathala. Open to +2, UG/PG students, and PhD scholars, with prelims in the forenoon and mains in the afternoon on March 28, 2026.",
+  url: buildAbsoluteUrl(STAR_OF_KAPRICIOUS_PATH),
+  image: buildAbsoluteUrl(STAR_OF_KAPRICIOUS_IMAGE),
+  startDate: "2026-03-28",
   endDate: "2026-03-28",
   eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
   eventStatus: "https://schema.org/EventScheduled",
@@ -419,8 +454,8 @@ const createEventListSchema = () => ({
       "@type": "ListItem",
       position: 2,
       name: "Star of Kapricious",
-      description: "The ultimate talent hunt competition",
-      url: buildAbsoluteUrl("/event/star-of-kapricious"),
+      description: "The personality title event at Kapricious 2026",
+      url: buildAbsoluteUrl(STAR_OF_KAPRICIOUS_PATH),
     },
     {
       "@type": "ListItem",
@@ -500,7 +535,7 @@ const createFAQSchema = () => ({
       name: "What is Star of Kapricious?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Star of Kapricious is the flagship talent hunt competition featuring rounds of singing, dancing, fashion, and personality assessment to crown the ultimate star.",
+        text: "Star of Kapricious is an individual personality title event open to +2, UG/PG students, and PhD scholars. It features forenoon prelims, afternoon mains, and crowns the participant who stands out through uniqueness and personality.",
       },
     },
     {
@@ -675,14 +710,16 @@ const buildMetadata = ({
 }): Metadata => {
   const canonicalUrl = buildCanonicalUrl(pathname);
   const imageUrl = buildAbsoluteUrl(image);
+  const resolvedKeywords = mergeKeywords(keywords);
 
   return {
     title,
     description,
-    keywords: keywords.join(", "),
+    keywords: resolvedKeywords.join(", "),
     authors: [{ name: ORGANIZATION_NAME, url: ORGANIZATION_WEBSITE }],
     creator: ORGANIZATION_NAME,
     publisher: ORGANIZATION_NAME,
+    referrer: "origin-when-cross-origin",
     alternates: {
       canonical: canonicalUrl,
       languages: {
@@ -732,7 +769,7 @@ const buildMetadata = ({
       },
     },
     category: "Technology",
-    classification: "Education, Technology, Events",
+    classification: "Education, Technology, Cultural Events, Student Festival",
     other: {
       "geo.region": "IN-KL",
       "geo.placename": "Aluva, Ernakulam, Kerala",
@@ -757,7 +794,7 @@ export const getBaseMetadata = (): Metadata => ({
     template: `%s | ${SITE_NAME}`,
   },
   description: DEFAULT_DESCRIPTION,
-  keywords: DEFAULT_KEYWORDS.join(", "),
+  keywords: mergeKeywords(DEFAULT_KEYWORDS).join(", "),
   authors: [{ name: ORGANIZATION_NAME, url: ORGANIZATION_WEBSITE }],
   creator: ORGANIZATION_NAME,
   publisher: ORGANIZATION_NAME,
@@ -768,7 +805,8 @@ export const getBaseMetadata = (): Metadata => ({
   },
   icons: {
     icon: [
-      { url: "/favicon-search.png", type: "image/png" },
+      { url: "/favicon.ico", sizes: "any" },
+      { url: SEARCH_ICON_PATH, type: "image/png" },
       {
         url: "/favicon-light.png",
         type: "image/png",
@@ -782,17 +820,19 @@ export const getBaseMetadata = (): Metadata => ({
       { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
       { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
-    shortcut: "/favicon-search.png",
+    shortcut: "/favicon.ico",
     apple: [
       { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
     ],
   },
   manifest: "/manifest.json",
-  verification: {
-    google: "your-google-verification-code",
-    // yandex: "your-yandex-verification",
-    // bing: "your-bing-verification",
-  },
+  ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim()
+    ? {
+        verification: {
+          google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION.trim(),
+        },
+      }
+    : {}),
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
@@ -828,7 +868,7 @@ export const getHomeSchema = () => {
 
 export const getEventsMetadata = () => {
   const description =
-    "Explore 50+ events at Kapricious 2026 - 12-hour Hackathon, Star of Kapricious talent hunt, Auto Show, coding competitions, robotics, workshops & cultural events at KMEA Engineering College, Edathala, Aluva, Ernakulam.";
+    "Explore 50+ events at Kapricious 2026 including the 12-hour Hackathon, Star of Kapricious personality title event, Auto Show, coding competitions, robotics, workshops, and cultural events at KMEA Engineering College, Edathala, Aluva, Ernakulam.";
 
   return buildMetadata({
     pathname: "/events",
@@ -848,7 +888,7 @@ export const getEventsMetadata = () => {
 export const getEventsSchema = () => {
   const canonicalUrl = buildCanonicalUrl("/events");
   const description =
-    "Explore 50+ events at Kapricious 2026 including hackathon, Star of Kapricious, auto show, and department events.";
+    "Explore 50+ events at Kapricious 2026 including the 12-hour Hackathon, Star of Kapricious personality title event, Auto Show, and department events.";
 
   return [
     createPageSchema("Kapricious 2026 Events", description, canonicalUrl),
@@ -890,19 +930,19 @@ export const getHackathonSchema = () => {
 // Star of Kapricious Page
 export const getStarOfKapriciousMetadata = () => {
   const description =
-    "Star of Kapricious 2026 - The ultimate talent hunt at KMEA Engineering College, Edathala, Aluva. Showcase your talents in singing, dancing, fashion & personality. Win the crown and exciting prizes!";
+    "Star of Kapricious 2026 is an individual personality title event at KMEA Engineering College, Edathala, Aluva. Open to +2, UG/PG students, and PhD scholars on March 28, 2026 with 9:00 AM reporting, forenoon prelims, and afternoon mains.";
 
   return buildMetadata({
-    pathname: "/event/star-of-kapricious",
-    title: "Star of Kapricious | Talent Hunt Competition",
+    pathname: STAR_OF_KAPRICIOUS_PATH,
+    title: "Star of Kapricious | Personality Title Event",
     description,
     keywords: STAR_OF_KAPRICIOUS_KEYWORDS,
-    image: "/images/star-of-kapricious-og.png",
+    image: STAR_OF_KAPRICIOUS_IMAGE,
   });
 };
 
 export const getStarOfKapriciousSchema = () => {
-  const canonicalUrl = buildCanonicalUrl("/event/star-of-kapricious");
+  const canonicalUrl = buildCanonicalUrl(STAR_OF_KAPRICIOUS_PATH);
 
   return [
     createStarOfKapriciousSchema(),
@@ -1238,13 +1278,22 @@ export const getDepartmentEventMetadata = (eventId: string) => {
     pathname: `/events/${event.id}`,
     title: `${event.title} | ${event.departmentName}`,
     description,
-    keywords: [
-      ...DEFAULT_KEYWORDS,
-      event.title,
-      event.departmentName,
-      `${event.departmentName} event`,
-      `${event.title} registration`,
-    ],
+    keywords:
+      event.id === "star-of-kapricious"
+        ? mergeKeywords(STAR_OF_KAPRICIOUS_KEYWORDS, [
+            event.departmentName,
+            `${event.departmentName} event`,
+            `${event.title} registration`,
+            `${event.title} KMEA`,
+            `${event.title} Edathala`,
+            `${event.title} Aluva`,
+          ])
+        : mergeKeywords(DEFAULT_KEYWORDS, [
+            event.title,
+            event.departmentName,
+            `${event.departmentName} event`,
+            `${event.title} registration`,
+          ]),
     image: event.image,
   });
 };
@@ -1306,7 +1355,7 @@ export const generateSitemapUrls = () => {
     { url: "/register", priority: 0.9, changeFrequency: "weekly" as const },
     { url: "/schedule", priority: 0.8, changeFrequency: "weekly" as const },
     { url: "/event/hackathon", priority: 0.9, changeFrequency: "weekly" as const },
-    { url: "/event/star-of-kapricious", priority: 0.9, changeFrequency: "weekly" as const },
+    { url: STAR_OF_KAPRICIOUS_PATH, priority: 0.9, changeFrequency: "weekly" as const },
     { url: "/event/auto-show", priority: 0.9, changeFrequency: "weekly" as const },
     { url: "/contact", priority: 0.6, changeFrequency: "monthly" as const },
     { url: "/about", priority: 0.6, changeFrequency: "monthly" as const },

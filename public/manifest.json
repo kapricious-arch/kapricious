@@ -1,7 +1,7 @@
 {
   "name": "Kapricious 2026",
   "short_name": "Kapricious",
-  "description": "Kapricious 2026 is the flagship tech fest of KMEA Engineering College.",
+  "description": "Kapricious 2026 is the flagship tech fest of KMEA Engineering College featuring hackathon, Star of Kapricious, auto show, department events, and registrations.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0a0a0a",
@@ -10,12 +10,14 @@
     {
       "src": "/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "/apple-icon.png",
