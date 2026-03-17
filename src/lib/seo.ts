@@ -31,6 +31,12 @@ export const DEFAULT_KEYWORDS = [
   "Kapricious",
   "Kapricious KMEA",
   "Kapricious tech fest",
+
+  "kapricious .in",
+  "kapricious .com",
+  "kapricious fest",
+  "KMEA",
+  "kmea",
   
   // Institution Keywords
   "KMEA Engineering College",
