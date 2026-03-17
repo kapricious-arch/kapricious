@@ -30,7 +30,7 @@ export const eceEvents: DepartmentEvent[] = [
     department: "ECE",
     departmentName: "Electronics & Communication Engineering",
     image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
+    date: "March 27, 2026",
     time: "10:00 AM - 12:00 PM",
     venue: "ECE Lab, KMEA Engineering College",
     rules: [
@@ -57,7 +57,7 @@ export const eceEvents: DepartmentEvent[] = [
     department: "ECE",
     departmentName: "Electronics & Communication Engineering",
     image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
+    date: "March 27, 2026",
     time: "2:00 PM - 5:00 PM",
     venue: "Campus Wide, KMEA Engineering College",
     rules: [
@@ -85,7 +85,7 @@ export const eceEvents: DepartmentEvent[] = [
     department: "ECE",
     departmentName: "Electronics & Communication Engineering",
     image: "https://images.unsplash.com/photo-1588508065123-287b28e013da?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
+    date: "March 27, 2026",
     time: "11:00 AM - 1:00 PM",
     venue: "ECE Workshop, KMEA Engineering College",
     rules: [
@@ -112,7 +112,7 @@ export const eceEvents: DepartmentEvent[] = [
     department: "ECE",
     departmentName: "Electronics & Communication Engineering",
     image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
+    date: "March 27, 2026",
     time: "3:00 PM - 5:00 PM",
     venue: "Computer Lab, KMEA Engineering College",
     rules: [
@@ -139,7 +139,7 @@ export const eceEvents: DepartmentEvent[] = [
     department: "ECE",
     departmentName: "Electronics & Communication Engineering",
     image: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
+    date: "March 27, 2026",
     time: "9:00 AM - 11:00 AM",
     venue: "Seminar Hall, KMEA Engineering College",
     rules: [
@@ -471,7 +471,7 @@ export const eeeEvents: DepartmentEvent[] = [
     department: "EEE",
     departmentName: "Electrical & Electronics Engineering",
     image: "https://images.unsplash.com/photo-1553406830-ef2513450d76?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
+    date: "March 27, 2026",
     time: "10:00 AM - 12:00 PM",
     venue: "EEE Lab, KMEA Engineering College",
     rules: [
@@ -501,7 +501,7 @@ export const eeeEvents: DepartmentEvent[] = [
     department: "EEE",
     departmentName: "Electrical & Electronics Engineering",
     image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
+    date: "March 27, 2026",
     time: "11:00 AM - 1:00 PM",
     venue: "EEE Department, KMEA Engineering College",
     rules: [
@@ -529,7 +529,7 @@ export const eeeEvents: DepartmentEvent[] = [
     department: "EEE",
     departmentName: "Electrical & Electronics Engineering",
     image: "https://images.unsplash.com/photo-1489389944381-3471b5b30f04?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
+    date: "March 27, 2026",
     time: "2:00 PM - 5:00 PM",
     venue: "EEE Lab, KMEA Engineering College",
     rules: [
@@ -555,7 +555,7 @@ export const eeeEvents: DepartmentEvent[] = [
     department: "EEE",
     departmentName: "Electrical & Electronics Engineering",
     image: "https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
+    date: "March 27, 2026",
     time: "10:00 AM - 2:00 PM",
     venue: "Common Area, KMEA Engineering College",
     rules: [
@@ -585,7 +585,7 @@ export const eeeEvents: DepartmentEvent[] = [
     department: "EEE",
     departmentName: "Electrical & Electronics Engineering",
     image: "https://images.unsplash.com/photo-1611996575749-79a3a250f948?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
+    date: "March 27, 2026",
     time: "11:00 AM - 1:00 PM",
     venue: "EEE Department, KMEA Engineering College",
     rules: [
@@ -613,7 +613,7 @@ export const eeeEvents: DepartmentEvent[] = [
     department: "EEE",
     departmentName: "Electrical & Electronics Engineering",
     image: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
+    date: "March 27, 2026",
     time: "10:00 AM - 6:00 PM",
     venue: "Gaming Zone, KMEA Engineering College",
     rules: [
@@ -643,7 +643,7 @@ export const eeeEvents: DepartmentEvent[] = [
     department: "EEE",
     departmentName: "Electrical & Electronics Engineering",
     image: "https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
+    date: "March 27, 2026",
     time: "2:00 PM - 4:00 PM",
     venue: "Campus Wide, KMEA Engineering College",
     rules: [
@@ -1315,7 +1315,7 @@ export const culturalEvents: DepartmentEvent[] = [
     department: "CULTURAL",
     departmentName: "Cultural Events",
     image: "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
+    date: "March 27, 2026",
     time: "5:30 PM - 7:30 PM",
     venue: "Auditorium",
     rules: [
@@ -1349,7 +1349,7 @@ export const culturalEvents: DepartmentEvent[] = [
     department: "CULTURAL",
     departmentName: "Cultural Events",
     image: "https://images.unsplash.com/photo-1508700929628-666bc8bd84ea?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
+    date: "March 27, 2026",
     time: "3:30 PM - 5:30 PM",
     venue: "Auditorium",
     rules: [
@@ -1384,7 +1384,7 @@ export const culturalEvents: DepartmentEvent[] = [
     department: "CULTURAL",
     departmentName: "Cultural Events",
     image: "https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
+    date: "March 27, 2026",
     time: "2:00 PM - 3:30 PM",
     venue: "Auditorium",
     rules: [
@@ -1465,7 +1465,7 @@ export const culturalEvents: DepartmentEvent[] = [
     departmentName: "Cultural Events",
     image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1200&h=600&fit=crop",
     date: "March 28, 2026",
-    time: "5:00 PM - 8:00 PM",
+    time: "9:00 AM - 5:00 PM",
     venue: "Main Auditorium, KMEA Engineering College",
     rules: [
       "Individual participation only",

@@ -14,7 +14,7 @@ export const mainEvents: DepartmentEvent[] = [
     department: "CULTURAL",
     departmentName: "Cultural Events",
     image: "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
+    date: "March 27, 2026",
     time: "5:30 PM - 7:30 PM",
     venue: "Auditorium",
     rules: [
@@ -49,7 +49,7 @@ export const mainEvents: DepartmentEvent[] = [
     department: "CULTURAL",
     departmentName: "Cultural Events",
     image: "https://images.unsplash.com/photo-1508700929628-666bc8bd84ea?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
+    date: "March 27, 2026",
     time: "3:30 PM - 5:30 PM",
     venue: "Auditorium",
     rules: [
@@ -85,7 +85,7 @@ export const mainEvents: DepartmentEvent[] = [
     department: "CULTURAL",
     departmentName: "Cultural Events",
     image: "https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
+    date: "March 27, 2026",
     time: "2:00 PM - 3:30 PM",
     venue: "Auditorium",
     rules: [
@@ -155,7 +155,7 @@ export const mainEvents: DepartmentEvent[] = [
     departmentName: "Cultural Events",
     image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1200&h=600&fit=crop",
     date: "March 28, 2026",
-    time: "5:00 PM - 8:00 PM",
+    time: "9:00 AM - 5:00 PM",
     venue: "Main Auditorium, KMEA Engineering College",
     rules: [
       "Individual participation only",
