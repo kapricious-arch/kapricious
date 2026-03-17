@@ -1217,7 +1217,7 @@ export const getDepartmentEventMetadata = (eventId: string) => {
     return getNotFoundMetadata(`/events/${eventId}`);
   }
 
-  const description = `${event.title} - A ${event.departmentName} event at Kapricious 2026, KMEA Engineering College, Edathala, Aluva, Ernakulam. Date: ${event.date} | Venue: ${event.venue} | Prize: ${event.prize || "Exciting prizes"} | Register now!`;
+  const description = `${event.title} - A ${event.departmentName} event at Kapricious 2026, KMEA Engineering College, Edathala, Aluva, Ernakulam. Date: ${event.date} | Venue: ${event.venue} | Prize: ${event.prizePool || "Exciting prizes"} | Register now!`;
 
   return buildMetadata({
     pathname: `/events/${event.id}`,
@@ -1257,7 +1257,7 @@ export const getDepartmentEventSchema = (eventId: string) => {
     createBreadcrumbSchema([
       { name: "Home", url: getSiteUrl() },
       { name: "Events", url: buildAbsoluteUrl("/events") },
-      { name: event.departmentName, url: buildAbsoluteUrl(`/departments/${event.departmentId}`) },
+      { name: event.departmentName, url: buildAbsoluteUrl("/events") },
       { name: event.title, url: canonicalUrl },
     ]),
   ];
