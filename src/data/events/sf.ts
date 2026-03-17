@@ -13,7 +13,7 @@ export const sfEvents: DepartmentEvent[] = [
     type: "team",
     department: "SF",
     departmentName: "Safety & Fire Engineering",
-    image: "https://images.unsplash.com/photo-1581092921461-eab10380b1fb?w=1200&h=600&fit=crop",
+    image: "https://images.unsplash.com/photo-1517048676732-d65bc937f952?w=1200&h=600&fit=crop",
     date: "March 27, 2026",
     time: "9:00 AM - 11:00 AM",
     venue: "Fire Safety Lab, KMEA Engineering College",
