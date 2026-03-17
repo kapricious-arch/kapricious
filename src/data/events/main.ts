@@ -4,11 +4,7 @@ export const mainEvents: DepartmentEvent[] = [
   {
     id: "fashion-show",
     title: "Fashion Show",
-<<<<<<< HEAD
-    teamSize: 14,
-=======
     teamSize: 5,
->>>>>>> a458511 (Changes in admin and addition of events,Venues,Logo)
     registrationFee: "₹250 per head (College teams) / ₹350 per head (Other teams)",
     prizePool: "₹75,000",
     details:
@@ -22,19 +18,6 @@ export const mainEvents: DepartmentEvent[] = [
     time: "5:30 PM - 7:30 PM",
     venue: "Auditorium",
     rules: [
-<<<<<<< HEAD
-      "Open-theme show; no specific theme requirements",
-      "Team event with 8-14 members",
-      "Time limit: 15 minutes total (including setup and performance)",
-      "Negative marking for exceeding the time limit",
-      "Tracks must be in pen drive and submitted in advance",
-      "Vulgarity/obscenity will lead to disqualification",
-      "Props allowed if safe, non-obstructive, and easily portable",
-      "Sharp, heavy, or hazardous props are strictly prohibited",
-      "Judging: Costume & Creativity, Ramp Walk & Confidence, Overall Presentation",
-      "Judges' decision is final and binding",
-      "Use of cigarettes, alcohol, or any unfair means is prohibited"
-=======
       "Open to all registered fest participants",
       "Participants must perform in teams",
       "Minimum team size: 5 members",
@@ -50,7 +33,6 @@ export const mainEvents: DepartmentEvent[] = [
       "Participants are responsible for their costumes and accessories",
       "Judging: theme representation, creativity and innovation, confidence and stage presence, coordination",
       "The judges' decision will be final and binding"
->>>>>>> a458511 (Changes in admin and addition of events,Venues,Logo)
     ],
     highlights: [
       "Theme-based team runway performance",
@@ -76,19 +58,6 @@ export const mainEvents: DepartmentEvent[] = [
     time: "3:30 PM - 5:30 PM",
     venue: "Auditorium",
     rules: [
-<<<<<<< HEAD
-      "Team size: Minimum 8 members, maximum 20 members",
-      "Performance time limit: 5-10 minutes (exceeding may lead to disqualification)",
-      "One minute will be allotted for stage arrangement before performance",
-      "Only one team per participating college is allowed",
-      "Mixed groups from different colleges are not permitted",
-      "Soundtrack must be in MP3 format",
-      "Props that may make the dance floor untidy are prohibited",
-      "Team must restore the stage to its original condition within the given time limit",
-      "Any vulgarity or inappropriate content leads to immediate disqualification",
-      "Judging criteria: synchronization, choreography, creativity, rhythm, stage presence, overall presentation",
-      "Judges' decision is final and binding"
-=======
       "Open to all registered fest participants",
       "Participants must carry valid ID cards during the event",
       "Registration must be completed before the deadline",
@@ -105,7 +74,6 @@ export const mainEvents: DepartmentEvent[] = [
       "Organizers reserve the right to modify rules if required",
       "Participants are responsible for their belongings",
       "Any damage to property will be the responsibility of the participant"
->>>>>>> a458511 (Changes in admin and addition of events,Venues,Logo)
     ],
     highlights: [
       "Team dance stage event",
@@ -131,17 +99,6 @@ export const mainEvents: DepartmentEvent[] = [
     time: "2:00 PM - 3:30 PM",
     venue: "Auditorium",
     rules: [
-<<<<<<< HEAD
-      "Individual event",
-      "Random songs will be played for contestants",
-      "Songs will cover multiple languages",
-      "All dance forms are allowed",
-      "Each performance is limited to 2 minutes",
-      "No dangerous props (fire, swords, knives)",
-      "Bring a valid ID card on event day",
-      "Report at least 30 minutes prior to the schedule",
-      "Judges' decision is final and binding"
-=======
       "Open to all registered fest participants",
       "Solo and team entries are allowed",
       "Team size: 1 to 5 members",
@@ -157,7 +114,6 @@ export const mainEvents: DepartmentEvent[] = [
       "Judging: choreography, synchronization, expression and energy, adaptability",
       "Participants must report to the venue on time",
       "The judges' decision will be final and binding"
->>>>>>> a458511 (Changes in admin and addition of events,Venues,Logo)
     ],
     highlights: [
       "Official event title: Rhythm",
@@ -183,31 +139,6 @@ export const mainEvents: DepartmentEvent[] = [
     time: "10:00 AM - 1:00 PM",
     venue: "Campus Wide, KMEA Engineering College",
     rules: [
-<<<<<<< HEAD
-      "General Rules: Competition is open to all registered participants of the tech fest",
-      "General Rules: Each participant must carry their own camera or smartphone for photography",
-      "General Rules: Theme will be given on the spot and images must be based on that theme",
-      "General Rules: 24-hour time limit to capture and submit via the drive link shared on event day",
-      "Camera Specs: DSLR camera or high-end smartphone with a good camera",
-      "Camera Specs: Lenses (wide-angle, prime, or zoom)",
-      "Camera Specs: Tripod (optional)",
-      "Camera Specs: Extra batteries and memory cards",
-      "General Rules: Only one final image can be submitted per participant",
-      "Ethics & Restrictions: Photos must be original and taken after the theme announcement",
-      "Ethics & Restrictions: Plagiarism or use of stock images leads to immediate disqualification",
-      "Ethics & Restrictions: Do not disturb or harm people, animals, or the environment",
-      "Ethics & Restrictions: Avoid restricted or prohibited areas",
-      "Judging Criteria: Creativity and originality (perspective, composition, storytelling)",
-      "Judging Criteria: Technical quality (sharpness, exposure, lighting, overall quality)",
-      "Judging Criteria: Relevance to theme/event (representation of theme or tech fest spirit)",
-      "Submission Guidelines: JPEG format only",
-      "Submission Guidelines: Minimum size 1024 x 768 pixels",
-      "Submission Guidelines: Heavy editing/manipulation (adding/removing elements) is not permitted",
-      "Submission Guidelines: Submit original (unedited) image along with final edited version",
-      "Additional Guidelines: Judges' decision is final and binding",
-      "Additional Guidelines: Any rule violation leads to disqualification",
-      "Additional Guidelines: Organizers may use submitted photographs for promotional/documentation purposes"
-=======
       "Open to all registered Kapricious participants",
       "Bring your own DSLR camera or high-end smartphone",
       "Theme will be announced on the spot and photos must be taken only after the announcement",
@@ -218,7 +149,6 @@ export const mainEvents: DepartmentEvent[] = [
       "Plagiarism, stock images, or pre-taken photos will lead to disqualification",
       "Do not disturb people, animals, or the environment and avoid restricted areas",
       "Judging: creativity and originality, technical quality, and relevance to the theme"
->>>>>>> a458511 (Changes in admin and addition of events,Venues,Logo)
     ],
     highlights: [
       "Official event title: Pixora",

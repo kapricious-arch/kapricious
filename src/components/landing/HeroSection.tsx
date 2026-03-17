@@ -11,24 +11,8 @@ import { allDepartmentEvents, sortDepartmentEventsByPrizePool } from "@/data/eve
 
 const FEATURED_EVENTS_AUTOPLAY_MS = 4000;
 
-<<<<<<< HEAD
-=======
-// Parse prize string like "₹40,000" to number
-const parsePrize = (prize: string): number => {
-  return parseInt(prize.replace(/[₹,]/g, ''), 10) || 0;
-};
-
-// Top 3 department events by prize pool
-const topEvents = [...allDepartmentEvents]
-  .sort((a, b) => parsePrize(b.prizePool) - parsePrize(a.prizePool))
-  .slice(0, 3)
-  .map(e => ({
-    id: e.id, title: e.title, prize: e.prizePool, description: e.details,
-    date: e.date, link: `/events/${e.id}`, department: e.departmentName, image: e.image,
-  }));
-
->>>>>>> a458511 (Changes in admin and addition of events,Venues,Logo)
 const HeroSection = () => {
+
   const heroRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -47,6 +31,7 @@ const HeroSection = () => {
           date: event.date,
           link: `/events/${event.id}`,
           department: event.departmentName,
+          image: event.image,
         })),
     []
   );
