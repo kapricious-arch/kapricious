@@ -200,8 +200,8 @@ export const cseEvents: DepartmentEvent[] = [
     department: "CSE",
     departmentName: "Computer Science & Engineering",
     image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
-    time: "9:00 AM - 9:00 PM",
+    date: "March 25, 2026",
+    time: "7:00 AM - 7:00 PM",
     venue: "Hack Lab, KMEA Engineering College",
     rules: [
       "Teams of up to four members",

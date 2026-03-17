@@ -14,6 +14,7 @@ import {
   sfEvents,
   eceEvents,
   mainEvents,
+  sortDepartmentEventsByPrizePool,
 } from "@/data/events/index";
 
 const eventMedia: Record<string, { type: "video"; src: string }> = {
@@ -28,14 +29,14 @@ const eventMedia: Record<string, { type: "video"; src: string }> = {
 };
 
 const departmentEvents = [
-  { code: "CULTURAL", name: "Cultural Events", events: mainEvents },
-  { code: "CSE", name: "Computer Science & Engineering", events: cseEvents },
-  { code: "CE", name: "Civil Engineering", events: ceEvents },
-  { code: "ME", name: "Mechanical Engineering", events: meEvents },
-  { code: "EEE", name: "Electrical & Electronics Engineering", events: eeeEvents },
-  { code: "ECE", name: "Electronics & Communication Engineering", events: eceEvents },
-  { code: "RAE", name: "Robotics & Automation Engineering", events: raEvents },
-  { code: "SF", name: "Safety & Fire Engineering", events: sfEvents },
+  { code: "CULTURAL", name: "Cultural Events", events: sortDepartmentEventsByPrizePool(mainEvents) },
+  { code: "CSE", name: "Computer Science & Engineering", events: sortDepartmentEventsByPrizePool(cseEvents) },
+  { code: "CE", name: "Civil Engineering", events: sortDepartmentEventsByPrizePool(ceEvents) },
+  { code: "ME", name: "Mechanical Engineering", events: sortDepartmentEventsByPrizePool(meEvents) },
+  { code: "EEE", name: "Electrical & Electronics Engineering", events: sortDepartmentEventsByPrizePool(eeeEvents) },
+  { code: "ECE", name: "Electronics & Communication Engineering", events: sortDepartmentEventsByPrizePool(eceEvents) },
+  { code: "RAE", name: "Robotics & Automation Engineering", events: sortDepartmentEventsByPrizePool(raEvents) },
+  { code: "SF", name: "Safety & Fire Engineering", events: sortDepartmentEventsByPrizePool(sfEvents) },
 ];
 
 const EventCard = memo(({ event, index }: { event: any; index: number }) => {

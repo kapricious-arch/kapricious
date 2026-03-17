@@ -25,6 +25,15 @@ import { ceEvents } from "./ce";
 import { cseEvents } from "./cse";
 import { DepartmentEvent } from "./types";
 
+const prizePoolToNumber = (value: string) => {
+  if (!value) return 0;
+  const match = value.replace(/,/g, "").match(/(\d+)/);
+  return match ? Number(match[1]) : 0;
+};
+
+export const sortDepartmentEventsByPrizePool = (events: DepartmentEvent[]) =>
+  [...events].sort((a, b) => prizePoolToNumber(b.prizePool) - prizePoolToNumber(a.prizePool));
+
 // All department events combined
 export const allDepartmentEvents: DepartmentEvent[] = [
   ...mainEvents,

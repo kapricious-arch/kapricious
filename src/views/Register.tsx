@@ -8,7 +8,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { toast } from "sonner";
 import { z } from "zod";
 import { User, Mail, Phone, GraduationCap, Layers, Calendar, CheckCircle2, CreditCard, ShieldCheck, ArrowRight, Trophy, Sparkles, Zap, Users, AlertTriangle, Loader2 } from "lucide-react";
-import { flagshipEvents, getEventById, mainEvents, cseEvents, ceEvents, meEvents, eeeEvents, raEvents, sfEvents, eceEvents } from "@/data/events/index";
+import { flagshipEvents, getEventById, mainEvents, cseEvents, ceEvents, meEvents, eeeEvents, raEvents, sfEvents, eceEvents, sortDepartmentEventsByPrizePool } from "@/data/events/index";
 
 const FLAGSHIP_DEPT_ID = "flagship";
 const LIMITED_EVENT_IDS = new Set(["hackathon"]);
@@ -427,14 +427,14 @@ const Register = () => {
     }
     if (selectedDept && departments) {
       const dept = departments.find(d => d.id === selectedDept);
-      if (dept?.code === "CULTURAL") return mainEvents.map(e => ({ id: e.id, title: e.title }));
-      if (dept?.code === "CSE") return cseEvents.map(e => ({ id: e.id, title: e.title }));
-      if (dept?.code === "CE") return ceEvents.map(e => ({ id: e.id, title: e.title }));
-      if (dept?.code === "ME") return meEvents.map(e => ({ id: e.id, title: e.title }));
-      if (dept?.code === "EEE") return eeeEvents.map(e => ({ id: e.id, title: e.title }));
-      if (dept?.code === "RAE") return raEvents.map(e => ({ id: e.id, title: e.title }));
-      if (dept?.code === "SF") return sfEvents.map(e => ({ id: e.id, title: e.title }));
-      if (dept?.code === "ECE") return eceEvents.map(e => ({ id: e.id, title: e.title }));
+      if (dept?.code === "CULTURAL") return sortDepartmentEventsByPrizePool(mainEvents).map(e => ({ id: e.id, title: e.title }));
+      if (dept?.code === "CSE") return sortDepartmentEventsByPrizePool(cseEvents).map(e => ({ id: e.id, title: e.title }));
+      if (dept?.code === "CE") return sortDepartmentEventsByPrizePool(ceEvents).map(e => ({ id: e.id, title: e.title }));
+      if (dept?.code === "ME") return sortDepartmentEventsByPrizePool(meEvents).map(e => ({ id: e.id, title: e.title }));
+      if (dept?.code === "EEE") return sortDepartmentEventsByPrizePool(eeeEvents).map(e => ({ id: e.id, title: e.title }));
+      if (dept?.code === "RAE") return sortDepartmentEventsByPrizePool(raEvents).map(e => ({ id: e.id, title: e.title }));
+      if (dept?.code === "SF") return sortDepartmentEventsByPrizePool(sfEvents).map(e => ({ id: e.id, title: e.title }));
+      if (dept?.code === "ECE") return sortDepartmentEventsByPrizePool(eceEvents).map(e => ({ id: e.id, title: e.title }));
     }
     return [];
   };
@@ -865,30 +865,7 @@ const Register = () => {
                   <p>The pass below is designed to be easy to save, share, and verify.</p>
                 </div>
               </div>
-              <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                {couponData ? (
-                  <motion.button
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.65 }}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={async () => {
-                      try {
-                        setCouponDownloading(true);
-                        await downloadDesignedCouponPdf(couponData);
-                      } catch (error: any) {
-                        toast.error(error?.message || "Failed to download designed coupon PDF.");
-                      } finally {
-                        setCouponDownloading(false);
-                      }
-                    }}
-                    disabled={couponDownloading}
-                    className="w-full border border-border rounded-2xl px-6 py-3.5 text-sm font-bold text-foreground hover:bg-secondary/50 transition-all disabled:opacity-60"
-                  >
-                    {couponDownloading ? "Preparing Designed PDF..." : "Download Coupon PDF"}
-                  </motion.button>
-                ) : null}
+              <div className="mt-5">
                 <motion.button
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
