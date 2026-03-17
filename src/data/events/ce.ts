@@ -9,7 +9,7 @@ export const ceEvents: DepartmentEvent[] = [
     prizePool: "₹3,500",
     details:
       "Design and construct a bridge using limited materials. The structure will be tested for load bearing capacity and efficiency.",
-    prizes: ["🥇 ₹3,000", "🥈 ₹1,500"],
+    prizes: ["🥇 ₹2,500", "🥈 ₹1,000"],
     type: "team",
     department: "CE",
     departmentName: "Civil Engineering",

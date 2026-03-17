@@ -1,6 +1,8 @@
 import crypto from "crypto";
 import { NextResponse } from "next/server";
 
+export const runtime = "nodejs";
+
 type VerifyBody = {
   razorpay_order_id: string;
   razorpay_payment_id: string;

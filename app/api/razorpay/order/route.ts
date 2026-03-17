@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+export const runtime = "nodejs";
+
 type CreateOrderBody = {
   amount: number;
   currency?: string;
@@ -22,6 +24,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Invalid amount." }, { status: 400 });
     }
 
+    const sanitizedReceipt = (body?.receipt || `kapricious-${Date.now()}`)
+      .replace(/[^a-zA-Z0-9-_]/g, "-")
+      .slice(0, 40);
+
     const auth = Buffer.from(`${keyId}:${keySecret}`).toString("base64");
     const response = await fetch("https://api.razorpay.com/v1/orders", {
       method: "POST",
@@ -32,7 +38,7 @@ export async function POST(req: Request) {
       body: JSON.stringify({
         amount: Math.round(amount),
         currency: body?.currency || "INR",
-        receipt: body?.receipt || `kapricious-${Date.now()}`,
+        receipt: sanitizedReceipt,
         notes: body?.notes || {},
       }),
       cache: "no-store",

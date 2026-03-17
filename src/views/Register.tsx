@@ -12,6 +12,7 @@ import { flagshipEvents, getEventById, mainEvents, cseEvents, ceEvents, meEvents
 
 const FLAGSHIP_DEPT_ID = "flagship";
 const LIMITED_EVENT_IDS = new Set(["hackathon"]);
+const COMING_SOON_EVENT_IDS = new Set(["hackathon"]);
 const RAZORPAY_CHECKOUT_SRC = "https://checkout.razorpay.com/v1/checkout.js";
 
 type RazorpayPaymentProof = {
@@ -447,6 +448,7 @@ const Register = () => {
 
   const selectedEventDetails = getSelectedEventDetails();
   const isCapacityLimitedEvent = LIMITED_EVENT_IDS.has(selectedEvent);
+  const isComingSoonEvent = COMING_SOON_EVENT_IDS.has(selectedEvent);
 
   const selectedEventLabel =
     selectedDept === FLAGSHIP_DEPT_ID
@@ -516,6 +518,10 @@ const Register = () => {
     }
     if (!selectedDept || !selectedEvent) {
       toast.error("Please select a category and event.");
+      return;
+    }
+    if (isComingSoonEvent) {
+      toast.info("Hackathon registrations will open soon.");
       return;
     }
 
@@ -702,8 +708,8 @@ const Register = () => {
 
     const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
     if (!keyId) {
-      toast.info("Payment gateway is not configured yet. Continuing with registration for now.");
-      return true;
+      toast.error("Payment gateway is not configured yet. Add the Razorpay public key and try again.");
+      return false;
     }
 
     const loaded = await loadRazorpayCheckout();
@@ -721,7 +727,7 @@ const Register = () => {
         body: JSON.stringify({
           amount: payableAmountInPaise,
           currency: "INR",
-          receipt: `${eventTitle}-${Date.now()}`,
+          receipt: `${selectedEvent}-${Date.now()}`,
           notes: { eventTitle, email: form.email.trim().toLowerCase() },
         }),
       });
@@ -1251,7 +1257,7 @@ const Register = () => {
                 <div className="p-6 md:p-8">
                   <motion.button
                     type="button"
-                    disabled={slotCheckLoading}
+                    disabled={slotCheckLoading || isComingSoonEvent}
                     onClick={handleProceedToPayment}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
@@ -1264,11 +1270,16 @@ const Register = () => {
                       </span>
                     ) : (
                       <>
-                        {isCapacityLimitedEvent ? "Check Availability & Proceed" : "Proceed to Payment"}
+                        {isComingSoonEvent ? "Coming Soon" : isCapacityLimitedEvent ? "Check Availability & Proceed" : "Proceed to Payment"}
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </>
                     )}
                   </motion.button>
+                  {isComingSoonEvent && (
+                    <p className="mt-2 text-center text-xs text-muted-foreground">
+                      Hackathon registrations are currently closed and will open soon.
+                    </p>
+                  )}
                 </div>
               </motion.div>
             )}
@@ -1328,10 +1339,16 @@ const Register = () => {
                     </div>
                     <h3 className="font-display text-xs font-bold text-foreground mb-1">PAYMENT GATEWAY</h3>
                     <p className="text-[10px] text-muted-foreground mb-3 uppercase tracking-wider">
-                      {payableAmountInPaise > 0 ? "Razorpay Test Mode" : "No Payment Required"}
+                      {payableAmountInPaise > 0 ? "Razorpay Checkout Ready" : "No Payment Required"}
                     </p>
+                    <div className="mb-4">
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Amount Payable</p>
+                      <p className="mt-1 font-display text-3xl font-bold text-foreground">
+                        {payableAmountInPaise > 0 ? `₹${payableRupees.toLocaleString("en-IN")}` : "Free"}
+                      </p>
+                    </div>
                     <div className="flex justify-center gap-2">
-                      {["Razorpay", "Test API"].map((g) => (
+                      {[payableAmountInPaise > 0 ? "Razorpay" : "Free Entry", "Secure Checkout"].map((g) => (
                         <span key={g} className="rounded-full bg-card border border-border px-2.5 py-0.5 text-[9px] tracking-wider text-muted-foreground">{g}</span>
                       ))}
                     </div>
@@ -1339,6 +1356,11 @@ const Register = () => {
                       <ShieldCheck className="w-3 h-3" />
                       <span>256-bit SSL Encrypted</span>
                     </div>
+                    {payableAmountInPaise > 0 && (
+                      <p className="mt-3 text-xs text-muted-foreground">
+                        Clicking the button below will open Razorpay checkout.
+                      </p>
+                    )}
                   </div>
                 </div>
 

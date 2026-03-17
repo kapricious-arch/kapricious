@@ -191,7 +191,7 @@ export const cseEvents: DepartmentEvent[] = [
     id: "hackathon",
     title: "Hackathon",
     teamSize: 4,
-    registrationFee: "₹400 per team",
+    registrationFee: "Coming Soon",
     prizePool: "₹15,000",
     details:
       "A 12-hour innovation sprint where teams build a working prototype addressing real-world problems.",
