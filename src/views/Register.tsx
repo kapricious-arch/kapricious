@@ -1340,6 +1340,9 @@ const Register = () => {
                         <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
                         <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputClass} placeholder="John Doe" />
                       </div>
+                      <p className="mt-2 text-xs text-amber-400/90">
+                        Enter the name carefully. This spelling will be used for certificates and event records.
+                      </p>
                       {errors.name && <p className="text-xs text-destructive mt-1">{errors.name}</p>}
                     </div>
                     <div>
@@ -1376,6 +1379,9 @@ const Register = () => {
                       <Users className="w-4 h-4 text-accent" />
                       <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground">Team Members</span>
                     </div>
+                    <p className="text-xs text-amber-400/90">
+                      Team member names should also be entered exactly as they should appear on certificates.
+                    </p>
                     <div className="space-y-3">
                       {teamMembers.map((member, index) => (
                         <motion.div

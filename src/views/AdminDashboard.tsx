@@ -198,6 +198,9 @@ const AdminDashboard = () => {
       "Event ID",
       "Amount Paid",
       "Transaction ID",
+      "Razorpay Order ID",
+      "Payment Currency",
+      "Gateway Status",
       "Payment Status",
       "Screenshot Link",
       "Team Size",
@@ -220,6 +223,9 @@ const AdminDashboard = () => {
       r.event_id || "",
       r.amount_paid ?? "",
       r.transaction_id || "",
+      r.razorpay_order_id || "",
+      r.payment_currency || "",
+      r.payment_gateway_status || "",
       r.payment_status || "pending",
       r.screenshot_url || "",
       r.team_size ?? 1,
@@ -361,6 +367,9 @@ const AdminDashboard = () => {
                           <th className="text-left px-4 py-3 font-medium text-xs uppercase tracking-wider text-muted-foreground">Members</th>
                           <th className="text-left px-4 py-3 font-medium text-xs uppercase tracking-wider text-muted-foreground">Amount</th>
                           <th className="text-left px-4 py-3 font-medium text-xs uppercase tracking-wider text-muted-foreground">Txn ID</th>
+                          <th className="text-left px-4 py-3 font-medium text-xs uppercase tracking-wider text-muted-foreground">Order ID</th>
+                          <th className="text-left px-4 py-3 font-medium text-xs uppercase tracking-wider text-muted-foreground">Currency</th>
+                          <th className="text-left px-4 py-3 font-medium text-xs uppercase tracking-wider text-muted-foreground">Gateway</th>
                           <th className="text-left px-4 py-3 font-medium text-xs uppercase tracking-wider text-muted-foreground">Screenshot</th>
                           <th className="text-left px-4 py-3 font-medium text-xs uppercase tracking-wider text-muted-foreground">Check-In</th>
                           <SortHeader eventId={event.id} sortKey="created_at">Registered</SortHeader>
@@ -453,7 +462,7 @@ const AdminDashboard = () => {
                         })}
                         {eventRegs.length === 0 && (
                           <tr>
-                            <td colSpan={14} className="px-4 py-8 text-center text-muted-foreground">
+                            <td colSpan={17} className="px-4 py-8 text-center text-muted-foreground">
                               No registrations
                             </td>
                           </tr>

@@ -762,12 +762,21 @@ export const getBaseMetadata = (): Metadata => ({
   },
   icons: {
     icon: [
-      { url: "/logo.png", type: "image/png" },
-      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon-search.png", type: "image/png" },
+      {
+        url: "/favicon-light.png",
+        type: "image/png",
+        media: "(prefers-color-scheme: light)",
+      },
+      {
+        url: "/logo.png",
+        type: "image/png",
+        media: "(prefers-color-scheme: dark)",
+      },
       { url: "/icon-192.png", sizes: "192x192", type: "image/png" },
       { url: "/icon-512.png", sizes: "512x512", type: "image/png" },
     ],
-    shortcut: "/logo.png",
+    shortcut: "/favicon-search.png",
     apple: [
       { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
     ],
