@@ -17,6 +17,10 @@ export interface DepartmentEvent {
   venue: string;
   rules: string[];
   highlights: string[];
+  contact?: {
+    name: string;
+    phone: string;
+  };
 }
 
 export interface FlagshipEvent {

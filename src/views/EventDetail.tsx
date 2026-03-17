@@ -16,6 +16,7 @@ import {
   Clock,
   CreditCard,
   CheckCircle2,
+  Phone,
 } from "lucide-react";
 import { getDepartmentEventById } from "@/data/events/index";
 
@@ -236,6 +237,18 @@ const EventDetail = () => {
                   </div>
                   <span className="font-medium capitalize">{event.type}</span>
                 </div>
+                {event.contact ? (
+                  <div className="flex items-center justify-between pb-4 border-b border-background/20">
+                    <div className="flex items-center gap-2">
+                      <Phone className="w-4 h-4 opacity-60" />
+                      <span className="text-sm opacity-80">Coordinator</span>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium">{event.contact.name}</p>
+                      <p className="text-xs opacity-80">{event.contact.phone}</p>
+                    </div>
+                  </div>
+                ) : null}
               </div>
 
               <Link

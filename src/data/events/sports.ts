@@ -44,7 +44,7 @@ export const sportsEvents: DepartmentEvent[] = [
     type: "team",
     department: "SPORTS",
     departmentName: "Sports Fiesta",
-    image: "https://images.unsplash.com/photo-1547347298-4074fc3086f0?w=1200&h=600&fit=crop",
+    image: "https://live.staticflickr.com/62/192818726_03007699e7_o.jpg",
     date: "March 25, 2026",
     time: "TBA",
     venue: "College Indoor Kabaddi Court",

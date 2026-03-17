@@ -3,12 +3,12 @@ import { DepartmentEvent } from "./types";
 export const eceEvents: DepartmentEvent[] = [
   {
     id: "e-solder",
-    title: "Solder-Master",
+    title: "SolderMaster",
     teamSize: 1,
     registrationFee: "₹50 per head",
     prizePool: "₹1,500",
     details:
-      "Participants battle through rapid-fire circuit/frame challenges inspired by classic shooter missions.",
+      "Participants must replicate the given structure within the allotted time using the provided components.",
     prizes: ["🥇 ₹1,000", "🥈 ₹500"],
     type: "individual",
     department: "ECE",
@@ -17,29 +17,33 @@ export const eceEvents: DepartmentEvent[] = [
     date: "March 27, 2026",
     time: "11:30 AM - 4:00 PM",
     venue: "B308",
+    contact: {
+      name: "Anjana K P",
+      phone: "+91 70128 30512",
+    },
     rules: [
       "Individual participation",
-      "Battle stages are time-boxed",
-      "No external hardware allowed",
-      "Complete all phases to qualify for prizes",
-      "Judging focuses on precision and speed",
+      "Participants must replicate the given structure within the allotted time limit",
+      "Components will be provided",
+      "Judged based on accuracy, soldering quality, and neatness",
+      "Use only the materials provided at the venue",
       "Decision of the judges is final"
     ],
     highlights: [
-      "Action-themed electronics",
-      "Quick reflex challenges",
-      "State-of-the-art lab setup",
-      "New event format"
+      "Structure replication challenge",
+      "Components provided on site",
+      "Judged on soldering quality",
+      "Accuracy and neatness matter"
     ]
   },
   {
     id: "lazer-heist",
-    title: "Lazer Heist",
+    title: "Laser Heist",
     teamSize: 1,
     registrationFee: "₹50 per head",
     prizePool: "₹2,000",
     details:
-      "Navigate through a grid of lasers to reach the vault without tripping any beam, testing focus and control.",
+      "Participants must move through the laser maze without breaking beams while racing for the best completion time.",
     prizes: ["🥇 ₹1,500", "🥈 ₹500"],
     type: "individual",
     department: "ECE",
@@ -48,29 +52,33 @@ export const eceEvents: DepartmentEvent[] = [
     date: "March 27, 2026",
     time: "11:30 AM - 4:00 PM",
     venue: "B214",
+    contact: {
+      name: "B Nandhakishor",
+      phone: "+91 85907 67010",
+    },
     rules: [
       "Individual participation",
-      "Laser grid is simulator based",
-      "Three attempts per participant",
-      "Touching a laser resets the attempt",
-      "Judging: time and accuracy",
-      "Participants must wear provided goggles"
+      "Participants must move through the laser maze without breaking beams",
+      "Each beam break adds penalty time",
+      "Fastest completion time wins",
+      "Follow arena instructions carefully",
+      "Decision of the judges is final"
     ],
     highlights: [
-      "Immersive laser grid",
-      "Precision & timing",
-      "High-tech arena",
-      "Thrilling finale"
+      "Laser maze challenge",
+      "Penalty-based timing",
+      "Fastest completion wins",
+      "Precision movement test"
     ]
   },
   {
     id: "electrodex",
-    title: "ElectroDex",
+    title: "ElectroDex Challenge",
     teamSize: 1,
     registrationFee: "₹50 per head",
     prizePool: "₹1,500",
     details:
-      "A knowledge sprint reviewing electronic components, circuits, and communication systems across multiple rounds.",
+      "Participants identify electronic components and state their name, value when applicable, and function to score the highest.",
     prizes: ["🥇 ₹1,000", "🥈 ₹500"],
     type: "individual",
     department: "ECE",
@@ -79,60 +87,67 @@ export const eceEvents: DepartmentEvent[] = [
     date: "March 27, 2026",
     time: "11:30 AM - 4:00 PM",
     venue: "B307",
+    contact: {
+      name: "Nasih O A",
+      phone: "+91 90374 71665",
+    },
     rules: [
       "Individual participation",
-      "Multiple-choice and puzzle rounds",
-      "No electronic devices allowed",
-      "Top scorers move to the finals",
-      "Negative marking for wrong answers",
+      "Participants identify electronic components",
+      "Must mention component name, value if applicable, and function",
+      "Highest score wins",
+      "No external help or devices allowed",
       "Judges decision is final"
     ],
     highlights: [
-      "Comprehensive ECE quiz",
-      "Multi-stage format",
-      "Test your fundamentals",
-      "Great learning opportunity"
+      "Component identification challenge",
+      "Name, value, and function based scoring",
+      "Highest score wins",
+      "Practical electronics knowledge test"
     ]
   },
   {
     id: "electro-hunt",
-    title: "Electro Hunt",
-    teamSize: 1,
+    title: "ElectroHunt",
+    teamSize: 4,
     registrationFee: "₹200 per team",
     prizePool: "₹3,000",
     details:
-      "Decode clues, discover hidden checkpoints, and solve electronics-themed challenges across campus before time runs out.",
+      "Teams follow a clue trail where each solved clue leads to the next stage, and the fastest team to finish wins.",
     prizes: ["🥇 ₹3,000"],
-    type: "individual",
+    type: "team",
     department: "ECE",
     departmentName: "Electronics & Communication Engineering",
     image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=600&fit=crop",
     date: "March 27, 2026",
     time: "2:00 PM - 4:00 PM",
     venue: "Green Block",
+    contact: {
+      name: "Nabeel",
+      phone: "+91 99472 68474",
+    },
     rules: [
-      "Individual participation",
-      "Complete sequential checkpoints",
-      "Stay within campus boundaries",
-      "No external help allowed",
-      "Finishers ranked by time",
+      "Teams of 4 members",
+      "Each clue leads to the next",
+      "Team completing all stages fastest wins",
+      "Stay within the allowed event area",
       "Organizers reserve the right to disqualify unfair play"
     ],
     highlights: [
-      "Campus treasure hunt",
-      "Electronics-themed clues",
-      "Fast-paced adventure",
-      "Fun competition"
+      "4-member team event",
+      "Sequential clue-based format",
+      "Fastest full completion wins",
+      "Decode and discover challenge"
     ]
   },
   {
     id: "code-red",
-    title: "Code Red",
+    title: "Code Red: Bomb Defusal",
     teamSize: 1,
     registrationFee: "₹50 per head",
     prizePool: "₹1,500",
     details:
-      "A high-pressure bomb defusal challenge where participants must identify the right wires, decode clues, and disarm the device before time runs out.",
+      "Participants must identify the correct wire connections and complete a successful bomb defusal in the shortest time possible.",
     prizes: ["🥇 ₹1,000", "🥈 ₹500"],
     type: "individual",
     department: "ECE",
@@ -141,19 +156,23 @@ export const eceEvents: DepartmentEvent[] = [
     date: "March 27, 2026",
     time: "11:30 AM - 4:00 PM",
     venue: "B303",
+    contact: {
+      name: "Afshan Khan",
+      phone: "+91 97782 40531",
+    },
     rules: [
       "Individual participation",
-      "Programming in C/C++ for microcontrollers",
-      "Time limit: 90 minutes",
-      "Code must run without errors on provided boards",
-      "No pre-written templates allowed",
-      "Internet access limited to offline docs"
+      "Participants must identify the correct wire connections",
+      "Incorrect wire selection leads to penalties",
+      "Fastest successful defusal wins",
+      "Handle the setup carefully during the challenge",
+      "Decision of the judges is final"
     ],
     highlights: [
-      "Embedded systems focus",
-      "Hardware + software challenge",
-      "Real IoT boards",
-      "Round-the-clock support"
+      "Bomb defusal challenge",
+      "Penalty-based wire selection",
+      "Fastest successful attempt wins",
+      "Logic and speed event"
     ]
   }
 ];
