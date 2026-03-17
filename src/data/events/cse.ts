@@ -158,12 +158,12 @@ export const cseEvents: DepartmentEvent[] = [
   },
   {
     id: "tech-escape-room",
-    title: "Tech Escape Room",
+    title: "Realm Of Secrets",
     teamSize: 4,
     registrationFee: "₹200 per team",
     prizePool: "₹5,000",
     details:
-      "Decode encryptions, crack logic puzzles, and debug systems to escape the themed room before time runs out.",
+      "Enter a world where mystery meets technology. In the Realm of Secrets, hidden clues, encrypted codes, and digital puzzles challenge your logic and creativity. Use your mind to decode, hack, and uncover the truth. Will you escape... or become part of the secret?",
     prizes: ["🥇 ₹3,000", "🥈 ₹2,000"],
     type: "team",
     department: "CSE",
