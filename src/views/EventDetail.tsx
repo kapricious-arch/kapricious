@@ -29,7 +29,6 @@ const EventDetail = () => {
   const router = useRouter();
   const eventId = Array.isArray(params?.eventId) ? params.eventId[0] : params?.eventId;
   const event = eventId ? getDepartmentEventById(eventId) : null;
-  const isComingSoon = event?.id === "hackathon";
 
   if (!event) {
     return (
@@ -232,19 +231,13 @@ const EventDetail = () => {
                 </div>
               </div>
 
-              {isComingSoon ? (
-                <div className="w-full flex items-center justify-center gap-2 bg-background/70 text-foreground px-6 py-4 rounded-2xl font-bold">
-                  Registrations Open Soon
-                </div>
-              ) : (
-                <Link
-                  href={`/register?department=${event.department}&event=${event.id}`}
-                  className="w-full flex items-center justify-center gap-2 bg-background text-foreground px-6 py-4 rounded-2xl font-bold hover:opacity-90 transition-all group"
-                >
-                  Register for this Event
-                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              )}
+              <Link
+                href={`/register?department=${event.department}&event=${event.id}`}
+                className="w-full flex items-center justify-center gap-2 bg-background text-foreground px-6 py-4 rounded-2xl font-bold hover:opacity-90 transition-all group"
+              >
+                Register for this Event
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Link>
             </motion.div>
           </div>
         </div>

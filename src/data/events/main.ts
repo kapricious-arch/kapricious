@@ -4,8 +4,8 @@ export const mainEvents: DepartmentEvent[] = [
   {
     id: "fashion-show",
     title: "Fashion Show",
-    teamSize: 10,
-    registrationFee: "₹250 per head",
+    teamSize: 15,
+    registrationFee: "₹250 per head (College teams) / ₹350 per head (Other teams)",
     prizePool: "₹75,000",
     details:
       "Showcase themed fashion collections with choreography, music, and styling on the main stage runway.",
@@ -18,7 +18,7 @@ export const mainEvents: DepartmentEvent[] = [
     time: "6:00 PM - 8:00 PM",
     venue: "Main Auditorium, KMEA Engineering College",
     rules: [
-      "Teams of 8-12 members",
+      "Teams of up to 15 members",
       "Theme must be declared during registration",
       "Performance duration: 8-12 minutes",
       "Costumes and props are team responsibility",
@@ -35,7 +35,7 @@ export const mainEvents: DepartmentEvent[] = [
   {
     id: "group-dance",
     title: "Group Dance",
-    teamSize: 8,
+    teamSize: 15,
     registrationFee: "₹250 per head",
     prizePool: "₹75,000",
     details:
@@ -49,7 +49,7 @@ export const mainEvents: DepartmentEvent[] = [
     time: "4:00 PM - 6:00 PM",
     venue: "Main Auditorium, KMEA Engineering College",
     rules: [
-      "Teams of 6-10 members",
+      "Teams of up to 15 members",
       "Performance duration: 5-8 minutes",
       "Any dance style allowed",
       "Props allowed with limited setup time",
@@ -65,14 +65,14 @@ export const mainEvents: DepartmentEvent[] = [
   },
   {
     id: "step-in-synchro",
-    title: "Step in Synchro",
-    teamSize: 4,
+    title: "Spot Choreo",
+    teamSize: 1,
     registrationFee: "₹200",
     prizePool: "₹8,000",
     details:
       "A synchronization challenge where teams perform in perfect unison and timing under fixed music cues.",
     prizes: ["🥇 ₹5,000", "🥈 ₹3,000"],
-    type: "team",
+    type: "individual",
     department: "CULTURAL",
     departmentName: "Cultural Events",
     image: "https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=1200&h=600&fit=crop",
@@ -80,7 +80,7 @@ export const mainEvents: DepartmentEvent[] = [
     time: "2:00 PM - 4:00 PM",
     venue: "Open Air Stage, KMEA Engineering College",
     rules: [
-      "Teams of 4 members",
+      "Individual participation only",
       "Performance duration: 3-5 minutes",
       "All members must maintain synchronized movement",
       "Background track will be provided",

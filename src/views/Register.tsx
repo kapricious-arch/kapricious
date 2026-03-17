@@ -12,7 +12,6 @@ import { flagshipEvents, getEventById, mainEvents, cseEvents, ceEvents, meEvents
 
 const FLAGSHIP_DEPT_ID = "flagship";
 const LIMITED_EVENT_IDS = new Set(["hackathon"]);
-const COMING_SOON_EVENT_IDS = new Set(["hackathon"]);
 const RAZORPAY_CHECKOUT_SRC = "https://checkout.razorpay.com/v1/checkout.js";
 
 type RazorpayPaymentProof = {
@@ -265,6 +264,9 @@ const downloadDesignedCouponPdf = async (coupon: CouponData) => {
   URL.revokeObjectURL(url);
 };
 
+const buildCouponQrUrl = (entryCode: string) =>
+  `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(entryCode)}&bgcolor=ffffff&color=111827`;
+
 // Floating particles component
 const FloatingParticles = () => {
   const [mounted, setMounted] = useState(false);
@@ -322,6 +324,7 @@ const AnimatedGrid = () => {
 };
 
 type Step = "details" | "payment";
+type FashionShowTeamType = "college" | "other";
 
 const Register = () => {
   const searchParams = useSearchParams();
@@ -348,6 +351,7 @@ const Register = () => {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [registered, setRegistered] = useState(false);
   const [selectedTeamSize, setSelectedTeamSize] = useState(1);
+  const [fashionShowTeamType, setFashionShowTeamType] = useState<FashionShowTeamType>("college");
   const [teamMembers, setTeamMembers] = useState<string[]>([]);
   const [currentStep, setCurrentStep] = useState<Step>("details");
   const [slotCheckLoading, setSlotCheckLoading] = useState(false);
@@ -448,7 +452,7 @@ const Register = () => {
 
   const selectedEventDetails = getSelectedEventDetails();
   const isCapacityLimitedEvent = LIMITED_EVENT_IDS.has(selectedEvent);
-  const isComingSoonEvent = COMING_SOON_EVENT_IDS.has(selectedEvent);
+  const isFashionShow = selectedEvent === "fashion-show";
 
   const selectedEventLabel =
     selectedDept === FLAGSHIP_DEPT_ID
@@ -460,7 +464,9 @@ const Register = () => {
   const isTeamEvent = selectedEventDetails && 'teamSize' in selectedEventDetails && (selectedEventDetails as any).teamSize > 1;
   const maxTeamSize = isTeamEvent ? (selectedEventDetails as any).teamSize : 1;
   const registrationFeeText = selectedEventDetails && "registrationFee" in selectedEventDetails ? (selectedEventDetails as any).registrationFee || "" : "";
-  const payableRupees = parseFeeToRupees(registrationFeeText, isTeamEvent ? selectedTeamSize : 1);
+  const payableRupees = isFashionShow
+    ? (fashionShowTeamType === "college" ? 250 : 350) * Math.max(selectedTeamSize, 1)
+    : parseFeeToRupees(registrationFeeText, isTeamEvent ? selectedTeamSize : 1);
   const payableAmountInPaise = payableRupees * 100;
 
   useEffect(() => {
@@ -477,6 +483,7 @@ const Register = () => {
 
   useEffect(() => {
     setSelectedTeamSize(1);
+    setFashionShowTeamType("college");
     setTeamMembers([]);
     // Reset to details step when event changes
     setCurrentStep("details");
@@ -520,11 +527,6 @@ const Register = () => {
       toast.error("Please select a category and event.");
       return;
     }
-    if (isComingSoonEvent) {
-      toast.info("Hackathon registrations will open soon.");
-      return;
-    }
-
     setSlotCheckLoading(true);
     try {
       const eventTitle = getEventTitle();
@@ -818,6 +820,7 @@ const Register = () => {
   const labelClass = "block text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground mb-2";
 
   if (registered) {
+    const couponQrUrl = couponData ? buildCouponQrUrl(couponData.entryCode) : null;
     return (
       <div className="min-h-screen pt-24 pb-16 flex items-center justify-center grid-bg px-4">
         <FloatingParticles />
@@ -826,69 +829,169 @@ const Register = () => {
           initial={{ opacity: 0, scale: 0.8, rotateY: -10 }}
           animate={{ opacity: 1, scale: 1, rotateY: 0 }}
           transition={{ type: "spring", stiffness: 100, damping: 15 }}
-          className="bg-card rounded-large border border-border p-12 text-center max-w-md w-full relative z-10"
+          className="bg-card rounded-large border border-border p-6 md:p-8 max-w-4xl w-full relative z-10"
         >
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
-            className="w-20 h-20 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center mx-auto mb-6"
-          >
-            <CheckCircle2 className="w-10 h-10 text-accent" />
-          </motion.div>
-          <motion.h2
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="font-display text-2xl font-bold text-foreground mb-3"
-          >
-            YOU'RE IN
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6 }}
-            className="text-sm text-muted-foreground mb-8"
-          >
-            Your registration was successful. We've sent your event pass with a QR code to your email.
-          </motion.p>
-          {couponData ? (
-            <motion.button
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.65 }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={async () => {
-                try {
-                  setCouponDownloading(true);
-                  await downloadDesignedCouponPdf(couponData);
-                } catch (error: any) {
-                  toast.error(error?.message || "Failed to download designed coupon PDF.");
-                } finally {
-                  setCouponDownloading(false);
-                }
-              }}
-              disabled={couponDownloading}
-              className="w-full mb-3 border border-border rounded-2xl px-6 py-3.5 text-sm font-bold text-foreground hover:bg-secondary/50 transition-all disabled:opacity-60"
-            >
-              {couponDownloading ? "Preparing Designed PDF..." : "Download Coupon PDF"}
-            </motion.button>
-          ) : null}
-          <motion.button
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => {
-              setRegistered(false);
-              setCouponData(null);
-            }}
-            className="w-full bg-foreground text-background rounded-2xl px-6 py-3.5 text-sm font-bold hover:opacity-90 transition-all"
-          >
-            Register for Another Event
-          </motion.button>
+          <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+            <div className="text-center lg:text-left">
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+                className="w-16 h-16 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center mx-auto lg:mx-0 mb-5"
+              >
+                <CheckCircle2 className="w-8 h-8 text-accent" />
+              </motion.div>
+              <motion.h2
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.45 }}
+                className="font-display text-3xl md:text-4xl font-bold text-foreground mb-3"
+              >
+                Your Pass Is Ready
+              </motion.h2>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.55 }}
+                className="text-sm text-muted-foreground mb-6"
+              >
+                Your registration was successful. We&apos;ve sent the same event pass to your email, and you can screenshot this version right now.
+              </motion.p>
+              <div className="rounded-3xl border border-border bg-secondary/35 p-5 text-left">
+                <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-muted-foreground mb-3">Quick Notes</p>
+                <div className="space-y-3 text-sm text-muted-foreground">
+                  <p>Show the QR code or this screenshot at the venue entrance.</p>
+                  <p>Keep your registration ID handy in case of a manual check-in.</p>
+                  <p>The pass below is designed to be easy to save, share, and verify.</p>
+                </div>
+              </div>
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                {couponData ? (
+                  <motion.button
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.65 }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={async () => {
+                      try {
+                        setCouponDownloading(true);
+                        await downloadDesignedCouponPdf(couponData);
+                      } catch (error: any) {
+                        toast.error(error?.message || "Failed to download designed coupon PDF.");
+                      } finally {
+                        setCouponDownloading(false);
+                      }
+                    }}
+                    disabled={couponDownloading}
+                    className="w-full border border-border rounded-2xl px-6 py-3.5 text-sm font-bold text-foreground hover:bg-secondary/50 transition-all disabled:opacity-60"
+                  >
+                    {couponDownloading ? "Preparing Designed PDF..." : "Download Coupon PDF"}
+                  </motion.button>
+                ) : null}
+                <motion.button
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.7 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => {
+                    setRegistered(false);
+                    setCouponData(null);
+                  }}
+                  className="w-full bg-foreground text-background rounded-2xl px-6 py-3.5 text-sm font-bold hover:opacity-90 transition-all"
+                >
+                  Register for Another Event
+                </motion.button>
+              </div>
+            </div>
+
+            {couponData ? (
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.55, duration: 0.45 }}
+                className="rounded-[32px] overflow-hidden border border-[#2f3b54] bg-[#0f172a] shadow-[0_20px_80px_-35px_rgba(15,23,42,0.9)]"
+              >
+                <div className="bg-[linear-gradient(135deg,#f6d28a_0%,#e7a93e_100%)] px-5 py-4 text-[#111827]">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="text-[10px] font-bold tracking-[0.35em] uppercase">Kapricious 2026</p>
+                      <h3 className="font-display text-2xl font-bold mt-1">Event Coupon</h3>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-[10px] font-bold tracking-[0.28em] uppercase">Entry Code</p>
+                      <p className="font-mono text-lg font-bold mt-1">{couponData.entryCode}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 md:p-5">
+                  <div className="grid gap-4 md:grid-cols-[1.2fr_0.8fr]">
+                    <div className="space-y-4">
+                      <div className="overflow-hidden rounded-[24px] border border-[#334155] bg-[#111827]">
+                        {couponData.eventImage ? (
+                          <img
+                            src={couponData.eventImage}
+                            alt={couponData.eventName}
+                            className="h-52 w-full object-cover"
+                          />
+                        ) : (
+                          <div className="flex h-52 w-full items-center justify-center bg-[#111827] text-sm text-slate-300">
+                            Kapricious 2026
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <div className="rounded-[22px] border border-[#334155] bg-[#111827] p-4">
+                          <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-slate-400">Participant</p>
+                          <p className="mt-2 text-lg font-bold text-slate-50">{couponData.participantName}</p>
+                          <p className="mt-1 text-xs text-slate-300 break-all">{couponData.participantEmail}</p>
+                        </div>
+                        <div className="rounded-[22px] border border-[#334155] bg-[#111827] p-4">
+                          <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-slate-400">Event</p>
+                          <p className="mt-2 text-lg font-bold text-slate-50">{couponData.eventName}</p>
+                          <p className="mt-1 text-xs text-slate-300">{couponData.eventCategory}</p>
+                        </div>
+                        <div className="rounded-[22px] border border-[#334155] bg-[#111827] p-4">
+                          <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-slate-400">Date & Venue</p>
+                          <p className="mt-2 text-sm font-bold text-slate-50">{couponData.eventDate || "TBA"}</p>
+                          <p className="mt-1 text-xs text-slate-300">{couponData.venue || "Venue will be announced"}</p>
+                        </div>
+                        <div className="rounded-[22px] border border-[#334155] bg-[#111827] p-4">
+                          <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-slate-400">Registration ID</p>
+                          <p className="mt-2 font-mono text-base font-bold text-slate-50">{couponData.registrationId.substring(0, 8).toUpperCase()}</p>
+                          <p className="mt-1 text-xs text-slate-300">
+                            {couponData.teamCount > 1 ? `${couponData.teamCount} members` : "Individual pass"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="rounded-[26px] border border-[#334155] bg-[#111827] p-4 flex flex-col items-center justify-between">
+                      <div className="w-full rounded-[22px] bg-white p-3">
+                        {couponQrUrl ? (
+                          <img
+                            src={couponQrUrl}
+                            alt="Entry QR code"
+                            className="w-full rounded-2xl"
+                          />
+                        ) : null}
+                      </div>
+                      <div className="mt-4 w-full text-center">
+                        <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-slate-400">Scan At Entry</p>
+                        <p className="mt-2 text-xl font-bold text-slate-50">Kapricious Pass</p>
+                        <p className="mt-2 text-xs leading-5 text-slate-300">
+                          Save this screen or download the PDF. This pass includes the same key event details and QR used in the email version.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ) : null}
+          </div>
         </motion.div>
       </div>
     );
@@ -1163,6 +1266,22 @@ const Register = () => {
                       <p className="text-[10px] text-muted-foreground mt-1">
                         Maximum team size: {maxTeamSize} members
                       </p>
+                      {isFashionShow && (
+                        <div className="mt-4">
+                          <label className={labelClass}>Team Category</label>
+                          <div className="relative">
+                            <Users className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                            <select
+                              value={fashionShowTeamType}
+                              onChange={(e) => setFashionShowTeamType(e.target.value as FashionShowTeamType)}
+                              className={selectClass}
+                            >
+                              <option value="college">College Team - ₹250 per head</option>
+                              <option value="other">Other Team - ₹350 per head</option>
+                            </select>
+                          </div>
+                        </div>
+                      )}
                     </motion.div>
                   )}
                 </div>
@@ -1257,7 +1376,7 @@ const Register = () => {
                 <div className="p-6 md:p-8">
                   <motion.button
                     type="button"
-                    disabled={slotCheckLoading || isComingSoonEvent}
+                    disabled={slotCheckLoading}
                     onClick={handleProceedToPayment}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
@@ -1270,16 +1389,11 @@ const Register = () => {
                       </span>
                     ) : (
                       <>
-                        {isComingSoonEvent ? "Coming Soon" : isCapacityLimitedEvent ? "Check Availability & Proceed" : "Proceed to Payment"}
+                        {isCapacityLimitedEvent ? "Check Availability & Proceed" : "Proceed to Payment"}
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </>
                     )}
                   </motion.button>
-                  {isComingSoonEvent && (
-                    <p className="mt-2 text-center text-xs text-muted-foreground">
-                      Hackathon registrations are currently closed and will open soon.
-                    </p>
-                  )}
                 </div>
               </motion.div>
             )}
