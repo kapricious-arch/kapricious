@@ -101,7 +101,7 @@ export const mainEvents: DepartmentEvent[] = [
     ],
     highlights: [
       "Official event title: Rhythm",
-      "Solo or team participation up to 5 members",
+      "Individual participation only",
       "On-the-spot choreography challenge",
       "Judged on creativity, synchronization, and adaptability"
     ]

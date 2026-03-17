@@ -1366,7 +1366,7 @@ export const culturalEvents: DepartmentEvent[] = [
     ],
     highlights: [
       "Test your coordination",
-      "Fun team challenge",
+      "Fun solo challenge",
       "Quick rounds",
       "Exciting format"
     ]
@@ -1487,7 +1487,7 @@ export const flagshipEvents: FlagshipEvent[] = [
     date: "March 28, 2026",
     time: "10:00 AM - 4:00 PM",
     venue: "Computer Lab 1 & 2, KMEA Engineering College",
-    teamSize: "1-3 members",
+    teamSize: "2-3 members",
     registrationFee: "₹300 per team",
     highlights: [
       "Multiple difficulty levels from beginner to expert",
@@ -1498,7 +1498,7 @@ export const flagshipEvents: FlagshipEvent[] = [
       "Top performers get internship opportunities"
     ],
     rules: [
-      "Teams can have 1-3 members",
+      "Teams can have 2-3 members",
       "No attacking the CTF infrastructure",
       "No sharing flags between teams",
       "Use of automated tools is allowed",
@@ -1525,7 +1525,7 @@ export const flagshipEvents: FlagshipEvent[] = [
     date: "March 28, 2026",
     time: "10:00 AM - 4:00 PM",
     venue: "Design Studio, KMEA Engineering College",
-    teamSize: "1-2 members",
+    teamSize: "2 members",
     registrationFee: "₹200 per team",
     highlights: [
       "Real-world design brief from industry partner",
@@ -1536,7 +1536,7 @@ export const flagshipEvents: FlagshipEvent[] = [
       "Networking with design community"
     ],
     rules: [
-      "Individual or team of 2 allowed",
+      "Teams of 2 members only",
       "Bring your own laptop with design software",
       "Figma, Adobe XD, or Sketch recommended",
       "Design brief will be revealed at the start",
