@@ -13,6 +13,12 @@ import { flagshipEvents, getEventById, mainEvents, managerialEvents, sportsEvent
 const FLAGSHIP_DEPT_ID = "flagship";
 const SPORTS_DEPT_ID = "sports";
 const LIMITED_EVENT_IDS = new Set(["hackathon"]);
+const MIN_TEAM_SIZE_BY_EVENT: Record<string, number> = {
+  "fashion-show": 8,
+  "group-dance": 8,
+  hackathon: 2,
+  "tech-escape-room": 2,
+};
 const RAZORPAY_CHECKOUT_SRC = "https://checkout.razorpay.com/v1/checkout.js";
 
 type RazorpayPaymentProof = {
@@ -496,7 +502,7 @@ const Register = () => {
 
   const isTeamEvent = selectedEventDetails && 'teamSize' in selectedEventDetails && (selectedEventDetails as any).teamSize > 1;
   const maxTeamSize = isTeamEvent ? (selectedEventDetails as any).teamSize : 1;
-  const minTeamSize = selectedEvent === "tech-escape-room" ? 2 : 1;
+  const minTeamSize = MIN_TEAM_SIZE_BY_EVENT[selectedEvent] ?? 1;
   const registrationFeeText = selectedEventDetails && "registrationFee" in selectedEventDetails ? (selectedEventDetails as any).registrationFee || "" : "";
   const payableRupees = isFashionShow
     ? (fashionShowTeamType === "college" ? 250 : 350) * Math.max(selectedTeamSize, 1)

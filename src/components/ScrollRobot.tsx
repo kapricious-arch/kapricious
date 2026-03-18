@@ -8,22 +8,41 @@ const FRAME_COUNT = 80;
 const FRAME_INDICES = Array.from({ length: FRAME_COUNT }, (_, i) => i);
 const MOBILE_BREAKPOINT = 768;
 const MOBILE_SCROLL_SPEED_MULTIPLIER = 1.35;
+const MOBILE_FRAME_STEP = 3;
+const DESKTOP_DPR_CAP = 2;
+const MOBILE_DPR_CAP = 1.25;
 
 const currentFrame = (index: number) =>
   `/robo/Robot_face_transition_delpmaspu__${index.toString().padStart(3, "0")}.jpg`;
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+const getIsConstrainedDevice = () => {
+  if (typeof window === "undefined") return false;
+
+  const nav = navigator as Navigator & {
+    connection?: { saveData?: boolean };
+    deviceMemory?: number;
+  };
+
+  return (
+    window.innerWidth < MOBILE_BREAKPOINT ||
+    nav.connection?.saveData === true ||
+    (nav.deviceMemory ?? Infinity) <= 4 ||
+    (navigator.hardwareConcurrency ?? Infinity) <= 4
+  );
+};
 
 const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
+  const activeFrameIndicesRef = useRef<number[]>(FRAME_INDICES);
   const trackRef = useRef<HTMLElement | null>(null);
   const rafRef = useRef<number>(0);
   const isActiveRef = useRef<boolean>(true);
   const trackStartRef = useRef<number>(0);
   const totalDistanceRef = useRef<number>(1);
-  const lastFrameFloatRef = useRef<number>(-1);
+  const lastProgressRef = useRef<number>(-1);
   const canvasSizeRef = useRef({ width: 0, height: 0, dpr: 1 });
   const [imagesReady, setImagesReady] = useState(false);
   const loadedCountRef = useRef(0);
@@ -48,7 +67,7 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
     if (!canvas) return;
 
     const rect = canvas.getBoundingClientRect();
-    const dprCap = 2;
+    const dprCap = getIsConstrainedDevice() ? MOBILE_DPR_CAP : DESKTOP_DPR_CAP;
     const dpr = Math.min(window.devicePixelRatio || 1, dprCap);
     const width = Math.max(1, Math.round(rect.width * dpr));
     const height = Math.max(1, Math.round(rect.height * dpr));
@@ -68,7 +87,7 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
     const ctx = canvas.getContext("2d", { alpha: false, desynchronized: true });
     if (ctx) {
       ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = "high";
+      ctx.imageSmoothingQuality = getIsConstrainedDevice() ? "medium" : "high";
       ctxRef.current = ctx;
     }
   }, []);
@@ -107,14 +126,30 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
   }, []);
 
   const drawFrame = useCallback(
-    (frameFloat: number) => {
+    (progress: number) => {
       const ctx = ctxRef.current;
       if (!ctx) return;
 
-      const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
-      const baseIndex = Math.floor(frameFloat);
-      const nextIndex = Math.min(FRAME_COUNT - 1, baseIndex + 1);
-      const mix = isMobile ? 0 : frameFloat - baseIndex;
+      const isConstrainedDevice = getIsConstrainedDevice();
+      const activeFrameIndices = activeFrameIndicesRef.current;
+      const activeFrameCount = activeFrameIndices.length;
+
+      if (activeFrameCount === 0) return;
+
+      let baseIndex = 0;
+      let nextIndex = 0;
+      let mix = 0;
+
+      if (isConstrainedDevice) {
+        const activeIndex = Math.round(progress * (activeFrameCount - 1));
+        baseIndex = activeFrameIndices[activeIndex] ?? 0;
+        nextIndex = baseIndex;
+      } else {
+        const frameFloat = progress * (FRAME_COUNT - 1);
+        baseIndex = Math.floor(frameFloat);
+        nextIndex = Math.min(FRAME_COUNT - 1, baseIndex + 1);
+        mix = frameFloat - baseIndex;
+      }
 
       const baseImage = imagesRef.current[baseIndex];
       if (!baseImage || !baseImage.complete || baseImage.naturalWidth === 0) return;
@@ -131,13 +166,11 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
     [drawImageCover],
   );
 
-  const computeFrameFloat = useCallback(() => {
+  const computeProgress = useCallback(() => {
     const scrollY = window.scrollY || document.documentElement.scrollTop;
     const relativeY = scrollY - trackStartRef.current;
-    const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
-    const speed = isMobile ? MOBILE_SCROLL_SPEED_MULTIPLIER : 1;
-    const progress = clamp((relativeY / totalDistanceRef.current) * speed, 0, 1);
-    return progress * (FRAME_COUNT - 1);
+    const speed = getIsConstrainedDevice() ? MOBILE_SCROLL_SPEED_MULTIPLIER : 1;
+    return clamp((relativeY / totalDistanceRef.current) * speed, 0, 1);
   }, []);
 
   const renderIfNeeded = useCallback(() => {
@@ -145,12 +178,12 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
 
     if (!isActiveRef.current) return;
 
-    const frameFloat = computeFrameFloat();
-    if (Math.abs(frameFloat - lastFrameFloatRef.current) < 0.015) return;
+    const progress = computeProgress();
+    if (Math.abs(progress - lastProgressRef.current) < 0.01) return;
 
-    drawFrame(frameFloat);
-    lastFrameFloatRef.current = frameFloat;
-  }, [computeFrameFloat, drawFrame]);
+    drawFrame(progress);
+    lastProgressRef.current = progress;
+  }, [computeProgress, drawFrame]);
 
   const scheduleRender = useCallback(() => {
     if (rafRef.current !== 0) return;
@@ -159,18 +192,25 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
 
   useEffect(() => {
     const images: HTMLImageElement[] = [];
+    const isConstrainedDevice = getIsConstrainedDevice();
+    const activeFrameIndices = isConstrainedDevice
+      ? FRAME_INDICES.filter((frameIdx) => frameIdx % MOBILE_FRAME_STEP === 0 || frameIdx === FRAME_COUNT - 1)
+      : FRAME_INDICES;
+
+    activeFrameIndicesRef.current = activeFrameIndices;
     loadedCountRef.current = 0;
     initialDrawDoneRef.current = false;
+    setImagesReady(false);
 
-    FRAME_INDICES.forEach((frameIdx, i) => {
+    activeFrameIndices.forEach((frameIdx, i) => {
       const img = new Image();
       img.decoding = "async";
       if ("fetchPriority" in img) {
-        (img as HTMLImageElement & { fetchPriority?: string }).fetchPriority = i < 16 ? "high" : "auto";
+        (img as HTMLImageElement & { fetchPriority?: string }).fetchPriority = i < 8 ? "high" : "auto";
       }
       img.onload = () => {
         loadedCountRef.current += 1;
-        if (i === 0 && !initialDrawDoneRef.current) {
+        if (frameIdx === activeFrameIndices[0] && !initialDrawDoneRef.current) {
           initialDrawDoneRef.current = true;
           resizeCanvas();
           updateTrackMetrics();
@@ -180,12 +220,12 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
           }
           setImagesReady(true);
         }
-        if (loadedCountRef.current >= 16) {
+        if (loadedCountRef.current >= Math.min(8, activeFrameIndices.length)) {
           scheduleRender();
         }
       };
       img.src = currentFrame(frameIdx);
-      images.push(img);
+      images[frameIdx] = img;
     });
 
     imagesRef.current = images;
@@ -201,7 +241,7 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
     const handleResize = () => {
       updateTrackMetrics();
       resizeCanvas();
-      lastFrameFloatRef.current = -1;
+      lastProgressRef.current = -1;
       scheduleRender();
     };
 
@@ -214,7 +254,7 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
       ([entry]) => {
         isActiveRef.current = entry.isIntersecting;
         if (entry.isIntersecting) {
-          lastFrameFloatRef.current = -1;
+          lastProgressRef.current = -1;
           scheduleRender();
         }
       },
@@ -228,12 +268,14 @@ const ScrollRobot = ({ className = "" }: ScrollRobotProps) => {
     window.addEventListener("scroll", handleScroll, { passive: true });
     window.addEventListener("lenis:scroll", handleScroll);
     window.addEventListener("resize", handleResize, { passive: true });
+    document.addEventListener("visibilitychange", handleResize);
 
     return () => {
       observer.disconnect();
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("lenis:scroll", handleScroll);
       window.removeEventListener("resize", handleResize);
+      document.removeEventListener("visibilitychange", handleResize);
     };
   }, [imagesReady, resizeCanvas, scheduleRender, updateTrackMetrics]);
 

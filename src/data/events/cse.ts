@@ -235,22 +235,22 @@ export const cseEvents: DepartmentEvent[] = [
   },
   {
     id: "hackathon",
-    title: "Hackathon",
+    title: "BuildX'26 - Hackathon",
     teamSize: 4,
     registrationFee: "₹400 per team",
     prizePool: "₹15,000",
     details:
-      "A 12-hour innovation sprint where teams build a working prototype addressing real-world problems.",
+      "An overnight 12-hour innovation sprint where teams build a working prototype addressing real-world problems.",
     prizes: ["🥇 ₹10,000", "🥈 ₹5,000"],
     type: "team",
     department: "CSE",
     departmentName: "Computer Science & Engineering",
     image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200&h=600&fit=crop",
-    date: "March 26, 2026",
-    time: "7:00 AM - 7:00 PM",
+    date: "March 26-27, 2026",
+    time: "7:00 PM (Mar 26) - 7:00 AM (Mar 27)",
     venue: "Hack Lab, KMEA Engineering College",
     rules: [
-      "Participants can take part individually or in teams (maximum 3-4 members per team)",
+      "Participants can register only in teams of 2 to 4 members",
       "All participants must register before the event begins",
       "Problem statement will be given at the start of the hackathon",
       "Participants must complete the project within the given time limit",
@@ -261,7 +261,7 @@ export const cseEvents: DepartmentEvent[] = [
       "Participants must follow event rules and maintain proper discipline"
     ],
     highlights: [
-      "Full-day coding marathon",
+      "Overnight coding marathon",
       "Build real-world solutions",
       "Mentors on standby",
       "Biggest prizes of the fest"

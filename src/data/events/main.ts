@@ -3,7 +3,7 @@
 export const mainEvents: DepartmentEvent[] = [
   {
     id: "fashion-show",
-    title: "Fashion Show",
+    title: "Vogueza -Fashion Show",
     teamSize: 14,
     registrationFee: "₹250 per head (College teams) / ₹350 per head (Other teams)",
     prizePool: "₹75,000",
@@ -38,7 +38,7 @@ export const mainEvents: DepartmentEvent[] = [
   },
   {
     id: "group-dance",
-    title: "Group Dance",
+    title: "TAAL TARANG - Group Dance",
     teamSize: 20,
     registrationFee: "₹250 per head",
     prizePool: "₹75,000",
@@ -74,7 +74,7 @@ export const mainEvents: DepartmentEvent[] = [
   },
   {
     id: "step-in-synchro",
-    title: "Rhythm - Spot Choreo",
+    title: "Rhythm -Spot Choreo",
     teamSize: 1,
     registrationFee: "₹100",
     prizePool: "₹4,500",
@@ -100,7 +100,7 @@ export const mainEvents: DepartmentEvent[] = [
       "The decision of the judges will be final and binding"
     ],
     highlights: [
-      "Official event title: Rhythm",
+      "Official event title: Rhythm -Spot Choreo",
       "Individual participation only",
       "On-the-spot choreography challenge",
       "Judged on creativity, synchronization, and adaptability"
@@ -108,12 +108,12 @@ export const mainEvents: DepartmentEvent[] = [
   },
   {
     id: "spot-photography",
-    title: "Spot Photography - Pixora",
+    title: "PIXORA - Spot Photography",
     teamSize: 1,
     registrationFee: "₹100",
     prizePool: "₹3,000",
     details:
-      "Registration starts at 10:00 AM on March 27, 2026. The event begins at 11:00 AM on March 27, 2026 and runs until 11:00 AM on March 28, 2026. Pixora rewards creativity, technical quality, and how strongly your photograph reflects the given theme and the Kapricious fest spirit.",
+      "Registration starts at 10:00 AM on March 27, 2026. The event begins at 11:00 AM on March 27, 2026 and runs until 11:00 AM on March 28, 2026. PIXORA rewards creativity, technical quality, and how strongly your photograph reflects the given theme and the Kapricious fest spirit.",
     prizes: ["🥇 ₹2,000", "🥈 ₹1,000"],
     type: "individual",
     department: "CULTURAL",
@@ -137,7 +137,7 @@ export const mainEvents: DepartmentEvent[] = [
       "Judging: creativity and originality, technical quality, and relevance to the theme"
     ],
     highlights: [
-      "Official event title: Pixora",
+      "Official event title: PIXORA - Spot Photography",
       "Registration: Mar 27, 10:00 AM",
       "Event: Mar 27, 11:00 AM to Mar 28, 11:00 AM",
       "DSLR or smartphone participation",

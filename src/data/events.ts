@@ -1269,21 +1269,21 @@ export const cseEvents: DepartmentEvent[] = [
   },
   {
     id: "hackathon",
-    title: "Hackathon",
+    title: "BuildX'26 - Hackathon",
     teamSize: 4,
     registrationFee: "₹200",
     prizePool: "₹15,000",
-    details: "A team-based innovation challenge where participants build a working prototype within a fixed duration.",
+    details: "An overnight innovation challenge where teams build a working prototype within a fixed duration.",
     prizes: ["🥇 ₹10,000", "🥈 ₹5,000"],
     type: "team",
     department: "CSE",
     departmentName: "Computer Science & Engineering",
     image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
-    time: "9:00 AM - 9:00 PM",
+    date: "March 26-27, 2026",
+    time: "7:00 PM (Mar 26) - 7:00 AM (Mar 27)",
     venue: "Computer Lab Complex, KMEA Engineering College",
     rules: [
-      "Participants can take part individually or in teams (maximum 3-4 members per team)",
+      "Participants can register only in teams of 2 to 4 members",
       "All participants must register before the event begins",
       "Problem statement will be given at the start of the hackathon",
       "Participants must complete the project within the given time limit",
@@ -1294,7 +1294,7 @@ export const cseEvents: DepartmentEvent[] = [
       "Participants must follow event rules and maintain proper discipline"
     ],
     highlights: [
-      "Full-day hackathon",
+      "Overnight hackathon",
       "Build real projects",
       "Mentorship available",
       "Biggest prize pool"
@@ -1305,7 +1305,7 @@ export const cseEvents: DepartmentEvent[] = [
 export const culturalEvents: DepartmentEvent[] = [
   {
     id: "fashion-show",
-    title: "Fashion Show",
+    title: "Vogueza -Fashion Show",
     teamSize: 14,
     registrationFee: "₹250 per head (College teams) / ₹350 per head (Other teams)",
     prizePool: "₹75,000",
@@ -1339,7 +1339,7 @@ export const culturalEvents: DepartmentEvent[] = [
   },
   {
     id: "group-dance",
-    title: "Group Dance",
+    title: "TAAL TARANG - Group Dance",
     teamSize: 20,
     registrationFee: "₹250 per head",
     prizePool: "₹75,000",
@@ -1374,7 +1374,7 @@ export const culturalEvents: DepartmentEvent[] = [
   },
   {
     id: "step-in-synchro",
-    title: "Step in Synchro",
+    title: "Rhythm -Spot Choreo",
     teamSize: 4,
     registrationFee: "₹100",
     prizePool: "₹4,500",
@@ -1407,7 +1407,7 @@ export const culturalEvents: DepartmentEvent[] = [
   },
   {
     id: "spot-photography",
-    title: "Spot Photography",
+    title: "PIXORA - Spot Photography",
     teamSize: 1,
     registrationFee: "₹100",
     prizePool: "₹3,000",
