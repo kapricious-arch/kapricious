@@ -458,7 +458,7 @@ const Register = () => {
       if (dept?.code === "ME") return sortDepartmentEventsByPrizePool(meEvents).map(e => ({ id: e.id, title: e.title }));
       if (dept?.code === "EEE") return sortDepartmentEventsByPrizePool(eeeEvents).map(e => ({ id: e.id, title: e.title }));
       if (dept?.code === "RAE") return sortDepartmentEventsByPrizePool(raEvents).map(e => ({ id: e.id, title: e.title }));
-      if (dept?.code === "SF") return sortDepartmentEventsByPrizePool(sfEvents).map(e => ({ id: e.id, title: e.title }));
+      if (dept?.code === "SFE") return sortDepartmentEventsByPrizePool(sfEvents).map(e => ({ id: e.id, title: e.title }));
       if (dept?.code === "ECE") return sortDepartmentEventsByPrizePool(eceEvents).map(e => ({ id: e.id, title: e.title }));
     }
     return [];

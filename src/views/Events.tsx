@@ -38,7 +38,7 @@ const departmentEvents = [
   { code: "EEE", name: "Electrical & Electronics Engineering", events: sortDepartmentEventsByPrizePool(eeeEvents) },
   { code: "ECE", name: "Electronics & Communication Engineering", events: sortDepartmentEventsByPrizePool(eceEvents) },
   { code: "RAE", name: "Robotics & Automation Engineering", events: sortDepartmentEventsByPrizePool(raEvents) },
-  { code: "SF", name: "Safety & Fire Engineering", events: sortDepartmentEventsByPrizePool(sfEvents) },
+  { code: "SFE", name: "Safety & Fire Engineering", events: sortDepartmentEventsByPrizePool(sfEvents) },
 ];
 
 const isValidDepartmentFilter = (value: string | null) =>

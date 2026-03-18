@@ -113,20 +113,22 @@ export const mainEvents: DepartmentEvent[] = [
     registrationFee: "₹100",
     prizePool: "₹3,000",
     details:
-      "Capture an original image based on the on-spot theme announcement and submit it within 24 hours. Pixora rewards creativity, technical quality, and how strongly your photograph reflects the given theme and the Kapricious fest spirit.",
+      "Registration starts at 10:00 AM on March 27, 2026. The event begins at 11:00 AM on March 27, 2026 and runs until 11:00 AM on March 28, 2026. Pixora rewards creativity, technical quality, and how strongly your photograph reflects the given theme and the Kapricious fest spirit.",
     prizes: ["🥇 ₹2,000", "🥈 ₹1,000"],
     type: "individual",
     department: "CULTURAL",
     departmentName: "Cultural Events",
     image: "https://images.unsplash.com/photo-1502982720700-bfff97f2ecac?w=1200&h=600&fit=crop",
-    date: "March 28, 2026",
-    time: "10:00 AM - 1:00 PM",
+    date: "March 27-28, 2026",
+    time: "Registration: 10:00 AM (Mar 27) | Event: 11:00 AM (Mar 27) - 11:00 AM (Mar 28)",
     venue: "Campus Wide, KMEA Engineering College",
     rules: [
       "Open to all registered Kapricious participants",
       "Bring your own DSLR camera or high-end smartphone",
       "Theme will be announced on the spot and photos must be taken only after the announcement",
-      "One final JPEG image must be submitted per participant within 24 hours using the shared drive link",
+      "Registration starts at 10:00 AM on March 27, 2026",
+      "The event window is from 11:00 AM on March 27, 2026 to 11:00 AM on March 28, 2026",
+      "One final JPEG image must be submitted per participant within the event window using the shared drive link",
       "Minimum image size: 1024 x 768 pixels",
       "Submit both the original unedited image and the final edited version",
       "Heavy manipulation or adding/removing elements is not permitted",
@@ -136,7 +138,8 @@ export const mainEvents: DepartmentEvent[] = [
     ],
     highlights: [
       "Official event title: Pixora",
-      "24-hour submission window",
+      "Registration: Mar 27, 10:00 AM",
+      "Event: Mar 27, 11:00 AM to Mar 28, 11:00 AM",
       "DSLR or smartphone participation",
       "Judged on originality, technique, and theme relevance"
     ]
