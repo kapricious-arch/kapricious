@@ -23,6 +23,14 @@ WHERE NOT EXISTS (
   WHERE code = 'SPORTS'
 );
 
+INSERT INTO public.departments (name, code)
+SELECT 'Managerial Events', 'MANAGERIAL'
+WHERE NOT EXISTS (
+  SELECT 1
+  FROM public.departments
+  WHERE code = 'MANAGERIAL'
+);
+
 WITH renames(old_title, new_title, dept_code) AS (
   VALUES
     ('NO-Run Ninja', 'Build a PC', 'CSE'),
@@ -57,7 +65,7 @@ WITH canonical(title, dept_code, event_date, venue, image_url) AS (
     ('Group Dance', 'CULTURAL', '2026-03-28 16:00:00+05:30'::timestamptz, 'Main Auditorium, KMEA Engineering College', 'https://images.unsplash.com/photo-1508700929628-666bc8bd84ea?w=1200&h=600&fit=crop'),
     ('Spot Choreo', 'CULTURAL', '2026-03-28 14:00:00+05:30'::timestamptz, 'Open Air Stage, KMEA Engineering College', 'https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=1200&h=600&fit=crop'),
     ('Spot Photography', 'CULTURAL', '2026-03-28 10:00:00+05:30'::timestamptz, 'Campus Wide, KMEA Engineering College', 'https://images.unsplash.com/photo-1502982720700-bfff97f2ecac?w=1200&h=600&fit=crop'),
-    ('Star of Kapricious', 'CULTURAL', '2026-03-28 17:00:00+05:30'::timestamptz, 'Main Auditorium, KMEA Engineering College', 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1200&h=600&fit=crop'),
+    ('Star of Kapricious', 'MANAGERIAL', '2026-03-28 17:00:00+05:30'::timestamptz, 'Main Auditorium, KMEA Engineering College', 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1200&h=600&fit=crop'),
 
     ('7''s Football Tournament', 'SPORTS', '2026-03-24 00:00:00+05:30'::timestamptz, 'KMEA College Ground', 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1200&h=600&fit=crop'),
     ('Kabaddi Tournament', 'SPORTS', '2026-03-25 00:00:00+05:30'::timestamptz, 'College Indoor Kabaddi Court', 'https://images.unsplash.com/photo-1547347298-4074fc3086f0?w=1200&h=600&fit=crop'),
@@ -125,7 +133,7 @@ WITH canonical(title, dept_code, event_date, venue, image_url) AS (
     ('Group Dance', 'CULTURAL', '2026-03-28 16:00:00+05:30'::timestamptz, 'Main Auditorium, KMEA Engineering College', 'https://images.unsplash.com/photo-1508700929628-666bc8bd84ea?w=1200&h=600&fit=crop'),
     ('Spot Choreo', 'CULTURAL', '2026-03-28 14:00:00+05:30'::timestamptz, 'Open Air Stage, KMEA Engineering College', 'https://images.unsplash.com/photo-1535525153412-5a42439a210d?w=1200&h=600&fit=crop'),
     ('Spot Photography', 'CULTURAL', '2026-03-28 10:00:00+05:30'::timestamptz, 'Campus Wide, KMEA Engineering College', 'https://images.unsplash.com/photo-1502982720700-bfff97f2ecac?w=1200&h=600&fit=crop'),
-    ('Star of Kapricious', 'CULTURAL', '2026-03-28 17:00:00+05:30'::timestamptz, 'Main Auditorium, KMEA Engineering College', 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1200&h=600&fit=crop'),
+    ('Star of Kapricious', 'MANAGERIAL', '2026-03-28 17:00:00+05:30'::timestamptz, 'Main Auditorium, KMEA Engineering College', 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1200&h=600&fit=crop'),
 
     ('7''s Football Tournament', 'SPORTS', '2026-03-24 00:00:00+05:30'::timestamptz, 'KMEA College Ground', 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=1200&h=600&fit=crop'),
     ('Kabaddi Tournament', 'SPORTS', '2026-03-25 00:00:00+05:30'::timestamptz, 'College Indoor Kabaddi Court', 'https://images.unsplash.com/photo-1547347298-4074fc3086f0?w=1200&h=600&fit=crop'),
@@ -192,7 +200,7 @@ WITH canonical(title, dept_code) AS (
     ('Group Dance', 'CULTURAL'),
     ('Spot Choreo', 'CULTURAL'),
     ('Spot Photography', 'CULTURAL'),
-    ('Star of Kapricious', 'CULTURAL'),
+    ('Star of Kapricious', 'MANAGERIAL'),
     ('7''s Football Tournament', 'SPORTS'),
     ('Kabaddi Tournament', 'SPORTS'),
     ('Prompt Wars', 'CSE'),
@@ -238,7 +246,7 @@ WITH canonical(title, dept_code) AS (
 DELETE FROM public.events e
 USING public.departments d
 WHERE e.department_id = d.id
-  AND d.code IN ('CULTURAL', 'SPORTS', 'CSE', 'CE', 'ECE', 'EEE', 'ME', 'RAE', 'SF')
+  AND d.code IN ('CULTURAL', 'MANAGERIAL', 'SPORTS', 'CSE', 'CE', 'ECE', 'EEE', 'ME', 'RAE', 'SF')
   AND NOT EXISTS (
     SELECT 1
     FROM canonical c

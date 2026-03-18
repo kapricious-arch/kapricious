@@ -9,7 +9,7 @@ export const sfEvents: DepartmentEvent[] = [
     prizePool: "₹2,500",
     details:
       "A quiz focused on fire safety, industrial protocols, and hazard management. Teams compete across multiple rounds for accuracy and speed.",
-    prizes: ["🥇 ₹2,000", "🥈 ₹500"],
+    prizes: ["🥇 ₹1,500", "🥈 ₹1,000"],
     type: "team",
     department: "SFE",
     departmentName: "Safety & Fire Engineering",
@@ -133,7 +133,7 @@ export const sfEvents: DepartmentEvent[] = [
     prizePool: "₹4,500",
     details:
       "Scan a simulated workplace, spot hazards, and document control measures within the time limit.",
-    prizes: ["🥇 ₹3,000", "🥈 ₹1,500"],
+    prizes: ["🥇 ₹2,500", "🥈 ₹2,000"],
     type: "team",
     department: "SFE",
     departmentName: "Safety & Fire Engineering",

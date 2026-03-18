@@ -8,7 +8,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { toast } from "sonner";
 import { z } from "zod";
 import { User, Mail, Phone, GraduationCap, Layers, Calendar, CheckCircle2, CreditCard, ShieldCheck, ArrowRight, Trophy, Sparkles, Zap, Users, AlertTriangle, Loader2 } from "lucide-react";
-import { flagshipEvents, getEventById, mainEvents, sportsEvents, cseEvents, ceEvents, meEvents, eeeEvents, raEvents, sfEvents, eceEvents, sortDepartmentEventsByPrizePool } from "@/data/events/index";
+import { flagshipEvents, getEventById, mainEvents, managerialEvents, sportsEvents, cseEvents, ceEvents, meEvents, eeeEvents, raEvents, sfEvents, eceEvents, sortDepartmentEventsByPrizePool } from "@/data/events/index";
 
 const FLAGSHIP_DEPT_ID = "flagship";
 const SPORTS_DEPT_ID = "sports";
@@ -346,7 +346,7 @@ const Register = () => {
 
   const preselectedFlagship = getEventById(preselectedEvent);
 
-  const allDeptEvents = [...mainEvents, ...sportsEvents, ...cseEvents, ...ceEvents, ...meEvents, ...eeeEvents, ...raEvents, ...sfEvents, ...eceEvents];
+  const allDeptEvents = [...mainEvents, ...managerialEvents, ...sportsEvents, ...cseEvents, ...ceEvents, ...meEvents, ...eeeEvents, ...raEvents, ...sfEvents, ...eceEvents];
   const preselectedDeptEvent = allDeptEvents.find(ev => ev.id === preselectedEvent);
   
   const getInitialDept = () => {
@@ -453,6 +453,7 @@ const Register = () => {
     if (selectedDept && departments) {
       const dept = departments.find(d => d.id === selectedDept);
       if (dept?.code === "CULTURAL") return sortDepartmentEventsByPrizePool(mainEvents).map(e => ({ id: e.id, title: e.title }));
+      if (dept?.code === "MANAGERIAL") return sortDepartmentEventsByPrizePool(managerialEvents).map(e => ({ id: e.id, title: e.title }));
       if (dept?.code === "CSE") return sortDepartmentEventsByPrizePool(cseEvents).map(e => ({ id: e.id, title: e.title }));
       if (dept?.code === "CE") return sortDepartmentEventsByPrizePool(ceEvents).map(e => ({ id: e.id, title: e.title }));
       if (dept?.code === "ME") return sortDepartmentEventsByPrizePool(meEvents).map(e => ({ id: e.id, title: e.title }));
@@ -472,7 +473,7 @@ const Register = () => {
       return sportsEvents.find(ev => ev.id === selectedEvent);
     }
     if (selectedDept && departments) {
-      const allEvents = [...mainEvents, ...sportsEvents, ...cseEvents, ...ceEvents, ...meEvents, ...eeeEvents, ...raEvents, ...sfEvents, ...eceEvents];
+      const allEvents = [...mainEvents, ...managerialEvents, ...sportsEvents, ...cseEvents, ...ceEvents, ...meEvents, ...eeeEvents, ...raEvents, ...sfEvents, ...eceEvents];
       return allEvents.find(ev => ev.id === selectedEvent);
     }
     return undefined;
@@ -487,9 +488,11 @@ const Register = () => {
       ? "Flagship Event"
       : selectedDept === SPORTS_DEPT_ID
         ? "Sports Event"
-      : (selectedEventDetails && "department" in selectedEventDetails && selectedEventDetails.department === "CULTURAL")
-        ? "Cultural Event"
-        : "Department Event";
+        : (selectedEventDetails && "department" in selectedEventDetails && selectedEventDetails.department === "CULTURAL")
+          ? "Cultural Event"
+          : (selectedEventDetails && "department" in selectedEventDetails && selectedEventDetails.department === "MANAGERIAL")
+            ? "Managerial Event"
+            : "Department Event";
 
   const isTeamEvent = selectedEventDetails && 'teamSize' in selectedEventDetails && (selectedEventDetails as any).teamSize > 1;
   const maxTeamSize = isTeamEvent ? (selectedEventDetails as any).teamSize : 1;
@@ -537,7 +540,7 @@ const Register = () => {
   // Get event title from selected event
   const getEventTitle = () => {
     if (selectedDept === FLAGSHIP_DEPT_ID) return getEventById(selectedEvent)?.title || "";
-    const allHardcoded = [...mainEvents, ...sportsEvents, ...cseEvents, ...ceEvents, ...meEvents, ...eeeEvents, ...raEvents, ...sfEvents, ...eceEvents];
+    const allHardcoded = [...mainEvents, ...managerialEvents, ...sportsEvents, ...cseEvents, ...ceEvents, ...meEvents, ...eeeEvents, ...raEvents, ...sfEvents, ...eceEvents];
     return allHardcoded.find(ev => ev.id === selectedEvent)?.title || "";
   };
 
@@ -684,7 +687,7 @@ const Register = () => {
       } else if (selectedEventDetails && "department" in selectedEventDetails && selectedEventDetails.department === "SPORTS") {
         eventDate = selectedEventDetails.date || "";
         venue = selectedEventDetails.venue || "";
-      } else if (selectedEventDetails && "department" in selectedEventDetails && selectedEventDetails.department === "CULTURAL") {
+      } else if (selectedEventDetails && "department" in selectedEventDetails && ["CULTURAL", "MANAGERIAL"].includes(selectedEventDetails.department)) {
         eventDate = selectedEventDetails.date || "";
         venue = selectedEventDetails.venue || "";
       } else {

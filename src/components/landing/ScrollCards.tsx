@@ -2,9 +2,11 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import CountdownTimer from "@/components/CountdownTimer";
 import { mainEvents } from "@/data/events/main";
+import { managerialEvents } from "@/data/events/managerial";
 
 const departments = [
   "Sports Fiesta",
+  "Managerial Events",
   "CSE",
   "Civil",
   "ECE",
@@ -32,7 +34,7 @@ const ScrollCards = () => {
           >
             <div className="flex justify-between items-center mb-4 md:mb-6">
               <h3 className="font-display text-xs md:text-sm tracking-tight">DEPARTMENTS</h3>
-              <span className="text-muted-foreground text-[10px] md:text-xs">9 groups</span>
+              <span className="text-muted-foreground text-[10px] md:text-xs">10 groups</span>
             </div>
             <div className="flex flex-wrap gap-1.5 md:gap-2">
               {departments.map((dept) => (
@@ -51,6 +53,23 @@ const ScrollCards = () => {
                   <Link
                     key={ev.id}
                     href={`/events?department=CULTURAL#${ev.id}`}
+                    className="px-3 md:px-4 py-1.5 md:py-2 rounded-full border border-border text-[10px] md:text-xs font-medium uppercase tracking-wider text-muted-foreground hover:bg-accent hover:text-background active:bg-accent active:text-background transition-colors cursor-pointer"
+                  >
+                    {ev.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
+            <div className="mt-6 md:mt-8">
+              <div className="flex justify-between items-center mb-3 md:mb-4">
+                <h3 className="font-display text-xs md:text-sm tracking-tight">MANAGERIAL EVENTS</h3>
+                <span className="text-muted-foreground text-[10px] md:text-xs">{managerialEvents.length} event</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5 md:gap-2">
+                {managerialEvents.map((ev) => (
+                  <Link
+                    key={ev.id}
+                    href={`/events?department=MANAGERIAL#${ev.id}`}
                     className="px-3 md:px-4 py-1.5 md:py-2 rounded-full border border-border text-[10px] md:text-xs font-medium uppercase tracking-wider text-muted-foreground hover:bg-accent hover:text-background active:bg-accent active:text-background transition-colors cursor-pointer"
                   >
                     {ev.title}

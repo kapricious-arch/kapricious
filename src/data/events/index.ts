@@ -3,6 +3,7 @@ export type { DepartmentEvent, FlagshipEvent, CulturalEvent } from "./types";
 
 // Department Events
 export { mainEvents } from "./main";
+export { managerialEvents } from "./managerial";
 export { eceEvents } from "./ece";
 export { sfEvents } from "./sf";
 export { raEvents } from "./rae";
@@ -17,6 +18,7 @@ export { flagshipEvents, getEventById } from "./flagship";
 
 // Re-import for combined exports
 import { mainEvents } from "./main";
+import { managerialEvents } from "./managerial";
 import { eceEvents } from "./ece";
 import { sfEvents } from "./sf";
 import { raEvents } from "./rae";
@@ -39,6 +41,7 @@ export const sortDepartmentEventsByPrizePool = (events: DepartmentEvent[]) =>
 // All department events combined
 export const allDepartmentEvents: DepartmentEvent[] = [
   ...mainEvents,
+  ...managerialEvents,
   ...sportsEvents,
   ...eceEvents,
   ...sfEvents,

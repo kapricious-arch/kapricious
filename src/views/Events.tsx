@@ -14,6 +14,7 @@ import {
   sfEvents,
   eceEvents,
   mainEvents,
+  managerialEvents,
   sportsEvents,
   sortDepartmentEventsByPrizePool,
 } from "@/data/events/index";
@@ -31,6 +32,7 @@ const eventMedia: Record<string, { type: "video"; src: string }> = {
 
 const departmentEvents = [
   { code: "CULTURAL", name: "Cultural Events", events: sortDepartmentEventsByPrizePool(mainEvents) },
+  { code: "MANAGERIAL", name: "Managerial Events", events: sortDepartmentEventsByPrizePool(managerialEvents) },
   { code: "SPORTS", name: "Sports Fiesta", events: sortDepartmentEventsByPrizePool(sportsEvents) },
   { code: "CSE", name: "Computer Science & Engineering", events: sortDepartmentEventsByPrizePool(cseEvents) },
   { code: "CE", name: "Civil Engineering", events: sortDepartmentEventsByPrizePool(ceEvents) },
