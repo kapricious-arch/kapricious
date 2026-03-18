@@ -46,7 +46,7 @@ export const eeeEvents: DepartmentEvent[] = [
     departmentName: "Electrical & Electronics Engineering",
     image: "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=1200&h=600&fit=crop",
     date: "March 27-28, 2026",
-    time: "March 27: 11:30 AM - 3:00 PM | March 28: 10:00 AM - 2:00 PM",
+    time: "Friday, March 27: 11:30 AM - 2:00 PM | Saturday, March 28: 9:00 AM - 1:00 PM",
     venue: "C205-A",
     rules: [
       "Place the metal loop at the start of the wire before beginning",
@@ -75,7 +75,7 @@ export const eeeEvents: DepartmentEvent[] = [
     departmentName: "Electrical & Electronics Engineering",
     image: "https://images.unsplash.com/photo-1489389944381-3471b5b30f04?w=1200&h=600&fit=crop",
     date: "March 27-28, 2026",
-    time: "March 27: 2:00 PM - 5:00 PM | March 28: 9:00 AM - 1:00 PM",
+    time: "Friday, March 27: 11:30 AM - 2:00 PM | Saturday, March 28: 9:00 AM - 1:00 PM",
     venue: "C209",
     rules: [
       "Team size: 3 members",
@@ -102,7 +102,7 @@ export const eeeEvents: DepartmentEvent[] = [
     departmentName: "Electrical & Electronics Engineering",
     image: "https://images.unsplash.com/photo-1611996575749-79a3a250f948?w=1200&h=600&fit=crop",
     date: "March 27-28, 2026",
-    time: "March 27: 11:30 AM - 3:00 PM | March 28: 10:00 AM - 2:00 PM",
+    time: "Friday, March 27: 11:30 AM - 2:00 PM | Saturday, March 28: 9:00 AM - 1:00 PM",
     venue: "C205B",
     rules: [
       "Press the button once to stop the moving LED block and place it on the stack",

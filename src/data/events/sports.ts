@@ -4,7 +4,7 @@ export const sportsEvents: DepartmentEvent[] = [
   {
     id: "sevens-football-tournament",
     title: "7's Football Tournament",
-    teamSize: 12,
+    teamSize: 14,
     registrationFee: "₹800 per team",
     prizePool: "₹13,000 + Trophies",
     details:
@@ -18,8 +18,8 @@ export const sportsEvents: DepartmentEvent[] = [
     time: "TBA",
     venue: "KMEA College Ground",
     rules: [
-      "7-a-side tournament format with up to 5 substitute players",
-      "Minimum 7 members are required per team; up to 12 players can be registered including substitutes",
+      "7-a-side tournament format with up to 7 substitute players",
+      "Minimum 7 members are required per team; up to 14 players can be registered including substitutes",
       "Registration fee is charged per team",
       "Valid college identification may be required",
       "Fixtures and match rules will be announced by organizers",
