@@ -8,6 +8,7 @@
     "build": "next build",
     "lint": "eslint .",
     "start": "next start -p 3001",
+    "backfill:payments": "node --env-file=.env scripts/backfill-razorpay-payments.js",
     "test": "vitest run",
     "test:watch": "vitest"
   },

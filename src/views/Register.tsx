@@ -36,6 +36,10 @@ type RazorpayCheckoutResult = {
   signature: string;
 };
 
+type RegistrationMutationInput = {
+  paymentProofOverride?: RazorpayPaymentProof | null;
+};
+
 type CouponData = {
   registrationId: string;
   participantName: string;
@@ -625,12 +629,13 @@ const Register = () => {
   };
 
   const mutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: async ({ paymentProofOverride }: RegistrationMutationInput = {}) => {
       const validated = schema.parse(form);
       const isFlagship = selectedDept === FLAGSHIP_DEPT_ID;
       const eventTitle = getEventTitle();
       const dbEventId = findDbEventId(eventTitle);
       const dbDeptId = findDbDeptId(eventTitle);
+      const resolvedPaymentProof = paymentProofOverride ?? paymentProof;
 
       if (!dbEventId || !dbDeptId) {
         throw new Error("Event not found in database. Please try again later.");
@@ -669,14 +674,14 @@ const Register = () => {
         event_id: dbEventId,
         department_id: dbDeptId,
         entry_code: entryCode,
-        amount_paid: paymentProof ? paymentProof.amountRupees : payableAmountInPaise <= 0 ? 0 : null,
+        amount_paid: resolvedPaymentProof ? resolvedPaymentProof.amountRupees : payableAmountInPaise <= 0 ? 0 : null,
         team_size: isTeamEvent ? selectedTeamSize : 1,
         team_members: selectedTeamSize > 1 ? teamMembers.filter(m => m.trim()) : null,
-        razorpay_order_id: paymentProof?.orderId ?? null,
-        payment_currency: paymentProof?.currency ?? (payableAmountInPaise <= 0 ? "INR" : null),
-        payment_gateway_status: paymentProof?.gatewayStatus ?? (payableAmountInPaise <= 0 ? "free" : null),
-        transaction_id: paymentProof?.paymentId ?? null,
-        payment_status: paymentProof ? "verified" : "pending",
+        razorpay_order_id: resolvedPaymentProof?.orderId ?? null,
+        payment_currency: resolvedPaymentProof?.currency ?? (payableAmountInPaise <= 0 ? "INR" : null),
+        payment_gateway_status: resolvedPaymentProof?.gatewayStatus ?? (payableAmountInPaise <= 0 ? "free" : null),
+        transaction_id: resolvedPaymentProof?.paymentId ?? null,
+        payment_status: resolvedPaymentProof ? "verified" : "pending",
       }]).select("id").single();
       
       if (error) {
@@ -757,20 +762,20 @@ const Register = () => {
     },
   });
 
-  const startRazorpayPayment = async () => {
-    if (!selectedEventDetails) return false;
-    if (payableAmountInPaise <= 0) return true;
+  const startRazorpayPayment = async (): Promise<RazorpayPaymentProof | null> => {
+    if (!selectedEventDetails) return null;
+    if (payableAmountInPaise <= 0) return null;
 
     const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
     if (!keyId) {
       toast.error("Payment gateway is not configured yet. Add the Razorpay public key and try again.");
-      return false;
+      return null;
     }
 
     const loaded = await loadRazorpayCheckout();
     if (!loaded || !window.Razorpay) {
       toast.error("Unable to load Razorpay checkout.");
-      return false;
+      return null;
     }
 
     setPaymentLoading(true);
@@ -826,7 +831,7 @@ const Register = () => {
 
       if (!paymentResult) {
         toast.info("Payment cancelled.");
-        return false;
+        return null;
       }
 
       const verifyRes = await fetch("/api/razorpay/verify", {
@@ -848,17 +853,18 @@ const Register = () => {
         throw new Error("Verified payment details are incomplete.");
       }
 
-      setPaymentProof({
+      const nextPaymentProof = {
         ...paymentResult,
         amountRupees: Number(verifiedPayment.amount) / 100,
         currency: verifiedPayment.currency || "INR",
         gatewayStatus: verifiedPayment.status || "unknown",
-      });
+      };
+      setPaymentProof(nextPaymentProof);
       toast.success("Payment verified. Finalizing registration...");
-      return true;
+      return nextPaymentProof;
     } catch (error: any) {
       toast.error(error?.message || "Payment could not be completed.");
-      return false;
+      return null;
     } finally {
       setPaymentLoading(false);
     }
@@ -868,12 +874,14 @@ const Register = () => {
     e.preventDefault();
     if (mutation.isPending || paymentLoading) return;
 
+    let paymentProofForInsert = paymentProof;
+
     if (payableAmountInPaise > 0 && !paymentProof) {
-      const paid = await startRazorpayPayment();
-      if (!paid) return;
+      paymentProofForInsert = await startRazorpayPayment();
+      if (!paymentProofForInsert) return;
     }
 
-    mutation.mutate();
+    mutation.mutate({ paymentProofOverride: paymentProofForInsert });
   };
 
   const inputClass =
