@@ -15,6 +15,10 @@
   venue: string;
   rules: string[];
   highlights: string[];
+  contact?: {
+    name: string;
+    phone: string;
+  };
 }
 
 export const eceEvents: DepartmentEvent[] = [
