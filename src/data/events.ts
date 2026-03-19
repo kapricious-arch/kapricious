@@ -34,8 +34,8 @@ export const eceEvents: DepartmentEvent[] = [
     department: "ECE",
     departmentName: "Electronics & Communication Engineering",
     image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1200&h=600&fit=crop",
-    date: "March 27, 2026",
-    time: "10:00 AM - 12:00 PM",
+    date: "March 27-28, 2026",
+    time: "10:00 AM - 4:00 PM",
     venue: "ECE Lab, KMEA Engineering College",
     rules: [
       "Participants must move through the laser maze without breaking beams",
@@ -51,7 +51,7 @@ export const eceEvents: DepartmentEvent[] = [
   },
   {
     id: "electro-hunt",
-    title: "Electro Hunt",
+    title: "ElectroHunt: Decode & Discover",
     teamSize: 1,
     registrationFee: "₹200",
     prizePool: "₹3,000",
@@ -61,8 +61,8 @@ export const eceEvents: DepartmentEvent[] = [
     department: "ECE",
     departmentName: "Electronics & Communication Engineering",
     image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=600&fit=crop",
-    date: "March 27, 2026",
-    time: "2:00 PM - 5:00 PM",
+    date: "March 28, 2026",
+    time: "10:00 AM - 2:00 PM",
     venue: "Campus Wide, KMEA Engineering College",
     rules: [
       "Teams of 4 members",
@@ -79,7 +79,7 @@ export const eceEvents: DepartmentEvent[] = [
   },
   {
     id: "solder-master",
-    title: "Solder Master",
+    title: "SolderMaster",
     teamSize: 1,
     registrationFee: "₹50",
     prizePool: "₹1,500",
@@ -90,7 +90,7 @@ export const eceEvents: DepartmentEvent[] = [
     departmentName: "Electronics & Communication Engineering",
     image: "https://images.unsplash.com/photo-1588508065123-287b28e013da?w=1200&h=600&fit=crop",
     date: "March 27, 2026",
-    time: "11:00 AM - 1:00 PM",
+    time: "11:30 AM - 4:00 PM",
     venue: "ECE Workshop, KMEA Engineering College",
     rules: [
       "Participants must replicate the given circuit design",
@@ -106,7 +106,7 @@ export const eceEvents: DepartmentEvent[] = [
   },
   {
     id: "code-red",
-    title: "Code Red",
+    title: "Code Red: Bomb Defusal Challenge",
     teamSize: 1,
     registrationFee: "₹50",
     prizePool: "₹1,500",
@@ -117,7 +117,7 @@ export const eceEvents: DepartmentEvent[] = [
     departmentName: "Electronics & Communication Engineering",
     image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=1200&h=600&fit=crop",
     date: "March 27, 2026",
-    time: "3:00 PM - 5:00 PM",
+    time: "11:30 AM - 4:00 PM",
     venue: "Computer Lab, KMEA Engineering College",
     rules: [
       "Participants must identify the correct wire connections",
@@ -133,7 +133,7 @@ export const eceEvents: DepartmentEvent[] = [
   },
   {
     id: "electrodex",
-    title: "ElectroDex",
+    title: "ElectroDex Challenge",
     teamSize: 1,
     registrationFee: "₹50",
     prizePool: "₹3,000",
@@ -143,8 +143,8 @@ export const eceEvents: DepartmentEvent[] = [
     department: "ECE",
     departmentName: "Electronics & Communication Engineering",
     image: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=1200&h=600&fit=crop",
-    date: "March 27, 2026",
-    time: "9:00 AM - 11:00 AM",
+    date: "March 28, 2026",
+    time: "10:00 AM - 2:00 PM",
     venue: "Seminar Hall, KMEA Engineering College",
     rules: [
       "Participants identify electronic components",
@@ -1066,14 +1066,14 @@ export const cseEvents: DepartmentEvent[] = [
     rules: [
       "Event is open to all registered tech fest participants",
       "Participants must participate individually",
-      "Total event duration: 75 minutes",
+      "Total event duration: 60 minutes",
       "The competition will have two rounds",
       "Prompts must be created using the provided AI tool and model only",
       "Round 1 - Image Generation: task/theme will be given",
       "Round 1 time: 30 minutes",
       "Top participants from Round 1 advance to Round 2",
       "Round 2 - Video Generation: new task/theme will be given",
-      "Round 2 time: 45 minutes",
+      "Round 2 time: 30 minutes",
       "Prompts must be created during the competition",
       "Copying prompts or unfair practices are not allowed",
       "Participants must submit both the prompt and the AI-generated output",

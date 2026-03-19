@@ -46,8 +46,8 @@ export const eceEvents: DepartmentEvent[] = [
     department: "ECE",
     departmentName: "Electronics & Communication Engineering",
     image: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=1200&h=600&fit=crop",
-    date: "March 27, 2026",
-    time: "11:30 AM - 4:00 PM",
+    date: "March 27-28, 2026",
+    time: "10:00 AM - 4:00 PM",
     venue: "B214",
     contact: {
       name: "B Nandhakishor",
@@ -78,8 +78,8 @@ export const eceEvents: DepartmentEvent[] = [
     department: "ECE",
     departmentName: "Electronics & Communication Engineering",
     image: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=1200&h=600&fit=crop",
-    date: "March 27, 2026",
-    time: "11:30 AM - 4:00 PM",
+    date: "March 28, 2026",
+    time: "10:00 AM - 2:00 PM",
     venue: "B307",
     contact: {
       name: "Nasih O A",
@@ -99,7 +99,7 @@ export const eceEvents: DepartmentEvent[] = [
   },
   {
     id: "electro-hunt",
-    title: "ElectroHunt",
+    title: "ElectroHunt: Decode & Discover",
     teamSize: 4,
     registrationFee: "₹200 per team",
     prizePool: "₹3,000",
@@ -110,8 +110,8 @@ export const eceEvents: DepartmentEvent[] = [
     department: "ECE",
     departmentName: "Electronics & Communication Engineering",
     image: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=600&fit=crop",
-    date: "March 27, 2026",
-    time: "2:00 PM - 4:00 PM",
+    date: "March 28, 2026",
+    time: "10:00 AM - 2:00 PM",
     venue: "Green Block",
     contact: {
       name: "Nabeel",
@@ -132,7 +132,7 @@ export const eceEvents: DepartmentEvent[] = [
   },
   {
     id: "code-red",
-    title: "Code Red: Bomb Defusal",
+    title: "Code Red: Bomb Defusal Challenge",
     teamSize: 1,
     registrationFee: "₹50 per head",
     prizePool: "₹1,500",
