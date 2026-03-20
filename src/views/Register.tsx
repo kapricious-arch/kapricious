@@ -122,6 +122,13 @@ const parseFeeToRupees = (fee: string, teamSize: number) => {
 
 const getDefaultSlotLimit = (eventId: string) => DEFAULT_SLOT_LIMIT_BY_EVENT[eventId] ?? 10;
 
+const normalizeDepartmentCode = (value: string | null | undefined) => {
+  const normalized = (value || "").trim().toUpperCase();
+  if (normalized === "RAE") return "RA";
+  if (normalized === "SF") return "SFE";
+  return normalized;
+};
+
 const normalizeEventLookupValue = (value: string) =>
   value
     .toLowerCase()
@@ -400,10 +407,10 @@ const Register = () => {
   
   const getInitialDept = () => {
     if (preselectedFlagship) return FLAGSHIP_DEPT_ID;
-    if (preselectedDeptEvent?.department === "SPORTS") return SPORTS_DEPT_ID;
+    if (normalizeDepartmentCode(preselectedDeptEvent?.department) === "SPORTS") return SPORTS_DEPT_ID;
     if (preselectedDeptParam) return preselectedDeptParam;
     if (preselectedDeptEvent && preselectedDeptEvent.department) {
-      return preselectedDeptEvent.department;
+      return normalizeDepartmentCode(preselectedDeptEvent.department);
     }
     return "";
   };
@@ -446,7 +453,7 @@ const Register = () => {
   });
 
   const visibleDepartments = departments?.filter((d) => {
-    const normalizedCode = (d.code || "").toUpperCase();
+    const normalizedCode = normalizeDepartmentCode(d.code);
     const normalizedName = (d.name || "").toLowerCase();
     if (["FLAGSHIP", "AI"].includes(normalizedCode)) return false;
     if (normalizedName.includes("artificial intelligence")) return false;
@@ -458,14 +465,16 @@ const Register = () => {
     if (selectedDept === FLAGSHIP_DEPT_ID) return;
     if (selectedDept === SPORTS_DEPT_ID) return;
     if (preselectedDeptEvent && preselectedDeptEvent.department) {
-      if (preselectedDeptEvent.department === "SPORTS") {
+      if (normalizeDepartmentCode(preselectedDeptEvent.department) === "SPORTS") {
         if (selectedDept !== SPORTS_DEPT_ID) {
           setSelectedDept(SPORTS_DEPT_ID);
           setSelectedEvent(preselectedEvent);
         }
         return;
       }
-      const deptByCode = departments.find(d => d.code === preselectedDeptEvent.department);
+      const deptByCode = departments.find(
+        (d) => normalizeDepartmentCode(d.code) === normalizeDepartmentCode(preselectedDeptEvent.department),
+      );
       if (deptByCode && selectedDept !== deptByCode.id) {
         setSelectedDept(deptByCode.id);
         setSelectedEvent(preselectedEvent);
@@ -474,7 +483,11 @@ const Register = () => {
     if (preselectedDeptParam) {
       const isValidUUID = departments.some(d => d.id === selectedDept);
       if (!isValidUUID) {
-        const deptByCode = departments.find(d => d.code === preselectedDeptParam || d.code === selectedDept);
+        const deptByCode = departments.find(
+          (d) =>
+            normalizeDepartmentCode(d.code) === normalizeDepartmentCode(preselectedDeptParam) ||
+            normalizeDepartmentCode(d.code) === normalizeDepartmentCode(selectedDept),
+        );
         if (deptByCode) {
           setSelectedDept(deptByCode.id);
           setSelectedEvent(preselectedEvent);
@@ -501,15 +514,16 @@ const Register = () => {
     }
     if (selectedDept && departments) {
       const dept = departments.find(d => d.id === selectedDept);
-      if (dept?.code === "CULTURAL") return sortDepartmentEventsByPrizePool(mainEvents).map(e => ({ id: e.id, title: e.title }));
-      if (dept?.code === "MANAGERIAL") return sortDepartmentEventsByPrizePool(managerialEvents).map(e => ({ id: e.id, title: e.title }));
-      if (dept?.code === "CSE") return sortDepartmentEventsByPrizePool(cseEvents).map(e => ({ id: e.id, title: e.title }));
-      if (dept?.code === "CE") return sortDepartmentEventsByPrizePool(ceEvents).map(e => ({ id: e.id, title: e.title }));
-      if (dept?.code === "ME") return sortDepartmentEventsByPrizePool(meEvents).map(e => ({ id: e.id, title: e.title }));
-      if (dept?.code === "EEE") return sortDepartmentEventsByPrizePool(eeeEvents).map(e => ({ id: e.id, title: e.title }));
-      if (dept?.code === "RA") return sortDepartmentEventsByPrizePool(raEvents).map(e => ({ id: e.id, title: e.title }));
-      if (dept?.code === "SFE") return sortDepartmentEventsByPrizePool(sfEvents).map(e => ({ id: e.id, title: e.title }));
-      if (dept?.code === "ECE") return sortDepartmentEventsByPrizePool(eceEvents).map(e => ({ id: e.id, title: e.title }));
+      const deptCode = normalizeDepartmentCode(dept?.code);
+      if (deptCode === "CULTURAL") return sortDepartmentEventsByPrizePool(mainEvents).map(e => ({ id: e.id, title: e.title }));
+      if (deptCode === "MANAGERIAL") return sortDepartmentEventsByPrizePool(managerialEvents).map(e => ({ id: e.id, title: e.title }));
+      if (deptCode === "CSE") return sortDepartmentEventsByPrizePool(cseEvents).map(e => ({ id: e.id, title: e.title }));
+      if (deptCode === "CE") return sortDepartmentEventsByPrizePool(ceEvents).map(e => ({ id: e.id, title: e.title }));
+      if (deptCode === "ME") return sortDepartmentEventsByPrizePool(meEvents).map(e => ({ id: e.id, title: e.title }));
+      if (deptCode === "EEE") return sortDepartmentEventsByPrizePool(eeeEvents).map(e => ({ id: e.id, title: e.title }));
+      if (deptCode === "RA") return sortDepartmentEventsByPrizePool(raEvents).map(e => ({ id: e.id, title: e.title }));
+      if (deptCode === "SFE") return sortDepartmentEventsByPrizePool(sfEvents).map(e => ({ id: e.id, title: e.title }));
+      if (deptCode === "ECE") return sortDepartmentEventsByPrizePool(eceEvents).map(e => ({ id: e.id, title: e.title }));
     }
     return [];
   };
@@ -634,7 +648,7 @@ const Register = () => {
 
       if (duplicateError) throw duplicateError;
       if (duplicateCount && duplicateCount > 0) {
-        toast.error("You’ve already registered for this event with that email.");
+        toast.error("You've already registered for this event with that email.");
         return;
       }
 
@@ -796,7 +810,7 @@ const Register = () => {
       if (emailRateLimited) {
         toast.info("Registration successful! However, we couldn't send your event pass right now due to high demand. Please check your email tomorrow or contact the admin for your pass.");
       } else {
-        toast.success("Registration successful! Check your email for the event pass 🎫");
+        toast.success("Registration successful! Check your email for the event pass.");
       }
       setForm({ name: "", email: "", phone: "", college: "" });
       setSelectedEvent("");
