@@ -24,9 +24,18 @@ const DB_EVENT_TITLE_ALIASES: Record<string, string[]> = {
   electrodex: ["ElectroDex Challenge", "ElectroDex"],
   "electro-hunt": ["ElectroHunt: Decode & Discover", "Electro Hunt"],
   "code-red": ["Code Red: Bomb Defusal Challenge", "Code Red"],
+  innovatex: ["Vibe Coding Ideathon"],
+  "tech-insights": ["Circuit Rush"],
+  "hazard-huzzle": ["Safety Quiz"],
+  "safety-verdict": ["Technical Debate"],
+  insight: ["Poster/Paper Presentation Competition"],
+  "rescue-raid": ["Emergency Drill"],
+  "hazard-hunt": ["Hazard Hunt"],
+  "gear-up-challenge": ["PPE Race"],
 };
-const LIMITED_EVENT_IDS = new Set(["hackathon", "tech-escape-room"]);
+const LIMITED_EVENT_IDS = new Set(["bug-bounty", "hackathon", "tech-escape-room"]);
 const DEFAULT_SLOT_LIMIT_BY_EVENT: Record<string, number> = {
+  "bug-bounty": 15,
   hackathon: 10,
   "tech-escape-room": 15,
 };
@@ -420,7 +429,7 @@ const Register = () => {
   const [form, setForm] = useState({ name: "", email: "", phone: "", college: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [registered, setRegistered] = useState(false);
-  const [selectedTeamSize, setSelectedTeamSize] = useState(1);
+  const [selectedTeamSize, setSelectedTeamSize] = useState<number | null>(1);
   const [fashionShowTeamType, setFashionShowTeamType] = useState<FashionShowTeamType>("college");
   const [teamMembers, setTeamMembers] = useState<string[]>([]);
   const [currentStep, setCurrentStep] = useState<Step>("details");
@@ -561,15 +570,17 @@ const Register = () => {
   const maxTeamSize = isTeamEvent ? (selectedEventDetails as any).teamSize : 1;
   const minTeamSize = MIN_TEAM_SIZE_BY_EVENT[selectedEvent] ?? 1;
   const registrationFeeText = selectedEventDetails && "registrationFee" in selectedEventDetails ? (selectedEventDetails as any).registrationFee || "" : "";
-  const payableRupees = isFashionShow
-    ? (fashionShowTeamType === "college" ? 250 : 350) * Math.max(selectedTeamSize, 1)
-    : parseFeeToRupees(registrationFeeText, isTeamEvent ? selectedTeamSize : 1);
+  const payableRupees = isTeamEvent && selectedTeamSize === null
+    ? 0
+    : isFashionShow
+      ? (fashionShowTeamType === "college" ? 250 : 350) * Math.max(selectedTeamSize ?? 1, 1)
+      : parseFeeToRupees(registrationFeeText, isTeamEvent ? (selectedTeamSize ?? 1) : 1);
   const payableAmountInPaise = payableRupees * 100;
 
   useEffect(() => {
-    if (selectedTeamSize > 1) {
+    if ((selectedTeamSize ?? 0) > 1) {
       setTeamMembers(prev => {
-        const needed = selectedTeamSize - 1;
+        const needed = (selectedTeamSize ?? 1) - 1;
         if (prev.length < needed) return [...prev, ...Array(needed - prev.length).fill("")];
         return prev.slice(0, needed);
       });
@@ -579,7 +590,7 @@ const Register = () => {
   }, [selectedTeamSize]);
 
   useEffect(() => {
-    setSelectedTeamSize(minTeamSize);
+    setSelectedTeamSize(selectedEvent && isTeamEvent ? null : 1);
     setFashionShowTeamType("college");
     setTeamMembers([]);
     // Reset to details step when event changes
@@ -587,7 +598,7 @@ const Register = () => {
     setSlotsAvailable(null);
     setMaxSlots(null);
     setPaymentProof(null);
-  }, [selectedEvent, minTeamSize]);
+  }, [selectedEvent, isTeamEvent]);
 
   const findDbEventRecord = (eventId: string, eventTitle: string) => {
     if (!allDbEvents) return null;
@@ -613,9 +624,34 @@ const Register = () => {
     return allHardcoded.find(ev => ev.id === selectedEvent)?.title || "";
   };
 
+  const getTeamValidationErrors = () => {
+    const fieldErrors: Record<string, string> = {};
+
+    if (!isTeamEvent) return fieldErrors;
+
+    if (selectedTeamSize === null) {
+      fieldErrors.teamSize = "Please select the number of members.";
+      return fieldErrors;
+    }
+
+    if (selectedTeamSize > 1) {
+      const missingMembers = teamMembers.some((member) => !member.trim());
+      if (missingMembers || teamMembers.length !== selectedTeamSize - 1) {
+        fieldErrors.teamMembers = "Please fill in the names of all team members.";
+      }
+    }
+
+    return fieldErrors;
+  };
+
   // Step 1: Validate details and proceed to payment for events with registration caps.
   const handleProceedToPayment = async () => {
     setErrors({});
+    const teamErrors = getTeamValidationErrors();
+    if (Object.keys(teamErrors).length > 0) {
+      setErrors(teamErrors);
+      return;
+    }
     const result = schema.safeParse(form);
     if (!result.success) {
       const fieldErrors: Record<string, string> = {};
@@ -689,6 +725,11 @@ const Register = () => {
 
   const mutation = useMutation({
     mutationFn: async ({ paymentProofOverride }: RegistrationMutationInput = {}) => {
+      const teamErrors = getTeamValidationErrors();
+      if (Object.keys(teamErrors).length > 0) {
+        throw new Error(teamErrors.teamMembers ?? teamErrors.teamSize ?? "Please complete the team details.");
+      }
+
       const validated = schema.parse(form);
       const isFlagship = selectedDept === FLAGSHIP_DEPT_ID;
       const eventTitle = getEventTitle();
@@ -735,8 +776,8 @@ const Register = () => {
         department_id: dbDeptId,
         entry_code: entryCode,
         amount_paid: resolvedPaymentProof ? resolvedPaymentProof.amountRupees : payableAmountInPaise <= 0 ? 0 : null,
-        team_size: isTeamEvent ? selectedTeamSize : 1,
-        team_members: selectedTeamSize > 1 ? teamMembers.filter(m => m.trim()) : null,
+        team_size: isTeamEvent ? (selectedTeamSize ?? 1) : 1,
+        team_members: (selectedTeamSize ?? 0) > 1 ? teamMembers.filter(m => m.trim()) : null,
         razorpay_order_id: resolvedPaymentProof?.orderId ?? null,
         payment_currency: resolvedPaymentProof?.currency ?? (payableAmountInPaise <= 0 ? "INR" : null),
         payment_gateway_status: resolvedPaymentProof?.gatewayStatus ?? (payableAmountInPaise <= 0 ? "free" : null),
@@ -782,7 +823,7 @@ const Register = () => {
           entryCode,
           eventDate,
           venue,
-          teamCount: isTeamEvent ? selectedTeamSize : 1,
+          teamCount: isTeamEvent ? (selectedTeamSize ?? 1) : 1,
           eventImage: selectedEventDetails && "image" in selectedEventDetails ? (selectedEventDetails as any).image ?? "" : "",
           eventCategory: selectedDept === FLAGSHIP_DEPT_ID ? "Flagship Event" : selectedDept === SPORTS_DEPT_ID ? "Sports Event" : "Department Event",
         },
@@ -798,7 +839,7 @@ const Register = () => {
         venue,
         issuedAt: new Date().toLocaleString(),
         entryCode,
-        teamCount: isTeamEvent ? selectedTeamSize : 1,
+        teamCount: isTeamEvent ? (selectedTeamSize ?? 1) : 1,
         eventCategory: selectedDept === FLAGSHIP_DEPT_ID ? "Flagship Event" : selectedDept === SPORTS_DEPT_ID ? "Sports Event" : "Department Event",
         eventImage: selectedEventDetails && "image" in selectedEventDetails ? (selectedEventDetails as any).image ?? "" : "",
       };
@@ -933,6 +974,12 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (mutation.isPending || paymentLoading) return;
+
+    const teamErrors = getTeamValidationErrors();
+    if (Object.keys(teamErrors).length > 0) {
+      setErrors(teamErrors);
+      return;
+    }
 
     let paymentProofForInsert = paymentProof;
 
@@ -1363,10 +1410,23 @@ const Register = () => {
                       <div className="relative">
                         <Users className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
                         <select
-                          value={selectedTeamSize}
-                          onChange={(e) => setSelectedTeamSize(Number(e.target.value))}
+                          value={selectedTeamSize?.toString() ?? ""}
+                          onChange={(e) => {
+                            const nextValue = e.target.value ? Number(e.target.value) : null;
+                            setSelectedTeamSize(nextValue);
+                            setErrors((prev) => {
+                              if (!prev.teamSize && !prev.teamMembers) return prev;
+                              const nextErrors = { ...prev };
+                              delete nextErrors.teamSize;
+                              delete nextErrors.teamMembers;
+                              return nextErrors;
+                            });
+                          }}
                           className={selectClass}
                         >
+                          <option value="" disabled>
+                            Select number of members
+                          </option>
                           {Array.from({ length: maxTeamSize - minTeamSize + 1 }, (_, i) => i + minTeamSize).map((size) => (
                             <option key={size} value={size}>
                               {size} {size === 1 ? "Member (Individual)" : "Members"}
@@ -1374,6 +1434,7 @@ const Register = () => {
                           ))}
                         </select>
                       </div>
+                      {errors.teamSize && <p className="text-xs text-destructive mt-1">{errors.teamSize}</p>}
                       <p className="text-[10px] text-muted-foreground mt-1">
                         {minTeamSize > 1
                           ? `Minimum ${minTeamSize} members required; maximum team size: ${maxTeamSize} members`
@@ -1404,9 +1465,9 @@ const Register = () => {
                   <div className="flex items-center gap-2 mb-2">
                     <User className="w-4 h-4 text-accent" />
                     <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground">
-                      {isTeamEvent && selectedTeamSize > 1 ? "Team Leader Details" : "Personal Details"}
+                      {isTeamEvent && (selectedTeamSize ?? 0) > 1 ? "Team Leader Details" : "Personal Details"}
                     </span>
-                    {isTeamEvent && selectedTeamSize > 1 && (
+                    {isTeamEvent && (selectedTeamSize ?? 0) > 1 && (
                       <span className="text-[9px] bg-accent/10 text-accent px-2 py-0.5 rounded-full">
                         Coupon will be sent to leader
                       </span>
@@ -1415,7 +1476,7 @@ const Register = () => {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="sm:col-span-2">
-                      <label className={labelClass}>{isTeamEvent && selectedTeamSize > 1 ? "Leader's Full Name" : "Full Name"}</label>
+                      <label className={labelClass}>{isTeamEvent && (selectedTeamSize ?? 0) > 1 ? "Leader's Full Name" : "Full Name"}</label>
                       <div className="relative">
                         <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
                         <input type="text" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={inputClass} placeholder="John Doe" />
@@ -1426,7 +1487,7 @@ const Register = () => {
                       {errors.name && <p className="text-xs text-destructive mt-1">{errors.name}</p>}
                     </div>
                     <div>
-                      <label className={labelClass}>{isTeamEvent && selectedTeamSize > 1 ? "Leader's Email" : "Email"}</label>
+                      <label className={labelClass}>{isTeamEvent && (selectedTeamSize ?? 0) > 1 ? "Leader's Email" : "Email"}</label>
                       <div className="relative">
                         <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
                         <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={inputClass} placeholder="you@example.com" />
@@ -1434,7 +1495,7 @@ const Register = () => {
                       {errors.email && <p className="text-xs text-destructive mt-1">{errors.email}</p>}
                     </div>
                     <div>
-                      <label className={labelClass}>{isTeamEvent && selectedTeamSize > 1 ? "Leader's Phone" : "Phone"}</label>
+                      <label className={labelClass}>{isTeamEvent && (selectedTeamSize ?? 0) > 1 ? "Leader's Phone" : "Phone"}</label>
                       <div className="relative">
                         <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
                         <input type="tel" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className={inputClass} placeholder="+91 XXXXX XXXXX" />
@@ -1453,7 +1514,7 @@ const Register = () => {
                 </div>
 
                 {/* Team Members Section */}
-                {isTeamEvent && selectedTeamSize > 1 && (
+                {isTeamEvent && (selectedTeamSize ?? 0) > 1 && (
                   <div className="p-6 md:p-8 space-y-4 border-b border-border">
                     <div className="flex items-center gap-2 mb-2">
                       <Users className="w-4 h-4 text-accent" />
@@ -1462,6 +1523,7 @@ const Register = () => {
                     <p className="text-xs text-amber-400/90">
                       Team member names should also be entered exactly as they should appear on certificates.
                     </p>
+                    {errors.teamMembers && <p className="text-xs text-destructive">{errors.teamMembers}</p>}
                     <div className="space-y-3">
                       {teamMembers.map((member, index) => (
                         <motion.div
@@ -1480,6 +1542,12 @@ const Register = () => {
                                 const newMembers = [...teamMembers];
                                 newMembers[index] = e.target.value;
                                 setTeamMembers(newMembers);
+                                setErrors((prev) => {
+                                  if (!prev.teamMembers) return prev;
+                                  const nextErrors = { ...prev };
+                                  delete nextErrors.teamMembers;
+                                  return nextErrors;
+                                });
                               }}
                               className={inputClass}
                               placeholder={`Team member ${index + 2} name`}
@@ -1495,7 +1563,7 @@ const Register = () => {
                 <div className="p-6 md:p-8">
                   <motion.button
                     type="button"
-                    disabled={slotCheckLoading}
+                    disabled={slotCheckLoading || (isTeamEvent && selectedTeamSize === null)}
                     onClick={handleProceedToPayment}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
