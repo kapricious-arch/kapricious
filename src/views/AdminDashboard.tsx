@@ -1,12 +1,14 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import {
   ArrowUpDown,
+  BarChart3,
   CheckCircle,
   ChevronDown,
   ChevronUp,
@@ -262,12 +264,20 @@ const AdminDashboard = () => {
           <h1 className="font-display text-3xl font-bold">
             Admin <span className="text-primary">Dashboard</span>
           </h1>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <LogOut className="w-4 h-4" /> Logout
-          </button>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/admin/summary"
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <BarChart3 className="w-4 h-4" /> Event Summary
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <LogOut className="w-4 h-4" /> Logout
+            </button>
+          </div>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

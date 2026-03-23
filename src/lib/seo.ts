@@ -1158,7 +1158,7 @@ export const getGalleryMetadata = () => {
 };
 
 export const getAdminMetadata = (
-  pathname: "/admin" | "/admin/dashboard"
+  pathname: "/admin" | "/admin/dashboard" | "/admin/summary"
 ): Metadata =>
   buildMetadata({
     pathname,
@@ -1168,7 +1168,7 @@ export const getAdminMetadata = (
     follow: false,
   });
 
-export const getAdminSchema = (pathname: "/admin" | "/admin/dashboard") =>
+export const getAdminSchema = (pathname: "/admin" | "/admin/dashboard" | "/admin/summary") =>
   createPageSchema(
     "Kapricious 2026 Admin",
     "Admin portal",
