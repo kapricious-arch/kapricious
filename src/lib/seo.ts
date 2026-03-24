@@ -4,7 +4,7 @@ import {
   flagshipEvents,
   getDepartmentEventById,
   getEventById,
-} from "@/data/events";
+} from "@/data/events/index";
 
 // ============================================================================
 // SITE CONSTANTS
