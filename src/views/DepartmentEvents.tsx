@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { normalizeDepartmentCode } from "@/lib/departments";
 import { motion } from "framer-motion";
 import { Calendar, MapPin, ArrowLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { format } from "date-fns";
@@ -66,7 +67,7 @@ const DepartmentEvents = () => {
           <h1 className="font-display text-2xl md:text-3xl font-bold mb-4">
             {department?.name ? (
               <>
-                <span className="text-accent">{department.code}</span>{" "}
+                <span className="text-accent">{normalizeDepartmentCode(department.code)}</span>{" "}
                 <span className="text-foreground">EVENTS</span>
               </>
             ) : (

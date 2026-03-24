@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { toast } from "sonner";
 import { z } from "zod";
+import { formatDepartmentOptionLabel, normalizeDepartmentCode } from "@/lib/departments";
 import { User, Mail, Phone, GraduationCap, Layers, Calendar, CheckCircle2, CreditCard, ShieldCheck, ArrowRight, Trophy, Sparkles, Zap, Users, AlertTriangle, Loader2 } from "lucide-react";
 import { flagshipEvents, getEventById, mainEvents, managerialEvents, sportsEvents, cseEvents, ceEvents, meEvents, eeeEvents, raEvents, sfEvents, eceEvents, sortDepartmentEventsByPrizePool } from "@/data/events/index";
 
@@ -135,13 +136,6 @@ const parseFeeToRupees = (fee: string, teamSize: number) => {
 };
 
 const getDefaultSlotLimit = (eventId: string) => DEFAULT_SLOT_LIMIT_BY_EVENT[eventId] ?? 10;
-
-const normalizeDepartmentCode = (value: string | null | undefined) => {
-  const normalized = (value || "").trim().toUpperCase();
-  if (normalized === "RAE") return "RA";
-  if (normalized === "SF") return "SFE";
-  return normalized;
-};
 
 const normalizeEventLookupValue = (value: string) =>
   value
@@ -1448,7 +1442,7 @@ const Register = () => {
                           </optgroup>
                           <optgroup label="Department Events">
                             {visibleDepartments?.map((d) => (
-                              <option key={d.id} value={d.id}>{d.name} ({d.code})</option>
+                              <option key={d.id} value={d.id}>{formatDepartmentOptionLabel(d.name, d.code)}</option>
                             ))}
                           </optgroup>
                         </select>

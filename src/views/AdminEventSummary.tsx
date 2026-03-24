@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { BarChart3, ChevronLeft, Filter, Layers3, LogOut, Wallet } from "lucide-react";
 
 import { supabase } from "@/integrations/supabase/client";
+import { normalizeDepartmentCode } from "@/lib/departments";
 
 const formatCurrency = (value: number) =>
   `INR ${value.toLocaleString("en-IN", {
@@ -84,10 +85,11 @@ const AdminEventSummary = () => {
 
     events.forEach((event) => {
       const department = event.departments as { code?: string; name?: string } | null;
+      const departmentCode = normalizeDepartmentCode(department?.code);
       grouped.set(event.id, {
         eventId: event.id,
         eventName: event.title,
-        departmentCode: department?.code || "-",
+        departmentCode: departmentCode || "-",
         departmentName: department?.name || "Unknown",
         registrationCount: 0,
         verifiedCount: 0,

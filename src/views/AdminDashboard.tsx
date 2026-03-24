@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { normalizeDepartmentCode } from "@/lib/departments";
 import { toast } from "sonner";
 import {
   ArrowUpDown,
@@ -314,7 +315,7 @@ const AdminDashboard = () => {
                   <div className="flex items-center gap-3">
                     <h2 className="font-display text-lg font-bold text-foreground">{event.title}</h2>
                     <span className="text-xs text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
-                      {(event.departments as any)?.code}
+                      {normalizeDepartmentCode((event.departments as any)?.code)}
                     </span>
                     <span className="text-xs text-primary font-medium">
                       {eventRegs.length} registration{eventRegs.length !== 1 ? "s" : ""}
