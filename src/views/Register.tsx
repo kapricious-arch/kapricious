@@ -402,6 +402,7 @@ const AnimatedGrid = () => {
 
 type Step = "details" | "payment";
 type FashionShowTeamType = "college" | "other";
+type StarOfKapriciousStudentType = "kmea" | "other";
 
 const Register = () => {
   const searchParams = useSearchParams();
@@ -430,6 +431,7 @@ const Register = () => {
   const [registered, setRegistered] = useState(false);
   const [selectedTeamSize, setSelectedTeamSize] = useState<number | null>(1);
   const [fashionShowTeamType, setFashionShowTeamType] = useState<FashionShowTeamType>("college");
+  const [starOfKapriciousStudentType, setStarOfKapriciousStudentType] = useState<StarOfKapriciousStudentType | "">("");
   const [teamMembers, setTeamMembers] = useState<string[]>([]);
   const [currentStep, setCurrentStep] = useState<Step>("details");
   const [slotCheckLoading, setSlotCheckLoading] = useState(false);
@@ -553,6 +555,7 @@ const Register = () => {
   const selectedEventDetails = getSelectedEventDetails();
   const isCapacityLimitedEvent = LIMITED_EVENT_IDS.has(selectedEvent);
   const isFashionShow = selectedEvent === "fashion-show";
+  const isStarOfKapricious = selectedEvent === "star-of-kapricious";
 
   const selectedEventLabel =
     selectedDept === FLAGSHIP_DEPT_ID
@@ -568,12 +571,22 @@ const Register = () => {
   const isTeamEvent = selectedEventDetails && 'teamSize' in selectedEventDetails && (selectedEventDetails as any).teamSize > 1;
   const maxTeamSize = isTeamEvent ? (selectedEventDetails as any).teamSize : 1;
   const minTeamSize = MIN_TEAM_SIZE_BY_EVENT[selectedEvent] ?? 1;
-  const registrationFeeText = selectedEventDetails && "registrationFee" in selectedEventDetails ? (selectedEventDetails as any).registrationFee || "" : "";
+  const registrationFeeText = isStarOfKapricious
+    ? "₹150 for KMEA College Students / ₹250 for Other College Students"
+    : selectedEventDetails && "registrationFee" in selectedEventDetails
+      ? (selectedEventDetails as any).registrationFee || ""
+      : "";
   const payableRupees = isTeamEvent && selectedTeamSize === null
     ? 0
     : isFashionShow
       ? (fashionShowTeamType === "college" ? 250 : 350) * Math.max(selectedTeamSize ?? 1, 1)
-      : parseFeeToRupees(registrationFeeText, isTeamEvent ? (selectedTeamSize ?? 1) : 1);
+      : isStarOfKapricious
+        ? starOfKapriciousStudentType === "kmea"
+          ? 150
+          : starOfKapriciousStudentType === "other"
+            ? 250
+            : 0
+        : parseFeeToRupees(registrationFeeText, isTeamEvent ? (selectedTeamSize ?? 1) : 1);
   const payableAmountInPaise = payableRupees * 100;
 
   useEffect(() => {
@@ -591,6 +604,7 @@ const Register = () => {
   useEffect(() => {
     setSelectedTeamSize(selectedEvent && isTeamEvent ? null : 1);
     setFashionShowTeamType("college");
+    setStarOfKapriciousStudentType("");
     setTeamMembers([]);
     // Reset to details step when event changes
     setCurrentStep("details");
@@ -625,6 +639,10 @@ const Register = () => {
 
   const getTeamValidationErrors = () => {
     const fieldErrors: Record<string, string> = {};
+
+    if (isStarOfKapricious && !starOfKapriciousStudentType) {
+      fieldErrors.studentType = "Please choose whether you are a KMEA College Student or Other College Student.";
+    }
 
     if (!isTeamEvent) return fieldErrors;
 
@@ -1482,49 +1500,53 @@ const Register = () => {
                   )}
 
                   {/* Team Size Selection */}
-                  {isTeamEvent && selectedEvent && (
+                  {selectedEvent && (isTeamEvent || isStarOfKapricious) && (
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       className="mt-4"
                     >
-                      <div className="flex items-center gap-2 mb-2">
-                        <Users className="w-4 h-4 text-accent" />
-                        <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground">Team Size</span>
-                      </div>
-                      <div className="relative">
-                        <Users className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
-                        <select
-                          value={selectedTeamSize?.toString() ?? ""}
-                          onChange={(e) => {
-                            const nextValue = e.target.value ? Number(e.target.value) : null;
-                            setSelectedTeamSize(nextValue);
-                            setErrors((prev) => {
-                              if (!prev.teamSize && !prev.teamMembers) return prev;
-                              const nextErrors = { ...prev };
-                              delete nextErrors.teamSize;
-                              delete nextErrors.teamMembers;
-                              return nextErrors;
-                            });
-                          }}
-                          className={selectClass}
-                        >
-                          <option value="" disabled>
-                            Select number of members
-                          </option>
-                          {Array.from({ length: maxTeamSize - minTeamSize + 1 }, (_, i) => i + minTeamSize).map((size) => (
-                            <option key={size} value={size}>
-                              {size} {size === 1 ? "Member (Individual)" : "Members"}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      {errors.teamSize && <p className="text-xs text-destructive mt-1">{errors.teamSize}</p>}
-                      <p className="text-[10px] text-muted-foreground mt-1">
-                        {minTeamSize > 1
-                          ? `Minimum ${minTeamSize} members required; maximum team size: ${maxTeamSize} members`
-                          : `Maximum team size: ${maxTeamSize} members`}
-                      </p>
+                      {isTeamEvent && (
+                        <>
+                          <div className="flex items-center gap-2 mb-2">
+                            <Users className="w-4 h-4 text-accent" />
+                            <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground">Team Size</span>
+                          </div>
+                          <div className="relative">
+                            <Users className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                            <select
+                              value={selectedTeamSize?.toString() ?? ""}
+                              onChange={(e) => {
+                                const nextValue = e.target.value ? Number(e.target.value) : null;
+                                setSelectedTeamSize(nextValue);
+                                setErrors((prev) => {
+                                  if (!prev.teamSize && !prev.teamMembers) return prev;
+                                  const nextErrors = { ...prev };
+                                  delete nextErrors.teamSize;
+                                  delete nextErrors.teamMembers;
+                                  return nextErrors;
+                                });
+                              }}
+                              className={selectClass}
+                            >
+                              <option value="" disabled>
+                                Select number of members
+                              </option>
+                              {Array.from({ length: maxTeamSize - minTeamSize + 1 }, (_, i) => i + minTeamSize).map((size) => (
+                                <option key={size} value={size}>
+                                  {size} {size === 1 ? "Member (Individual)" : "Members"}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          {errors.teamSize && <p className="text-xs text-destructive mt-1">{errors.teamSize}</p>}
+                          <p className="text-[10px] text-muted-foreground mt-1">
+                            {minTeamSize > 1
+                              ? `Minimum ${minTeamSize} members required; maximum team size: ${maxTeamSize} members`
+                              : `Maximum team size: ${maxTeamSize} members`}
+                          </p>
+                        </>
+                      )}
                       {isFashionShow && (
                         <div className="mt-4">
                           <label className={labelClass}>Team Category</label>
@@ -1539,6 +1561,32 @@ const Register = () => {
                               <option value="other">Other Team - ₹350 per head</option>
                             </select>
                           </div>
+                        </div>
+                      )}
+                      {isStarOfKapricious && (
+                        <div className="mt-4">
+                          <label className={labelClass}>Student Category</label>
+                          <div className="relative">
+                            <GraduationCap className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                            <select
+                              value={starOfKapriciousStudentType}
+                              onChange={(e) => {
+                                setStarOfKapriciousStudentType(e.target.value as StarOfKapriciousStudentType | "");
+                                setErrors((prev) => {
+                                  if (!prev.studentType) return prev;
+                                  const nextErrors = { ...prev };
+                                  delete nextErrors.studentType;
+                                  return nextErrors;
+                                });
+                              }}
+                              className={selectClass}
+                            >
+                              <option value="">Select student category</option>
+                              <option value="kmea">KMEA College Student - ₹150</option>
+                              <option value="other">Other College Student - ₹250</option>
+                            </select>
+                          </div>
+                          {errors.studentType && <p className="text-xs text-destructive mt-1">{errors.studentType}</p>}
                         </div>
                       )}
                     </motion.div>

@@ -1466,7 +1466,7 @@ export const culturalEvents: DepartmentEvent[] = [
     id: "star-of-kapricious",
     title: "Star of Kapricious",
     teamSize: 1,
-    registrationFee: "₹350",
+    registrationFee: "₹150 for KMEA College Students / ₹250 for Other College Students",
     prizePool: "₹15,000",
     details: "The ultimate talent showcase! Sing, dance, perform standup, play instruments, or showcase any unique talent. The stage is yours to shine.",
     prizes: ["🥇 ₹10,000", "🥈 ₹5,000"],
