@@ -27,6 +27,7 @@ const fadeUp = {
 };
 
 const CLOSED_EVENT_IDS = new Set([
+  "innovatex",
   "tech-escape-room",
   "sevens-football-tournament",
 ]);
