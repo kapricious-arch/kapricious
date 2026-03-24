@@ -36,7 +36,13 @@ const formatTeamMembers = (value: unknown) => {
   return value.map((member) => String(member)).join(", ");
 };
 
-const csvEscape = (value: unknown) => `"${String(value ?? "").replace(/"/g, '""')}"`;
+const escapeHtml = (value: unknown) =>
+  String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 
 const AdminDashboard = () => {
   const router = useRouter();
@@ -186,43 +192,259 @@ const AdminDashboard = () => {
     });
   };
 
-  const downloadCSV = (event: any, rows: any[]) => {
+  const downloadPDF = (event: any, rows: any[]) => {
     const eventTitle = event.title || "Event";
     const departmentCode = normalizeDepartmentCode((event.departments as any)?.code) || "GENERAL";
-    const headers = [
-      "Serial Number",
-      "Coupon Code",
-      "Name",
-      "Email",
-      "Phone Number",
-      "Team Member Names",
-      "Amount Paid",
-    ];
+    const printedAt = new Date().toLocaleString();
+    const totalAmount = rows.reduce((sum, row) => sum + (Number(row.amount_paid) || 0), 0);
+    const tableRows = rows
+      .map((r, index) => {
+        const registeredAt = r.created_at ? new Date(r.created_at).toLocaleString() : "-";
+        const amountPaid =
+          r.amount_paid != null && r.amount_paid !== ""
+            ? `INR ${Number(r.amount_paid).toLocaleString("en-IN")}`
+            : "-";
 
-    const csvRows = rows.map((r, index) => [
-      index + 1,
-      r.entry_code || "",
-      r.name,
-      r.email,
-      r.phone,
-      formatTeamMembers(r.team_members),
-      r.amount_paid ?? "",
-    ]);
+        return `
+          <tr>
+            <td>${index + 1}</td>
+            <td>${escapeHtml(r.entry_code || "-")}</td>
+            <td>${escapeHtml(r.name)}</td>
+            <td>${escapeHtml(r.email)}</td>
+            <td>${escapeHtml(r.phone)}</td>
+            <td>${escapeHtml(formatTeamMembers(r.team_members) || "-")}</td>
+            <td>${escapeHtml(amountPaid)}</td>
+            <td>${escapeHtml(registeredAt)}</td>
+          </tr>
+        `;
+      })
+      .join("");
 
-    const csv = [
-      [`Department: ${departmentCode}`, `Event: ${eventTitle}`],
-      [],
-      headers,
-      ...csvRows,
-    ].map((row) => row.map(csvEscape).join(",")).join("\n");
-    const blob = new Blob([csv], { type: "text/csv" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${eventTitle.toLowerCase().replace(/\s+/g, "_")}_registrations.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success("CSV downloaded!");
+    const iframe = document.createElement("iframe");
+    iframe.style.position = "fixed";
+    iframe.style.right = "0";
+    iframe.style.bottom = "0";
+    iframe.style.width = "0";
+    iframe.style.height = "0";
+    iframe.style.border = "0";
+    document.body.appendChild(iframe);
+
+    const iframeWindow = iframe.contentWindow;
+    const iframeDocument = iframe.contentDocument ?? iframeWindow?.document;
+
+    if (!iframeWindow || !iframeDocument) {
+      document.body.removeChild(iframe);
+      toast.error("Unable to prepare the PDF preview. Please try again.");
+      return;
+    }
+
+    iframeDocument.open();
+    iframeDocument.write(`
+      <!DOCTYPE html>
+      <html lang="en">
+        <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>${escapeHtml(eventTitle)} Registrations</title>
+          <style>
+            :root {
+              color-scheme: light;
+              --ink: #0f172a;
+              --muted: #475569;
+              --line: #cbd5e1;
+              --soft: #e2e8f0;
+              --panel: #f8fafc;
+              --accent: #0f766e;
+            }
+
+            * {
+              box-sizing: border-box;
+            }
+
+            body {
+              margin: 0;
+              padding: 32px;
+              font-family: "Segoe UI", Arial, sans-serif;
+              color: var(--ink);
+              background: white;
+            }
+
+            .sheet {
+              width: 100%;
+            }
+
+            .hero {
+              border: 1px solid var(--soft);
+              background: linear-gradient(135deg, #ecfeff 0%, #f8fafc 55%, #f0fdfa 100%);
+              border-radius: 20px;
+              padding: 24px 28px;
+              margin-bottom: 20px;
+            }
+
+            .eyebrow {
+              margin: 0 0 8px;
+              font-size: 11px;
+              letter-spacing: 0.18em;
+              text-transform: uppercase;
+              color: var(--accent);
+              font-weight: 700;
+            }
+
+            h1 {
+              margin: 0;
+              font-size: 28px;
+              line-height: 1.15;
+            }
+
+            .subtext {
+              margin: 8px 0 0;
+              color: var(--muted);
+              font-size: 14px;
+            }
+
+            .stats {
+              display: grid;
+              grid-template-columns: repeat(3, minmax(0, 1fr));
+              gap: 12px;
+              margin: 18px 0 0;
+            }
+
+            .stat {
+              border: 1px solid var(--soft);
+              border-radius: 14px;
+              background: rgba(255, 255, 255, 0.92);
+              padding: 14px 16px;
+            }
+
+            .stat-label {
+              margin: 0 0 6px;
+              color: var(--muted);
+              text-transform: uppercase;
+              font-size: 10px;
+              letter-spacing: 0.12em;
+              font-weight: 700;
+            }
+
+            .stat-value {
+              margin: 0;
+              font-size: 22px;
+              font-weight: 700;
+            }
+
+            table {
+              width: 100%;
+              border-collapse: collapse;
+              table-layout: fixed;
+            }
+
+            thead th {
+              background: var(--panel);
+              color: var(--muted);
+              font-size: 11px;
+              text-transform: uppercase;
+              letter-spacing: 0.08em;
+              padding: 12px 10px;
+              border-bottom: 1px solid var(--line);
+              border-top: 1px solid var(--line);
+              text-align: left;
+            }
+
+            tbody td {
+              font-size: 12px;
+              padding: 10px;
+              border-bottom: 1px solid var(--soft);
+              vertical-align: top;
+              word-break: break-word;
+            }
+
+            tbody tr:nth-child(even) {
+              background: #fcfcfd;
+            }
+
+            @page {
+              size: A4 landscape;
+              margin: 12mm;
+            }
+
+            @media print {
+              body {
+                padding: 0;
+              }
+
+              .hero {
+                break-inside: avoid;
+              }
+
+              tr, td, th {
+                break-inside: avoid;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <main class="sheet">
+            <section class="hero">
+              <p class="eyebrow">Kapricious Registrations</p>
+              <h1>${escapeHtml(eventTitle)}</h1>
+              <p class="subtext">Department: ${escapeHtml(departmentCode)} | Exported: ${escapeHtml(printedAt)}</p>
+              <div class="stats">
+                <article class="stat">
+                  <p class="stat-label">Total Registrations</p>
+                  <p class="stat-value">${rows.length}</p>
+                </article>
+                <article class="stat">
+                  <p class="stat-label">Collected Amount</p>
+                  <p class="stat-value">INR ${escapeHtml(totalAmount.toLocaleString("en-IN"))}</p>
+                </article>
+                <article class="stat">
+                  <p class="stat-label">Checked In</p>
+                  <p class="stat-value">${rows.filter((row) => row.checked_in).length}</p>
+                </article>
+              </div>
+            </section>
+
+            <table>
+              <thead>
+                <tr>
+                  <th style="width: 6%">S.No</th>
+                  <th style="width: 12%">Coupon Code</th>
+                  <th style="width: 16%">Name</th>
+                  <th style="width: 20%">Email</th>
+                  <th style="width: 11%">Phone</th>
+                  <th style="width: 19%">Team Members</th>
+                  <th style="width: 8%">Amount Paid</th>
+                  <th style="width: 8%">Registered</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${tableRows || '<tr><td colspan="8">No registrations found.</td></tr>'}
+              </tbody>
+            </table>
+          </main>
+        </body>
+      </html>
+    `);
+    let hasPrinted = false;
+    const printFromFrame = () => {
+      if (hasPrinted) return;
+      hasPrinted = true;
+      iframeWindow.focus();
+      iframeWindow.print();
+      window.setTimeout(() => {
+        if (document.body.contains(iframe)) {
+          document.body.removeChild(iframe);
+        }
+      }, 1000);
+    };
+
+    iframe.onload = printFromFrame;
+    iframeDocument.close();
+
+    window.setTimeout(() => {
+      printFromFrame();
+    }, 250);
+
+    toast.success("Print preview opened. Choose 'Save as PDF' to download.");
   };
 
   const handleLogout = async () => {
@@ -319,10 +541,10 @@ const AdminDashboard = () => {
                   <div className="flex items-center gap-3">
                     <button
                       type="button"
-                      onClick={() => downloadCSV(event, eventRegs)}
+                      onClick={() => downloadPDF(event, eventRegs)}
                       className="flex items-center gap-1.5 rounded-lg bg-primary/10 border border-primary/30 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/20 transition-colors"
                     >
-                      <Download className="w-3 h-3" /> Download CSV
+                      <Download className="w-3 h-3" /> Export PDF
                     </button>
                     <button
                       type="button"
