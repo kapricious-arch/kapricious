@@ -103,11 +103,11 @@ const AdminEventSummary = () => {
       current.registrationCount += 1;
       if (registration.payment_status === "verified") {
         current.verifiedCount += 1;
+        current.totalAmount += Number(registration.amount_paid || 0);
       }
       if (registration.payment_status === "pending") {
         current.pendingCount += 1;
       }
-      current.totalAmount += Number(registration.amount_paid || 0);
     });
 
     return Array.from(grouped.values()).filter((row) => row.registrationCount > 0);
