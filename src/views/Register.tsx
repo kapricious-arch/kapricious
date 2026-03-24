@@ -1791,9 +1791,14 @@ const Register = () => {
                       <span>256-bit SSL Encrypted</span>
                     </div>
                     {payableAmountInPaise > 0 && (
-                      <p className="mt-3 text-xs text-muted-foreground">
-                        Clicking the button below will open Razorpay checkout.
-                      </p>
+                      <div className="mt-3 space-y-2">
+                        <p className="text-xs text-muted-foreground">
+                          Clicking the button below will open Razorpay checkout.
+                        </p>
+                        <p className="text-xs font-medium text-foreground">
+                          After payment, please wait on this screen while we process your coupon and confirm your registration. This may take a few seconds.
+                        </p>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -1810,7 +1815,7 @@ const Register = () => {
                     {mutation.isPending || paymentLoading ? (
                       <span className="flex items-center gap-2">
                         <span className="w-4 h-4 border-2 border-background/30 border-t-background rounded-full animate-spin" />
-                        {paymentLoading ? "Processing payment..." : "Registering..."}
+                        {paymentLoading ? "Processing payment and coupon..." : "Registering..."}
                       </span>
                     ) : (
                       <>
@@ -1819,6 +1824,11 @@ const Register = () => {
                       </>
                     )}
                   </motion.button>
+                  {paymentLoading && (
+                    <p className="mt-3 text-center text-xs text-muted-foreground">
+                      Payment received. Please wait while we process your coupon and confirm your registration.
+                    </p>
+                  )}
                 </div>
               </motion.form>
             )}
