@@ -27,6 +27,7 @@ const fadeUp = {
 };
 
 const CLOSED_EVENT_IDS = new Set([
+  "hackathon",
   "tech-escape-room",
   "sevens-football-tournament",
 ]);
@@ -277,45 +278,49 @@ const EventDetail = () => {
               custom={0}
               initial="hidden"
               animate="visible"
-              className="bg-foreground text-background rounded-large p-8 sticky top-28"
+              className={`sticky top-28 rounded-large p-8 ${
+                isRegistrationClosed
+                  ? "border border-border bg-[#f3f0ec] text-black"
+                  : "bg-foreground text-background"
+              }`}
             >
-              <h3 className="font-display text-lg font-bold mb-6">
+              <h3 className={`font-display font-bold mb-6 ${isRegistrationClosed ? "text-lg uppercase tracking-tight text-black" : "text-lg"}`}>
                 {isRegistrationClosed ? "Registrations Closed" : "Register Now"}
               </h3>
 
               <div className="space-y-4 mb-6">
-                <div className="flex items-center justify-between pb-4 border-b border-background/20">
+                <div className={`flex items-center justify-between pb-4 ${isRegistrationClosed ? "border-b border-black/15" : "border-b border-background/20"}`}>
                   <div className="flex items-center gap-2">
-                    <CreditCard className="w-4 h-4 opacity-60" />
-                    <span className="text-sm opacity-80">Registration Fee</span>
+                    <CreditCard className={`w-4 h-4 ${isRegistrationClosed ? "text-black/50" : "opacity-60"}`} />
+                    <span className={`text-sm ${isRegistrationClosed ? "text-black/65" : "opacity-80"}`}>Registration Fee</span>
                   </div>
-                  <span className="font-bold">{event.registrationFee}</span>
+                  <span className={isRegistrationClosed ? "font-bold text-black" : "font-bold"}>{event.registrationFee}</span>
                 </div>
-                <div className="flex items-center justify-between pb-4 border-b border-background/20">
+                <div className={`flex items-center justify-between pb-4 ${isRegistrationClosed ? "border-b border-black/15" : "border-b border-background/20"}`}>
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 opacity-60" />
-                    <span className="text-sm opacity-80">Venue</span>
+                    <MapPin className={`w-4 h-4 ${isRegistrationClosed ? "text-black/50" : "opacity-60"}`} />
+                    <span className={`text-sm ${isRegistrationClosed ? "text-black/65" : "opacity-80"}`}>Venue</span>
                   </div>
-                  <span className="text-sm font-medium text-right max-w-[150px]">{event.venue}</span>
+                  <span className={`text-sm font-medium text-right max-w-[150px] ${isRegistrationClosed ? "text-black" : ""}`}>{event.venue}</span>
                 </div>
-                <div className="flex items-center justify-between pb-4 border-b border-background/20">
+                <div className={`flex items-center justify-between pb-4 ${isRegistrationClosed ? "border-b border-black/15" : "border-b border-background/20"}`}>
                   <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 opacity-60" />
-                    <span className="text-sm opacity-80">Type</span>
+                    <Users className={`w-4 h-4 ${isRegistrationClosed ? "text-black/50" : "opacity-60"}`} />
+                    <span className={`text-sm ${isRegistrationClosed ? "text-black/65" : "opacity-80"}`}>Type</span>
                   </div>
-                  <span className="font-medium capitalize">{event.type}</span>
+                  <span className={`font-medium capitalize ${isRegistrationClosed ? "text-black" : ""}`}>{event.type}</span>
                 </div>
               </div>
 
               {isRegistrationClosed ? (
                 <div className="space-y-3">
-                  <div className="rounded-2xl border border-background/20 bg-background/10 px-4 py-3">
-                    <p className="text-sm font-bold">Registrations are closed for this event.</p>
-                    <p className="mt-1 text-xs opacity-80">This event is already over. Please browse another event.</p>
+                  <div className="rounded-2xl border border-black/15 bg-black/5 px-4 py-4">
+                    <p className="text-sm font-bold text-black">Registrations are closed for this event.</p>
+                    <p className="mt-1 text-xs text-black/65">This event is already over. Please browse another event.</p>
                   </div>
                   <Link
                     href="/events"
-                    className="w-full flex items-center justify-center gap-2 bg-background text-foreground px-6 py-4 rounded-2xl font-bold hover:opacity-90 transition-all group"
+                    className="w-full flex items-center justify-center gap-2 rounded-2xl bg-black px-6 py-4 font-bold text-white transition-all hover:opacity-90 group"
                   >
                     Browse Other Events
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

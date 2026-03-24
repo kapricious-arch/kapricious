@@ -15,6 +15,7 @@ import { flagshipEvents, getEventById, mainEvents, managerialEvents, sportsEvent
 const FLAGSHIP_DEPT_ID = "flagship";
 const SPORTS_DEPT_ID = "sports";
 const CLOSED_EVENT_IDS = new Set([
+  "hackathon",
   "tech-escape-room",
   "sevens-football-tournament",
 ]);
