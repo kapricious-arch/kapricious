@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,6 +13,9 @@ import { flagshipEvents, getEventById, mainEvents, managerialEvents, sportsEvent
 
 const FLAGSHIP_DEPT_ID = "flagship";
 const SPORTS_DEPT_ID = "sports";
+const CLOSED_EVENT_IDS = new Set(["tech-escape-room"]);
+const CLOSED_EVENT_MESSAGE =
+  "Slots are filled for Realm Of Secrets. Please browse another event.";
 const DB_EVENT_TITLE_ALIASES: Record<string, string[]> = {
   "fashion-show": ["Fashion Show"],
   "group-dance": ["Group Dance"],
@@ -553,6 +557,7 @@ const Register = () => {
   };
 
   const selectedEventDetails = getSelectedEventDetails();
+  const isSelectedEventClosed = CLOSED_EVENT_IDS.has(selectedEvent);
   const isCapacityLimitedEvent = LIMITED_EVENT_IDS.has(selectedEvent);
   const isFashionShow = selectedEvent === "fashion-show";
   const isStarOfKapricious = selectedEvent === "star-of-kapricious";
@@ -750,6 +755,10 @@ const Register = () => {
       toast.error("Please select a category and event.");
       return;
     }
+    if (isSelectedEventClosed) {
+      toast.error(CLOSED_EVENT_MESSAGE);
+      return;
+    }
     setSlotCheckLoading(true);
     try {
       const { dbEvent, dbEventId } = getSelectedDbEvent();
@@ -824,6 +833,10 @@ const Register = () => {
 
   const mutation = useMutation({
     mutationFn: async () => {
+      if (isSelectedEventClosed) {
+        throw new Error(CLOSED_EVENT_MESSAGE);
+      }
+
       const teamErrors = getTeamValidationErrors();
       if (Object.keys(teamErrors).length > 0) {
         throw new Error(teamErrors.teamMembers ?? teamErrors.teamSize ?? "Please complete the team details.");
@@ -914,6 +927,10 @@ const Register = () => {
   });
 
   const createOrRefreshPendingRegistration = async () => {
+    if (isSelectedEventClosed) {
+      throw new Error(CLOSED_EVENT_MESSAGE);
+    }
+
     const teamErrors = getTeamValidationErrors();
     if (Object.keys(teamErrors).length > 0) {
       throw new Error(teamErrors.teamMembers ?? teamErrors.teamSize ?? "Please complete the team details.");
@@ -1072,6 +1089,11 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (mutation.isPending || paymentLoading) return;
+
+    if (isSelectedEventClosed) {
+      toast.error(CLOSED_EVENT_MESSAGE);
+      return;
+    }
 
     const teamErrors = getTeamValidationErrors();
     if (Object.keys(teamErrors).length > 0) {
@@ -1499,6 +1521,32 @@ const Register = () => {
                     </motion.div>
                   )}
 
+                  {isSelectedEventClosed && selectedEventDetails && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4"
+                    >
+                      <div className="flex items-start gap-3">
+                        <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-300" />
+                        <div className="min-w-0">
+                          <p className="text-sm font-bold text-foreground">Registrations Closed</p>
+                          <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                            Slots are filled for <span className="font-bold text-foreground">{selectedEventDetails.title}</span>.
+                            Please browse another event.
+                          </p>
+                          <Link
+                            href="/events"
+                            className="mt-3 inline-flex items-center gap-2 rounded-full border border-amber-400/30 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em] text-amber-200 transition-opacity hover:opacity-80"
+                          >
+                            Browse Events
+                            <ArrowRight className="h-3 w-3" />
+                          </Link>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
                   {/* Team Size Selection */}
                   {selectedEvent && (isTeamEvent || isStarOfKapricious) && (
                     <motion.div
@@ -1696,7 +1744,7 @@ const Register = () => {
                 <div className="p-6 md:p-8">
                   <motion.button
                     type="button"
-                    disabled={slotCheckLoading || (isTeamEvent && selectedTeamSize === null)}
+                    disabled={slotCheckLoading || isSelectedEventClosed || (isTeamEvent && selectedTeamSize === null)}
                     onClick={handleProceedToPayment}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
@@ -1709,7 +1757,11 @@ const Register = () => {
                       </span>
                     ) : (
                       <>
-                        {isCapacityLimitedEvent ? "Check Availability & Proceed" : "Proceed to Payment"}
+                        {isSelectedEventClosed
+                          ? "Registrations Closed"
+                          : isCapacityLimitedEvent
+                            ? "Check Availability & Proceed"
+                            : "Proceed to Payment"}
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </>
                     )}
