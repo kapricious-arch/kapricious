@@ -29,7 +29,6 @@ const fadeUp = {
 const CLOSED_EVENT_IDS = new Set([
   "tech-escape-room",
   "sevens-football-tournament",
-  "kabaddi-tournament",
 ]);
 
 const getCoordinatorContacts = (event: DepartmentEvent): CoordinatorContact[] => {

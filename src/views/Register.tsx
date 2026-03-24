@@ -16,7 +16,6 @@ const SPORTS_DEPT_ID = "sports";
 const CLOSED_EVENT_IDS = new Set([
   "tech-escape-room",
   "sevens-football-tournament",
-  "kabaddi-tournament",
 ]);
 const CLOSED_EVENT_MESSAGE =
   "Registrations are closed for this event because it is already over. Please browse another event.";
@@ -52,7 +51,6 @@ const MIN_TEAM_SIZE_BY_EVENT: Record<string, number> = {
   "fashion-show": 8,
   "group-dance": 8,
   hackathon: 2,
-  "kabaddi-tournament": 7,
   "sevens-football-tournament": 7,
   "tech-escape-room": 2,
 };
