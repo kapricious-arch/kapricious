@@ -15,7 +15,6 @@ import { flagshipEvents, getEventById, mainEvents, managerialEvents, sportsEvent
 const FLAGSHIP_DEPT_ID = "flagship";
 const SPORTS_DEPT_ID = "sports";
 const CLOSED_EVENT_IDS = new Set([
-  "hackathon",
   "tech-escape-room",
   "sevens-football-tournament",
 ]);
@@ -42,12 +41,13 @@ const DB_EVENT_TITLE_ALIASES: Record<string, string[]> = {
   "hazard-hunt": ["Hazard Hunt"],
   "gear-up-challenge": ["PPE Race"],
 };
-const LIMITED_EVENT_IDS = new Set(["bug-bounty", "build-a-pc", "hackathon", "tech-escape-room", "code-catastrophe"]);
+const LIMITED_EVENT_IDS = new Set(["bug-bounty", "build-a-pc", "hackathon", "tech-escape-room", "code-catastrophe", "prompt-wars"]);
 const DEFAULT_SLOT_LIMIT_BY_EVENT: Record<string, number> = {
-  "bug-bounty": 15,
+  "bug-bounty": 30,
   "build-a-pc": 10,
   "code-catastrophe": 10,
-  hackathon: 10,
+  hackathon: 15,
+  "prompt-wars": 15,
   "tech-escape-room": 15,
 };
 const MIN_TEAM_SIZE_BY_EVENT: Record<string, number> = {
@@ -138,6 +138,10 @@ const parseFeeToRupees = (fee: string, teamSize: number) => {
 };
 
 const getDefaultSlotLimit = (eventId: string) => DEFAULT_SLOT_LIMIT_BY_EVENT[eventId] ?? 10;
+const getEffectiveSlotLimit = (eventId: string, dbLimit: number | null | undefined) => {
+  const fallbackLimit = getDefaultSlotLimit(eventId);
+  return typeof dbLimit === "number" ? Math.max(dbLimit, fallbackLimit) : fallbackLimit;
+};
 
 const normalizeEventLookupValue = (value: string) =>
   value
@@ -802,7 +806,7 @@ const Register = () => {
 
         if (countResult.error) throw countResult.error;
 
-        const max = eventResult.data?.max_participants ?? getDefaultSlotLimit(selectedEvent);
+        const max = getEffectiveSlotLimit(selectedEvent, eventResult.data?.max_participants);
         const current = countResult.count ?? 0;
         const remaining = max - current;
 
@@ -862,7 +866,7 @@ const Register = () => {
           .eq("id", dbEventId)
           .single();
 
-        const maxParticipants = eventInfo?.max_participants ?? getDefaultSlotLimit(selectedEvent);
+        const maxParticipants = getEffectiveSlotLimit(selectedEvent, eventInfo?.max_participants);
 
         if (regCount !== null && regCount >= maxParticipants) {
           throw new Error(`Registrations for this event are full (${maxParticipants}/${maxParticipants}). Please try another event.`);

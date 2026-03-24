@@ -27,7 +27,6 @@ const fadeUp = {
 };
 
 const CLOSED_EVENT_IDS = new Set([
-  "hackathon",
   "tech-escape-room",
   "sevens-football-tournament",
 ]);
