@@ -186,40 +186,35 @@ const AdminDashboard = () => {
     });
   };
 
-  const downloadCSV = (eventTitle: string, rows: any[]) => {
+  const downloadCSV = (event: any, rows: any[]) => {
+    const eventTitle = event.title || "Event";
+    const departmentCode = normalizeDepartmentCode((event.departments as any)?.code) || "GENERAL";
     const headers = [
-      "Name",
-      "Event",
-      "Email",
-      "Phone",
-      "College",
-      "Team Size",
-      "Team Members",
+      "Serial Number",
       "Coupon Code",
+      "Name",
+      "Email",
+      "Phone Number",
+      "Team Member Names",
       "Amount Paid",
-      "Transaction ID",
-      "Payment Status",
-      "Checked In",
-      "Registration Time",
     ];
 
-    const csvRows = rows.map((r) => [
+    const csvRows = rows.map((r, index) => [
+      index + 1,
+      r.entry_code || "",
       r.name,
-      (r.events as any)?.title || eventTitle,
       r.email,
       r.phone,
-      r.college,
-      r.team_size ?? 1,
       formatTeamMembers(r.team_members),
-      r.entry_code || "",
       r.amount_paid ?? "",
-      r.transaction_id || "",
-      r.payment_status || "pending",
-      r.checked_in ? "Yes" : "No",
-      new Date(r.created_at).toLocaleString(),
     ]);
 
-    const csv = [headers, ...csvRows].map((row) => row.map(csvEscape).join(",")).join("\n");
+    const csv = [
+      [`Department: ${departmentCode}`, `Event: ${eventTitle}`],
+      [],
+      headers,
+      ...csvRows,
+    ].map((row) => row.map(csvEscape).join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -324,7 +319,7 @@ const AdminDashboard = () => {
                   <div className="flex items-center gap-3">
                     <button
                       type="button"
-                      onClick={() => downloadCSV(event.title, eventRegs)}
+                      onClick={() => downloadCSV(event, eventRegs)}
                       className="flex items-center gap-1.5 rounded-lg bg-primary/10 border border-primary/30 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/20 transition-colors"
                     >
                       <Download className="w-3 h-3" /> Download CSV
