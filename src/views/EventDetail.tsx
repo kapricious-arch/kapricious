@@ -26,7 +26,11 @@ const fadeUp = {
   visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.5 } }),
 };
 
-const CLOSED_EVENT_IDS = new Set(["tech-escape-room"]);
+const CLOSED_EVENT_IDS = new Set([
+  "tech-escape-room",
+  "sevens-football-tournament",
+  "kabaddi-tournament",
+]);
 
 const getCoordinatorContacts = (event: DepartmentEvent): CoordinatorContact[] => {
   if (event.coordinators?.length) {
@@ -307,8 +311,8 @@ const EventDetail = () => {
               {isRegistrationClosed ? (
                 <div className="space-y-3">
                   <div className="rounded-2xl border border-background/20 bg-background/10 px-4 py-3">
-                    <p className="text-sm font-bold">Slots filled for Realm Of Secrets.</p>
-                    <p className="mt-1 text-xs opacity-80">Please browse another event.</p>
+                    <p className="text-sm font-bold">Registrations are closed for this event.</p>
+                    <p className="mt-1 text-xs opacity-80">This event is already over. Please browse another event.</p>
                   </div>
                   <Link
                     href="/events"

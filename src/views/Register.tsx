@@ -13,9 +13,13 @@ import { flagshipEvents, getEventById, mainEvents, managerialEvents, sportsEvent
 
 const FLAGSHIP_DEPT_ID = "flagship";
 const SPORTS_DEPT_ID = "sports";
-const CLOSED_EVENT_IDS = new Set(["tech-escape-room"]);
+const CLOSED_EVENT_IDS = new Set([
+  "tech-escape-room",
+  "sevens-football-tournament",
+  "kabaddi-tournament",
+]);
 const CLOSED_EVENT_MESSAGE =
-  "Slots are filled for Realm Of Secrets. Please browse another event.";
+  "Registrations are closed for this event because it is already over. Please browse another event.";
 const DB_EVENT_TITLE_ALIASES: Record<string, string[]> = {
   "fashion-show": ["Fashion Show"],
   "group-dance": ["Group Dance"],
@@ -1532,8 +1536,8 @@ const Register = () => {
                         <div className="min-w-0">
                           <p className="text-sm font-bold text-foreground">Registrations Closed</p>
                           <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                            Slots are filled for <span className="font-bold text-foreground">{selectedEventDetails.title}</span>.
-                            Please browse another event.
+                            Registrations are closed for <span className="font-bold text-foreground">{selectedEventDetails.title}</span>
+                            {" "}because the event is already over. Please browse another event.
                           </p>
                           <Link
                             href="/events"
