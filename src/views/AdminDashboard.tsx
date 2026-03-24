@@ -197,6 +197,7 @@ const AdminDashboard = () => {
     const departmentCode = normalizeDepartmentCode((event.departments as any)?.code) || "GENERAL";
     const printedAt = new Date().toLocaleString();
     const totalAmount = rows.reduce((sum, row) => sum + (Number(row.amount_paid) || 0), 0);
+    const checkedInCount = rows.filter((row) => row.checked_in).length;
     const tableRows = rows
       .map((r, index) => {
         const registeredAt = r.created_at ? new Date(r.created_at).toLocaleString() : "-";
@@ -208,7 +209,7 @@ const AdminDashboard = () => {
         return `
           <tr>
             <td>${index + 1}</td>
-            <td>${escapeHtml(r.entry_code || "-")}</td>
+            <td class="code">${escapeHtml(r.entry_code || "-")}</td>
             <td>${escapeHtml(r.name)}</td>
             <td>${escapeHtml(r.email)}</td>
             <td>${escapeHtml(r.phone)}</td>
@@ -331,6 +332,11 @@ const AdminDashboard = () => {
               font-weight: 700;
             }
 
+            .stat-value.is-empty {
+              color: transparent;
+              user-select: none;
+            }
+
             table {
               width: 100%;
               border-collapse: collapse;
@@ -361,6 +367,23 @@ const AdminDashboard = () => {
               background: #fcfcfd;
             }
 
+            .code {
+              font-family: "Consolas", "Courier New", monospace;
+              font-style: normal;
+              letter-spacing: 0.02em;
+              white-space: nowrap;
+            }
+
+            .no-data {
+              text-align: center;
+              color: var(--muted);
+              padding: 28px 10px;
+            }
+
+            .spacer {
+              min-height: 28vh;
+            }
+
             @page {
               size: A4 landscape;
               margin: 12mm;
@@ -369,10 +392,20 @@ const AdminDashboard = () => {
             @media print {
               body {
                 padding: 0;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
               }
 
               .hero {
                 break-inside: avoid;
+              }
+
+              thead {
+                display: table-header-group;
+              }
+
+              tfoot {
+                display: table-footer-group;
               }
 
               tr, td, th {
@@ -398,7 +431,7 @@ const AdminDashboard = () => {
                 </article>
                 <article class="stat">
                   <p class="stat-label">Checked In</p>
-                  <p class="stat-value">${rows.filter((row) => row.checked_in).length}</p>
+                  <p class="stat-value ${checkedInCount === 0 ? "is-empty" : ""}">${checkedInCount === 0 ? "&nbsp;" : checkedInCount}</p>
                 </article>
               </div>
             </section>
@@ -407,7 +440,7 @@ const AdminDashboard = () => {
               <thead>
                 <tr>
                   <th style="width: 6%">S.No</th>
-                  <th style="width: 12%">Coupon Code</th>
+                  <th style="width: 12%">Registration ID</th>
                   <th style="width: 16%">Name</th>
                   <th style="width: 20%">Email</th>
                   <th style="width: 11%">Phone</th>
@@ -417,9 +450,10 @@ const AdminDashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                ${tableRows || '<tr><td colspan="8">No registrations found.</td></tr>'}
+                ${tableRows || '<tr><td colspan="8" class="no-data">No registrations found.</td></tr>'}
               </tbody>
             </table>
+            ${rows.length > 0 && rows.length < 8 ? '<div class="spacer"></div>' : ""}
           </main>
         </body>
       </html>
