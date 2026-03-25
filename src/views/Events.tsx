@@ -35,7 +35,6 @@ const CLOSED_EVENT_IDS = new Set([
   "hackathon",
   "innovatex",
   "sevens-football-tournament",
-  "tech-escape-room",
 ]);
 
 const departmentEvents = [
