@@ -200,7 +200,7 @@ const AdminDashboard = () => {
     const checkedInCount = rows.filter((row) => row.checked_in).length;
     const tableRows = rows
       .map((r, index) => {
-        const registeredAt = r.created_at ? new Date(r.created_at).toLocaleString() : "-";
+        const collegeName = r.college?.trim() || "-";
         const amountPaid =
           r.amount_paid != null && r.amount_paid !== ""
             ? `INR ${Number(r.amount_paid).toLocaleString("en-IN")}`
@@ -215,7 +215,7 @@ const AdminDashboard = () => {
             <td>${escapeHtml(r.phone)}</td>
             <td>${escapeHtml(formatTeamMembers(r.team_members) || "-")}</td>
             <td>${escapeHtml(amountPaid)}</td>
-            <td>${escapeHtml(registeredAt)}</td>
+            <td>${escapeHtml(collegeName)}</td>
           </tr>
         `;
       })
@@ -446,7 +446,7 @@ const AdminDashboard = () => {
                   <th style="width: 11%">Phone</th>
                   <th style="width: 19%">Team Members</th>
                   <th style="width: 8%">Amount Paid</th>
-                  <th style="width: 8%">Registered</th>
+                  <th style="width: 8%">College</th>
                 </tr>
               </thead>
               <tbody>
