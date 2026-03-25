@@ -15,10 +15,13 @@ import { flagshipEvents, getEventById, mainEvents, managerialEvents, sportsEvent
 const FLAGSHIP_DEPT_ID = "flagship";
 const SPORTS_DEPT_ID = "sports";
 const CLOSED_EVENT_IDS = new Set([
+  "build-a-pc",
+  "hackathon",
   "innovatex",
-  "tech-escape-room",
   "sevens-football-tournament",
+  "tech-escape-room",
 ]);
+const HIDDEN_REGISTER_EVENT_IDS = new Set(["hackathon"]);
 const CLOSED_EVENT_MESSAGE =
   "Registrations are closed for this event because it is already over. Please browse another event.";
 const DB_EVENT_TITLE_ALIASES: Record<string, string[]> = {
@@ -141,7 +144,7 @@ const parseFeeToRupees = (fee: string, teamSize: number) => {
 const getDefaultSlotLimit = (eventId: string) => DEFAULT_SLOT_LIMIT_BY_EVENT[eventId] ?? 10;
 const getEffectiveSlotLimit = (eventId: string, dbLimit: number | null | undefined) => {
   const fallbackLimit = getDefaultSlotLimit(eventId);
-  return typeof dbLimit === "number" ? Math.max(dbLimit, fallbackLimit) : fallbackLimit;
+  return typeof dbLimit === "number" && dbLimit >= 0 ? dbLimit : fallbackLimit;
 };
 
 const normalizeEventLookupValue = (value: string) =>
@@ -523,29 +526,40 @@ const Register = () => {
   });
 
   const getEventsForDept = () => {
+    const filterHiddenEvents = <T extends { id: string; title: string }>(items: T[]) =>
+      items
+        .filter((event) => !HIDDEN_REGISTER_EVENT_IDS.has(event.id))
+        .map((event) => ({ id: event.id, title: event.title }));
+
     if (selectedDept === FLAGSHIP_DEPT_ID) {
       return flagshipEvents.map(e => ({ id: e.id, title: e.title, type: "flagship" }));
     }
     if (selectedDept === SPORTS_DEPT_ID) {
-      return sortDepartmentEventsByPrizePool(sportsEvents).map(e => ({ id: e.id, title: e.title }));
+      return filterHiddenEvents(sortDepartmentEventsByPrizePool(sportsEvents));
     }
     if (selectedDept && departments) {
       const dept = departments.find(d => d.id === selectedDept);
       const deptCode = normalizeDepartmentCode(dept?.code);
-      if (deptCode === "CULTURAL") return sortDepartmentEventsByPrizePool(mainEvents).map(e => ({ id: e.id, title: e.title }));
-      if (deptCode === "MANAGERIAL") return sortDepartmentEventsByPrizePool(managerialEvents).map(e => ({ id: e.id, title: e.title }));
-      if (deptCode === "CSE") return sortDepartmentEventsByPrizePool(cseEvents).map(e => ({ id: e.id, title: e.title }));
-      if (deptCode === "CE") return sortDepartmentEventsByPrizePool(ceEvents).map(e => ({ id: e.id, title: e.title }));
-      if (deptCode === "ME") return sortDepartmentEventsByPrizePool(meEvents).map(e => ({ id: e.id, title: e.title }));
-      if (deptCode === "EEE") return sortDepartmentEventsByPrizePool(eeeEvents).map(e => ({ id: e.id, title: e.title }));
-      if (deptCode === "RA") return sortDepartmentEventsByPrizePool(raEvents).map(e => ({ id: e.id, title: e.title }));
-      if (deptCode === "SFE") return sortDepartmentEventsByPrizePool(sfEvents).map(e => ({ id: e.id, title: e.title }));
-      if (deptCode === "ECE") return sortDepartmentEventsByPrizePool(eceEvents).map(e => ({ id: e.id, title: e.title }));
+      if (deptCode === "CULTURAL") return filterHiddenEvents(sortDepartmentEventsByPrizePool(mainEvents));
+      if (deptCode === "MANAGERIAL") return filterHiddenEvents(sortDepartmentEventsByPrizePool(managerialEvents));
+      if (deptCode === "CSE") return filterHiddenEvents(sortDepartmentEventsByPrizePool(cseEvents));
+      if (deptCode === "CE") return filterHiddenEvents(sortDepartmentEventsByPrizePool(ceEvents));
+      if (deptCode === "ME") return filterHiddenEvents(sortDepartmentEventsByPrizePool(meEvents));
+      if (deptCode === "EEE") return filterHiddenEvents(sortDepartmentEventsByPrizePool(eeeEvents));
+      if (deptCode === "RA") return filterHiddenEvents(sortDepartmentEventsByPrizePool(raEvents));
+      if (deptCode === "SFE") return filterHiddenEvents(sortDepartmentEventsByPrizePool(sfEvents));
+      if (deptCode === "ECE") return filterHiddenEvents(sortDepartmentEventsByPrizePool(eceEvents));
     }
     return [];
   };
 
   const events = getEventsForDept();
+
+  useEffect(() => {
+    if (selectedEvent && HIDDEN_REGISTER_EVENT_IDS.has(selectedEvent)) {
+      setSelectedEvent("");
+    }
+  }, [selectedEvent]);
 
   const getSelectedEventDetails = () => {
     if (selectedDept === FLAGSHIP_DEPT_ID) return getEventById(selectedEvent);

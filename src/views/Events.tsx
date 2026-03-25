@@ -30,6 +30,14 @@ const eventMedia: Record<string, { type: "video"; src: string }> = {
   },
 };
 
+const CLOSED_EVENT_IDS = new Set([
+  "build-a-pc",
+  "hackathon",
+  "innovatex",
+  "sevens-football-tournament",
+  "tech-escape-room",
+]);
+
 const departmentEvents = [
   { code: "CULTURAL", name: "Cultural Events", events: sortDepartmentEventsByPrizePool(mainEvents) },
   { code: "MANAGERIAL", name: "Managerial Events", events: sortDepartmentEventsByPrizePool(managerialEvents) },
@@ -70,6 +78,7 @@ const EventCard = memo(
     activeFilter !== "ALL"
       ? `/events/${event.id}?department=${activeFilter}`
       : `/events/${event.id}`;
+  const isRegistrationClosed = CLOSED_EVENT_IDS.has(event.id);
 
   return (
     <motion.div
@@ -116,6 +125,14 @@ const EventCard = memo(
             {event.type === "team" ? `Team (${event.teamSize} max)` : "Individual"}
           </span>
         </div>
+
+        {isRegistrationClosed ? (
+          <div className="absolute top-3 right-3 z-10">
+            <span className="px-3 py-1 rounded-full bg-amber-500/90 backdrop-blur-sm text-[10px] font-bold uppercase tracking-widest text-black">
+              Closed
+            </span>
+          </div>
+        ) : null}
       </div>
 
       <div className="p-6">
@@ -123,6 +140,15 @@ const EventCard = memo(
           {event.title}
         </h3>
         <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 mb-4">{event.details}</p>
+
+        {isRegistrationClosed ? (
+          <div className="mb-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-3">
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-amber-300">Registrations Closed</p>
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">
+              This event is closed. You can still open the event page to view the full description.
+            </p>
+          </div>
+        ) : null}
 
         <div className="flex items-center justify-between pt-4 border-t border-border">
           <div>

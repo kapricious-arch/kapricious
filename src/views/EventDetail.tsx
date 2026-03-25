@@ -27,9 +27,11 @@ const fadeUp = {
 };
 
 const CLOSED_EVENT_IDS = new Set([
+  "build-a-pc",
+  "hackathon",
   "innovatex",
-  "tech-escape-room",
   "sevens-football-tournament",
+  "tech-escape-room",
 ]);
 
 const getCoordinatorContacts = (event: DepartmentEvent): CoordinatorContact[] => {
@@ -175,6 +177,14 @@ const EventDetail = () => {
                 <Star className="w-5 h-5 text-accent" />
                 About This Event
               </h2>
+              {isRegistrationClosed ? (
+                <div className="mb-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-4">
+                  <p className="text-sm font-bold text-foreground">Registrations Closed</p>
+                  <p className="mt-1 text-sm leading-6 text-muted-foreground">
+                    Registrations are closed for {event.title} because the event is already over.
+                  </p>
+                </div>
+              ) : null}
               <p className="text-muted-foreground leading-relaxed">{event.details}</p>
             </motion.div>
 
