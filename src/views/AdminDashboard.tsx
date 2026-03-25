@@ -49,6 +49,7 @@ const AdminDashboard = () => {
   const queryClient = useQueryClient();
   const [expandedEvents, setExpandedEvents] = useState<Record<string, boolean>>({});
   const [sortConfig, setSortConfig] = useState<Record<string, { key: SortKey; dir: SortDir }>>({});
+  const [registrationQuery, setRegistrationQuery] = useState("");
 
   const [uploadEventId, setUploadEventId] = useState("");
   const [certFile, setCertFile] = useState<File | null>(null);
@@ -150,14 +151,33 @@ const AdminDashboard = () => {
 
   const groupedByEvent = useMemo(() => {
     if (!registrations || !events) return [];
+    const search = registrationQuery.trim().toLowerCase();
     const map = new Map<string, { event: any; registrations: any[] }>();
     events.forEach((ev) => map.set(ev.id, { event: ev, registrations: [] }));
     registrations.forEach((r) => {
       const group = map.get(r.event_id);
       if (group) group.registrations.push(r);
     });
-    return Array.from(map.values()).filter((g) => g.registrations.length > 0);
-  }, [registrations, events]);
+    const groups = Array.from(map.values()).filter((g) => g.registrations.length > 0);
+
+    if (!search) {
+      return groups;
+    }
+
+    const matchingGroups: typeof groups = [];
+    const nonMatchingGroups: typeof groups = [];
+
+    groups.forEach((group) => {
+      const eventTitle = String(group.event?.title || "").toLowerCase();
+      if (eventTitle.includes(search)) {
+        matchingGroups.push(group);
+      } else {
+        nonMatchingGroups.push(group);
+      }
+    });
+
+    return [...matchingGroups, ...nonMatchingGroups];
+  }, [registrations, events, registrationQuery]);
 
   const toggleEvent = (eventId: string) => {
     setExpandedEvents((prev) => ({ ...prev, [eventId]: !prev[eventId] }));
@@ -193,12 +213,13 @@ const AdminDashboard = () => {
   };
 
   const downloadPDF = (event: any, rows: any[]) => {
+    const verifiedRows = rows.filter((row) => row.payment_status === "verified");
     const eventTitle = event.title || "Event";
     const departmentCode = normalizeDepartmentCode((event.departments as any)?.code) || "GENERAL";
     const printedAt = new Date().toLocaleString();
-    const totalAmount = rows.reduce((sum, row) => sum + (Number(row.amount_paid) || 0), 0);
-    const checkedInCount = rows.filter((row) => row.checked_in).length;
-    const tableRows = rows
+    const totalAmount = verifiedRows.reduce((sum, row) => sum + (Number(row.amount_paid) || 0), 0);
+    const checkedInCount = verifiedRows.filter((row) => row.checked_in).length;
+    const tableRows = verifiedRows
       .map((r, index) => {
         const collegeName = r.college?.trim() || "-";
         const amountPaid =
@@ -419,11 +440,11 @@ const AdminDashboard = () => {
             <section class="hero">
               <p class="eyebrow">Kapricious Registrations</p>
               <h1>${escapeHtml(eventTitle)}</h1>
-              <p class="subtext">Department: ${escapeHtml(departmentCode)} | Exported: ${escapeHtml(printedAt)}</p>
+              <p class="subtext">Department: ${escapeHtml(departmentCode)} | Verified only | Exported: ${escapeHtml(printedAt)}</p>
               <div class="stats">
                 <article class="stat">
-                  <p class="stat-label">Total Registrations</p>
-                  <p class="stat-value">${rows.length}</p>
+                  <p class="stat-label">Verified Registrations</p>
+                  <p class="stat-value">${verifiedRows.length}</p>
                 </article>
                 <article class="stat">
                   <p class="stat-label">Collected Amount</p>
@@ -450,10 +471,10 @@ const AdminDashboard = () => {
                 </tr>
               </thead>
               <tbody>
-                ${tableRows || '<tr><td colspan="8" class="no-data">No registrations found.</td></tr>'}
+                ${tableRows || '<tr><td colspan="8" class="no-data">No verified registrations found.</td></tr>'}
               </tbody>
             </table>
-            ${rows.length > 0 && rows.length < 8 ? '<div class="spacer"></div>' : ""}
+            ${verifiedRows.length > 0 && verifiedRows.length < 8 ? '<div class="spacer"></div>' : ""}
           </main>
         </body>
       </html>
@@ -553,6 +574,19 @@ const AdminDashboard = () => {
               {registrations?.filter((r) => r.payment_status === "pending").length || 0}
             </p>
           </div>
+        </div>
+
+        <div className="mb-6 rounded-xl border border-border bg-card p-4">
+          <label className="block text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2">
+            Browse Registrations
+          </label>
+          <input
+            type="text"
+            value={registrationQuery}
+            onChange={(e) => setRegistrationQuery(e.target.value)}
+            placeholder="Search by event name to bring matching registrations to the top"
+            className="w-full rounded-lg bg-input border border-border px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+          />
         </div>
 
         <div className="space-y-4">
