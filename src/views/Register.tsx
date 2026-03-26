@@ -39,10 +39,10 @@ const DB_EVENT_TITLE_ALIASES: Record<string, string[]> = {
   "hazard-hunt": ["Hazard Hunt"],
   "gear-up-challenge": ["PPE Race"],
 };
-const LIMITED_EVENT_IDS = new Set(["bug-bounty", "build-a-pc", "hackathon", "tech-escape-room", "prompt-wars"]);
+const LIMITED_EVENT_IDS = new Set(["bug-bounty", "build-a-pc", "hackathon", "tech-escape-room"]);
 const DEFAULT_SLOT_LIMIT_BY_EVENT: Record<string, number> = {
   "bug-bounty": 30,
-  "build-a-pc": 10,
+  "build-a-pc": 15,
   "code-catastrophe": 10,
   hackathon: 15,
   "prompt-wars": 25,
