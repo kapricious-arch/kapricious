@@ -110,7 +110,7 @@ export const mainEvents: DepartmentEvent[] = [
     id: "spot-photography",
     title: "PIXORA - Spot Photography",
     teamSize: 1,
-    registrationFee: "₹100",
+    registrationFee: "₹50",
     prizePool: "₹3,000",
     details:
       "Registration starts at 10:00 AM on March 27, 2026. The event begins at 11:00 AM on March 27, 2026 and runs until 11:00 AM on March 28, 2026. PIXORA rewards creativity, technical quality, and how strongly your photograph reflects the given theme and the Kapricious fest spirit.",
