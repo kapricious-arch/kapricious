@@ -50,6 +50,7 @@ const AdminDashboard = () => {
   const [expandedEvents, setExpandedEvents] = useState<Record<string, boolean>>({});
   const [sortConfig, setSortConfig] = useState<Record<string, { key: SortKey; dir: SortDir }>>({});
   const [registrationQuery, setRegistrationQuery] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState("ALL");
 
   const [uploadEventId, setUploadEventId] = useState("");
   const [certFile, setCertFile] = useState<File | null>(null);
@@ -94,6 +95,23 @@ const AdminDashboard = () => {
       return data;
     },
   });
+
+  const departmentOptions = useMemo(() => {
+    if (!events) return [{ code: "ALL", name: "All Departments" }];
+
+    return [
+      { code: "ALL", name: "All Departments" },
+      ...Array.from(
+        new Map(
+          events.map((event) => {
+            const department = event.departments as { code?: string; name?: string } | null;
+            const code = normalizeDepartmentCode(department?.code) || "GENERAL";
+            return [code, { code, name: department?.name || "General" }];
+          }),
+        ).values(),
+      ).sort((a, b) => a.code.localeCompare(b.code)),
+    ];
+  }, [events]);
 
   const updatePaymentStatus = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: string }) => {
@@ -153,7 +171,13 @@ const AdminDashboard = () => {
     if (!registrations || !events) return [];
     const search = registrationQuery.trim().toLowerCase();
     const map = new Map<string, { event: any; registrations: any[] }>();
-    events.forEach((ev) => map.set(ev.id, { event: ev, registrations: [] }));
+    events
+      .filter((ev) => {
+        if (selectedDepartment === "ALL") return true;
+        const departmentCode = normalizeDepartmentCode((ev.departments as { code?: string } | null)?.code) || "GENERAL";
+        return departmentCode === selectedDepartment;
+      })
+      .forEach((ev) => map.set(ev.id, { event: ev, registrations: [] }));
     registrations.forEach((r) => {
       const group = map.get(r.event_id);
       if (group) group.registrations.push(r);
@@ -177,7 +201,7 @@ const AdminDashboard = () => {
     });
 
     return [...matchingGroups, ...nonMatchingGroups];
-  }, [registrations, events, registrationQuery]);
+  }, [registrations, events, registrationQuery, selectedDepartment]);
 
   const toggleEvent = (eventId: string) => {
     setExpandedEvents((prev) => ({ ...prev, [eventId]: !prev[eventId] }));
@@ -236,7 +260,7 @@ const AdminDashboard = () => {
             <td>${escapeHtml(r.phone)}</td>
             <td>${escapeHtml(formatTeamMembers(r.team_members) || "-")}</td>
             <td>${escapeHtml(amountPaid)}</td>
-            <td>${escapeHtml(collegeName)}</td>
+            <td class="college">${escapeHtml(collegeName)}</td>
           </tr>
         `;
       })
@@ -291,8 +315,13 @@ const AdminDashboard = () => {
               background: white;
             }
 
+            html, body {
+              width: 100%;
+            }
+
             .sheet {
               width: 100%;
+              max-width: none;
             }
 
             .hero {
@@ -370,7 +399,7 @@ const AdminDashboard = () => {
               font-size: 11px;
               text-transform: uppercase;
               letter-spacing: 0.08em;
-              padding: 12px 10px;
+              padding: 10px 8px;
               border-bottom: 1px solid var(--line);
               border-top: 1px solid var(--line);
               text-align: left;
@@ -378,7 +407,7 @@ const AdminDashboard = () => {
 
             tbody td {
               font-size: 12px;
-              padding: 10px;
+              padding: 8px 8px;
               border-bottom: 1px solid var(--soft);
               vertical-align: top;
               word-break: break-word;
@@ -395,26 +424,37 @@ const AdminDashboard = () => {
               white-space: nowrap;
             }
 
+            .college {
+              white-space: normal;
+              word-break: break-word;
+              overflow-wrap: anywhere;
+            }
+
             .no-data {
               text-align: center;
               color: var(--muted);
               padding: 28px 10px;
             }
 
-            .spacer {
-              min-height: 28vh;
-            }
-
             @page {
               size: A4 landscape;
-              margin: 12mm;
+              margin: 8mm;
             }
 
             @media print {
+              html, body {
+                width: 100%;
+                height: auto;
+              }
+
               body {
                 padding: 0;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+              }
+
+              .sheet {
+                width: 100%;
               }
 
               .hero {
@@ -460,21 +500,20 @@ const AdminDashboard = () => {
             <table>
               <thead>
                 <tr>
-                  <th style="width: 6%">S.No</th>
-                  <th style="width: 12%">Registration ID</th>
+                  <th style="width: 5%">S.No</th>
+                  <th style="width: 9%">Registration ID</th>
                   <th style="width: 16%">Name</th>
-                  <th style="width: 20%">Email</th>
-                  <th style="width: 11%">Phone</th>
+                  <th style="width: 17%">Email</th>
+                  <th style="width: 9%">Phone</th>
                   <th style="width: 19%">Team Members</th>
                   <th style="width: 8%">Amount Paid</th>
-                  <th style="width: 8%">College</th>
+                  <th style="width: 17%">College</th>
                 </tr>
               </thead>
               <tbody>
                 ${tableRows || '<tr><td colspan="8" class="no-data">No verified registrations found.</td></tr>'}
               </tbody>
             </table>
-            ${verifiedRows.length > 0 && verifiedRows.length < 8 ? '<div class="spacer"></div>' : ""}
           </main>
         </body>
       </html>
@@ -580,13 +619,26 @@ const AdminDashboard = () => {
           <label className="block text-xs font-medium uppercase tracking-wider text-muted-foreground mb-2">
             Browse Registrations
           </label>
-          <input
-            type="text"
-            value={registrationQuery}
-            onChange={(e) => setRegistrationQuery(e.target.value)}
-            placeholder="Search by event name to bring matching registrations to the top"
-            className="w-full rounded-lg bg-input border border-border px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-          />
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-[220px_minmax(0,1fr)]">
+            <select
+              value={selectedDepartment}
+              onChange={(e) => setSelectedDepartment(e.target.value)}
+              className="rounded-lg bg-input border border-border px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+            >
+              {departmentOptions.map((department) => (
+                <option key={department.code} value={department.code}>
+                  {department.code === "ALL" ? department.name : `${department.code} - ${department.name}`}
+                </option>
+              ))}
+            </select>
+            <input
+              type="text"
+              value={registrationQuery}
+              onChange={(e) => setRegistrationQuery(e.target.value)}
+              placeholder="Search by event name to bring matching registrations to the top"
+              className="w-full rounded-lg bg-input border border-border px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
+            />
+          </div>
         </div>
 
         <div className="space-y-4">
@@ -718,7 +770,7 @@ const AdminDashboard = () => {
 
           {groupedByEvent.length === 0 && (
             <div className="rounded-xl border border-border bg-card p-12 text-center text-muted-foreground">
-              No events with registrations found.
+              No events with registrations found for the current filters.
             </div>
           )}
         </div>

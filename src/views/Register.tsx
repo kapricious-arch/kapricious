@@ -50,7 +50,7 @@ const DEFAULT_SLOT_LIMIT_BY_EVENT: Record<string, number> = {
   "build-a-pc": 10,
   "code-catastrophe": 10,
   hackathon: 15,
-  "prompt-wars": 15,
+  "prompt-wars": 25,
   "tech-escape-room": 15,
 };
 const MIN_TEAM_SIZE_BY_EVENT: Record<string, number> = {
