@@ -6,10 +6,10 @@ export const esportsEvents: DepartmentEvent[] = [
     title: "Mini Militia Tournament",
     teamSize: 5,
     registrationFee: "₹60",
-    prizePool: "₹1,000",
+    prizePool: "₹1,500",
     details:
       "A competitive Esports showdown for Mini Militia players at Kapricious 2026. Squad up, coordinate your attacks, and battle through the bracket for the top spot.",
-    prizes: ["Winner prize from ₹1,000 pool", "Runner-up prize from ₹1,000 pool"],
+    prizes: ["Winner prize from ₹1,500 pool", "Runner-up prize from ₹1,500 pool"],
     type: "team",
     department: "ESPORTS",
     departmentName: "Esports",
@@ -22,6 +22,10 @@ export const esportsEvents: DepartmentEvent[] = [
       {
         name: "Ali Ihlas",
         phone: "+91 82810 66448",
+      },
+      {
+        name: "Fathahudheen",
+        phone: "+91 94006 68195",
       },
     ],
     date: "March 27, 2026",
@@ -63,6 +67,10 @@ export const esportsEvents: DepartmentEvent[] = [
         name: "Ali Ihlas",
         phone: "+91 82810 66448",
       },
+      {
+        name: "Fathahudheen",
+        phone: "+91 94006 68195",
+      },
     ],
     date: "March 28, 2026",
     time: "10:30 AM - 4:00 PM",
@@ -102,6 +110,10 @@ export const esportsEvents: DepartmentEvent[] = [
       {
         name: "Ali Ihlas",
         phone: "+91 82810 66448",
+      },
+      {
+        name: "Fathahudheen",
+        phone: "+91 94006 68195",
       },
     ],
     date: "March 27-28, 2026",
