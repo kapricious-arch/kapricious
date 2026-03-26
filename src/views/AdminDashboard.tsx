@@ -437,13 +437,14 @@ const AdminDashboard = () => {
             }
 
             @page {
-              size: A4 landscape;
+              size: 297mm 210mm;
               margin: 8mm;
             }
 
             @media print {
               html, body {
-                width: 100%;
+                width: 297mm;
+                min-height: 210mm;
                 height: auto;
               }
 

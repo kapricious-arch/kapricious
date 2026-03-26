@@ -20,18 +20,12 @@ import {
 } from "lucide-react";
 import { getDepartmentEventById } from "@/data/events/index";
 import type { CoordinatorContact, DepartmentEvent } from "@/data/events/types";
+import { CLOSED_EVENT_IDS } from "@/lib/closed-events";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
   visible: (i: number) => ({ opacity: 1, y: 0, transition: { delay: i * 0.1, duration: 0.5 } }),
 };
-
-const CLOSED_EVENT_IDS = new Set([
-  "build-a-pc",
-  "hackathon",
-  "innovatex",
-  "sevens-football-tournament",
-]);
 
 const getCoordinatorContacts = (event: DepartmentEvent): CoordinatorContact[] => {
   if (event.coordinators?.length) {

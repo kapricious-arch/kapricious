@@ -9,17 +9,12 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { toast } from "sonner";
 import { z } from "zod";
 import { formatDepartmentOptionLabel, normalizeDepartmentCode } from "@/lib/departments";
+import { CLOSED_EVENT_IDS } from "@/lib/closed-events";
 import { User, Mail, Phone, GraduationCap, Layers, Calendar, CheckCircle2, CreditCard, ShieldCheck, ArrowRight, Trophy, Sparkles, Zap, Users, AlertTriangle, Loader2 } from "lucide-react";
 import { flagshipEvents, getEventById, mainEvents, managerialEvents, sportsEvents, cseEvents, ceEvents, meEvents, eeeEvents, raEvents, sfEvents, eceEvents, sortDepartmentEventsByPrizePool } from "@/data/events/index";
 
 const FLAGSHIP_DEPT_ID = "flagship";
 const SPORTS_DEPT_ID = "sports";
-const CLOSED_EVENT_IDS = new Set([
-  "build-a-pc",
-  "hackathon",
-  "innovatex",
-  "sevens-football-tournament",
-]);
 const HIDDEN_REGISTER_EVENT_IDS = new Set(["hackathon"]);
 const CLOSED_EVENT_MESSAGE =
   "Registrations are closed for this event because it is already over. Please browse another event.";

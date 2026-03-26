@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight, Play, Sparkles } from "lucide-react";
+import { CLOSED_EVENT_IDS } from "@/lib/closed-events";
 import {
   cseEvents,
   ceEvents,
@@ -29,13 +30,6 @@ const eventMedia: Record<string, { type: "video"; src: string }> = {
     src: "https://videos.pexels.com/video-files/3141208/3141208-uhd_2560_1440_25fps.mp4",
   },
 };
-
-const CLOSED_EVENT_IDS = new Set([
-  "build-a-pc",
-  "hackathon",
-  "innovatex",
-  "sevens-football-tournament",
-]);
 
 const departmentEvents = [
   { code: "CULTURAL", name: "Cultural Events", events: sortDepartmentEventsByPrizePool(mainEvents) },
