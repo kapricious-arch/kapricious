@@ -11,6 +11,7 @@ export { eeeEvents } from "./eee";
 export { meEvents } from "./me";
 export { ceEvents } from "./ce";
 export { cseEvents } from "./cse";
+export { esportsEvents } from "./esports";
 export { sportsEvents } from "./sports";
 
 // Other Events
@@ -26,6 +27,7 @@ import { eeeEvents } from "./eee";
 import { meEvents } from "./me";
 import { ceEvents } from "./ce";
 import { cseEvents } from "./cse";
+import { esportsEvents } from "./esports";
 import { sportsEvents } from "./sports";
 import { DepartmentEvent } from "./types";
 
@@ -43,6 +45,7 @@ export const allDepartmentEvents: DepartmentEvent[] = [
   ...mainEvents,
   ...managerialEvents,
   ...sportsEvents,
+  ...esportsEvents,
   ...eceEvents,
   ...sfEvents,
   ...raEvents,

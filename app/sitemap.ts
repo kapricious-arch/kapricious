@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { allDepartmentEvents, flagshipEvents } from "@/data/events";
+import { allDepartmentEvents, flagshipEvents } from "@/data/events/index";
 import { getSiteUrl } from "@/lib/seo";
 
 const sitemap = (): MetadataRoute.Sitemap => {

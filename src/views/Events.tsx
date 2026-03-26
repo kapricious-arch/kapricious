@@ -9,6 +9,7 @@ import { CLOSED_EVENT_IDS } from "@/lib/closed-events";
 import {
   cseEvents,
   ceEvents,
+  esportsEvents,
   meEvents,
   eeeEvents,
   raEvents,
@@ -35,6 +36,7 @@ const departmentEvents = [
   { code: "CULTURAL", name: "Cultural Events", events: sortDepartmentEventsByPrizePool(mainEvents) },
   { code: "MANAGERIAL", name: "Managerial Events", events: sortDepartmentEventsByPrizePool(managerialEvents) },
   { code: "SPORTS", name: "Sports Fiesta", events: sortDepartmentEventsByPrizePool(sportsEvents) },
+  { code: "ESPORTS", name: "Esports", events: sortDepartmentEventsByPrizePool(esportsEvents) },
   { code: "CSE", name: "Computer Science & Engineering", events: sortDepartmentEventsByPrizePool(cseEvents) },
   { code: "CE", name: "Civil Engineering", events: sortDepartmentEventsByPrizePool(ceEvents) },
   { code: "ME", name: "Mechanical Engineering", events: sortDepartmentEventsByPrizePool(meEvents) },
@@ -205,9 +207,18 @@ const DepartmentSection = memo(
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {dept.events.map((event, i) => (
-          <EventCard key={event.id} event={event} index={i} activeFilter={activeFilter} />
-        ))}
+        {dept.events.length > 0 ? (
+          dept.events.map((event, i) => (
+            <EventCard key={event.id} event={event} index={i} activeFilter={activeFilter} />
+          ))
+        ) : (
+          <div className="md:col-span-2 lg:col-span-3 rounded-large border border-dashed border-border bg-card/60 p-8 text-center">
+            <p className="text-sm font-semibold text-foreground">{dept.name} events will be added here.</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              The department is live now. Send the event details and I can plug them straight into this section.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

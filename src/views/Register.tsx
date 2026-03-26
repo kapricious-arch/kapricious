@@ -11,7 +11,7 @@ import { z } from "zod";
 import { formatDepartmentOptionLabel, normalizeDepartmentCode } from "@/lib/departments";
 import { CLOSED_EVENT_IDS } from "@/lib/closed-events";
 import { User, Mail, Phone, GraduationCap, Layers, Calendar, CheckCircle2, CreditCard, ShieldCheck, ArrowRight, Trophy, Sparkles, Zap, Users, AlertTriangle, Loader2 } from "lucide-react";
-import { flagshipEvents, getEventById, mainEvents, managerialEvents, sportsEvents, cseEvents, ceEvents, meEvents, eeeEvents, raEvents, sfEvents, eceEvents, sortDepartmentEventsByPrizePool } from "@/data/events/index";
+import { flagshipEvents, getEventById, mainEvents, managerialEvents, sportsEvents, esportsEvents, cseEvents, ceEvents, meEvents, eeeEvents, raEvents, sfEvents, eceEvents, sortDepartmentEventsByPrizePool } from "@/data/events/index";
 
 const FLAGSHIP_DEPT_ID = "flagship";
 const SPORTS_DEPT_ID = "sports";
@@ -55,6 +55,12 @@ const MIN_TEAM_SIZE_BY_EVENT: Record<string, number> = {
   "sevens-football-tournament": 7,
   "tech-escape-room": 2,
 };
+const GAME_EXPERIENCE_OPTIONS = [
+  { id: "vr-15", label: "VR", duration: "15 mins", amount: 50 },
+  { id: "racing-simulator-1h", label: "Racing Simulator", duration: "1 hour", amount: 90 },
+  { id: "pc-1h", label: "PC", duration: "1 hour", amount: 60 },
+  { id: "ps5-1h", label: "PS5", duration: "1 hour", amount: 60 },
+] as const;
 const RAZORPAY_CHECKOUT_SRC = "https://checkout.razorpay.com/v1/checkout.js";
 
 const normalizeEventLookupKey = (value: string) =>
@@ -407,6 +413,7 @@ const AnimatedGrid = () => {
 type Step = "details" | "payment";
 type FashionShowTeamType = "college" | "other";
 type StarOfKapriciousStudentType = "kmea" | "other";
+type GameExperienceOptionId = (typeof GAME_EXPERIENCE_OPTIONS)[number]["id"];
 
 const Register = () => {
   const searchParams = useSearchParams();
@@ -415,7 +422,7 @@ const Register = () => {
 
   const preselectedFlagship = getEventById(preselectedEvent);
 
-  const allDeptEvents = [...mainEvents, ...managerialEvents, ...sportsEvents, ...cseEvents, ...ceEvents, ...meEvents, ...eeeEvents, ...raEvents, ...sfEvents, ...eceEvents];
+  const allDeptEvents = [...mainEvents, ...managerialEvents, ...sportsEvents, ...esportsEvents, ...cseEvents, ...ceEvents, ...meEvents, ...eeeEvents, ...raEvents, ...sfEvents, ...eceEvents];
   const preselectedDeptEvent = allDeptEvents.find(ev => ev.id === preselectedEvent);
   
   const getInitialDept = () => {
@@ -436,6 +443,7 @@ const Register = () => {
   const [selectedTeamSize, setSelectedTeamSize] = useState<number | null>(1);
   const [fashionShowTeamType, setFashionShowTeamType] = useState<FashionShowTeamType>("college");
   const [starOfKapriciousStudentType, setStarOfKapriciousStudentType] = useState<StarOfKapriciousStudentType | "">("");
+  const [gameExperienceOption, setGameExperienceOption] = useState<GameExperienceOptionId | "">("");
   const [teamMembers, setTeamMembers] = useState<string[]>([]);
   const [currentStep, setCurrentStep] = useState<Step>("details");
   const [slotCheckLoading, setSlotCheckLoading] = useState(false);
@@ -536,6 +544,7 @@ const Register = () => {
       const deptCode = normalizeDepartmentCode(dept?.code);
       if (deptCode === "CULTURAL") return filterHiddenEvents(sortDepartmentEventsByPrizePool(mainEvents));
       if (deptCode === "MANAGERIAL") return filterHiddenEvents(sortDepartmentEventsByPrizePool(managerialEvents));
+      if (deptCode === "ESPORTS") return filterHiddenEvents(sortDepartmentEventsByPrizePool(esportsEvents));
       if (deptCode === "CSE") return filterHiddenEvents(sortDepartmentEventsByPrizePool(cseEvents));
       if (deptCode === "CE") return filterHiddenEvents(sortDepartmentEventsByPrizePool(ceEvents));
       if (deptCode === "ME") return filterHiddenEvents(sortDepartmentEventsByPrizePool(meEvents));
@@ -561,7 +570,7 @@ const Register = () => {
       return sportsEvents.find(ev => ev.id === selectedEvent);
     }
     if (selectedDept && departments) {
-      const allEvents = [...mainEvents, ...managerialEvents, ...sportsEvents, ...cseEvents, ...ceEvents, ...meEvents, ...eeeEvents, ...raEvents, ...sfEvents, ...eceEvents];
+      const allEvents = [...mainEvents, ...managerialEvents, ...sportsEvents, ...esportsEvents, ...cseEvents, ...ceEvents, ...meEvents, ...eeeEvents, ...raEvents, ...sfEvents, ...eceEvents];
       return allEvents.find(ev => ev.id === selectedEvent);
     }
     return undefined;
@@ -572,6 +581,9 @@ const Register = () => {
   const isCapacityLimitedEvent = LIMITED_EVENT_IDS.has(selectedEvent);
   const isFashionShow = selectedEvent === "fashion-show";
   const isStarOfKapricious = selectedEvent === "star-of-kapricious";
+  const isGameExperienceZone = selectedEvent === "game-experience-zone";
+  const selectedGameExperience =
+    GAME_EXPERIENCE_OPTIONS.find((option) => option.id === gameExperienceOption) ?? null;
 
   const selectedEventLabel =
     selectedDept === FLAGSHIP_DEPT_ID
@@ -604,6 +616,10 @@ const Register = () => {
             : 0
         : parseFeeToRupees(registrationFeeText, isTeamEvent ? (selectedTeamSize ?? 1) : 1);
   const payableAmountInPaise = payableRupees * 100;
+  const effectivePayableRupees = isGameExperienceZone
+    ? selectedGameExperience?.amount ?? 0
+    : payableRupees;
+  const effectivePayableAmountInPaise = effectivePayableRupees * 100;
 
   useEffect(() => {
     if ((selectedTeamSize ?? 0) > 1) {
@@ -621,6 +637,7 @@ const Register = () => {
     setSelectedTeamSize(selectedEvent && isTeamEvent ? null : 1);
     setFashionShowTeamType("college");
     setStarOfKapriciousStudentType("");
+    setGameExperienceOption("");
     setTeamMembers([]);
     // Reset to details step when event changes
     setCurrentStep("details");
@@ -649,8 +666,12 @@ const Register = () => {
   // Get event title from selected event
   const getEventTitle = () => {
     if (selectedDept === FLAGSHIP_DEPT_ID) return getEventById(selectedEvent)?.title || "";
-    const allHardcoded = [...mainEvents, ...managerialEvents, ...sportsEvents, ...cseEvents, ...ceEvents, ...meEvents, ...eeeEvents, ...raEvents, ...sfEvents, ...eceEvents];
-    return allHardcoded.find(ev => ev.id === selectedEvent)?.title || "";
+    const allHardcoded = [...mainEvents, ...managerialEvents, ...sportsEvents, ...esportsEvents, ...cseEvents, ...ceEvents, ...meEvents, ...eeeEvents, ...raEvents, ...sfEvents, ...eceEvents];
+    const baseTitle = allHardcoded.find(ev => ev.id === selectedEvent)?.title || "";
+    if (selectedEvent === "game-experience-zone" && selectedGameExperience) {
+      return `${baseTitle} - ${selectedGameExperience.label} (${selectedGameExperience.duration})`;
+    }
+    return baseTitle;
   };
 
   const getTeamValidationErrors = () => {
@@ -658,6 +679,10 @@ const Register = () => {
 
     if (isStarOfKapricious && !starOfKapriciousStudentType) {
       fieldErrors.studentType = "Please choose whether you are a KMEA College Student or Other College Student.";
+    }
+
+    if (isGameExperienceZone && !selectedGameExperience) {
+      fieldErrors.gameExperienceOption = "Please choose what you want to book.";
     }
 
     if (!isTeamEvent) return fieldErrors;
@@ -683,8 +708,19 @@ const Register = () => {
     return { eventTitle, dbEvent, dbEventId: dbEvent?.id ?? null, dbDeptId: dbEvent?.department_id ?? null };
   };
 
+  const getRegistrationMetadata = () => {
+    if (isGameExperienceZone && selectedGameExperience) {
+      return [`Game Experience: ${selectedGameExperience.label} (${selectedGameExperience.duration})`];
+    }
+    return (selectedTeamSize ?? 0) > 1 ? teamMembers.filter((member) => member.trim()) : null;
+  };
+
+  const getCheckoutEventTitle = () => {
+    return getEventTitle();
+  };
+
   const buildCouponPayload = async (registrationId: string, entryCode: string, participantName: string, participantEmail: string) => {
-    const eventTitle = getEventTitle();
+    const eventTitle = getCheckoutEventTitle();
     const { dbEventId } = getSelectedDbEvent();
     let eventName = eventTitle;
     let eventDate = "";
@@ -896,7 +932,7 @@ const Register = () => {
         entry_code: entryCode,
         amount_paid: 0,
         team_size: isTeamEvent ? (selectedTeamSize ?? 1) : 1,
-        team_members: (selectedTeamSize ?? 0) > 1 ? teamMembers.filter(m => m.trim()) : null,
+        team_members: getRegistrationMetadata(),
         razorpay_order_id: null,
         payment_currency: "INR",
         payment_gateway_status: "free",
@@ -965,9 +1001,9 @@ const Register = () => {
       p_event_id: dbEventId,
       p_department_id: dbDeptId,
       p_entry_code: entryCode,
-      p_amount_paid: payableRupees,
+      p_amount_paid: effectivePayableRupees,
       p_team_size: isTeamEvent ? (selectedTeamSize ?? 1) : 1,
-      p_team_members: (selectedTeamSize ?? 0) > 1 ? teamMembers.filter((member) => member.trim()) : null,
+      p_team_members: getRegistrationMetadata(),
     });
 
     if (error) {
@@ -993,7 +1029,7 @@ const Register = () => {
 
   const startRazorpayPayment = async (registration: PendingRegistrationRecord): Promise<PaidRegistrationResult | null> => {
     if (!selectedEventDetails) return null;
-    if (payableAmountInPaise <= 0) return null;
+    if (effectivePayableAmountInPaise <= 0) return null;
 
     const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
     if (!keyId) {
@@ -1009,15 +1045,21 @@ const Register = () => {
 
     setPaymentLoading(true);
     try {
-      const eventTitle = getEventTitle();
+      const eventTitle = getCheckoutEventTitle();
       const orderRes = await fetch("/api/razorpay/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: payableAmountInPaise,
+          amount: effectivePayableAmountInPaise,
           currency: "INR",
           receipt: `${selectedEvent}-${Date.now()}`,
-          notes: { eventTitle, email: form.email.trim().toLowerCase() },
+          notes: {
+            eventTitle,
+            email: form.email.trim().toLowerCase(),
+            ...(isGameExperienceZone && selectedGameExperience
+              ? { experience: `${selectedGameExperience.label} (${selectedGameExperience.duration})` }
+              : {}),
+          },
         }),
       });
 
@@ -1029,7 +1071,7 @@ const Register = () => {
       const paymentResult: RazorpayCheckoutResult | null = await new Promise((resolve, reject) => {
         const checkout = new window.Razorpay({
           key: keyId,
-          amount: payableAmountInPaise,
+          amount: effectivePayableAmountInPaise,
           currency: "INR",
           name: "Kapricious 2026",
           description: eventTitle,
@@ -1039,7 +1081,12 @@ const Register = () => {
             email: form.email,
             contact: form.phone,
           },
-          notes: { eventTitle },
+          notes: {
+            eventTitle,
+            ...(isGameExperienceZone && selectedGameExperience
+              ? { experience: `${selectedGameExperience.label} (${selectedGameExperience.duration})` }
+              : {}),
+          },
           theme: { color: "#22c55e" },
           handler: (response: any) => {
             resolve({
@@ -1112,7 +1159,7 @@ const Register = () => {
       return;
     }
 
-    if (payableAmountInPaise > 0) {
+    if (effectivePayableAmountInPaise > 0) {
       try {
         const pending = await createOrRefreshPendingRegistration();
         const paymentResult = await startRazorpayPayment(pending);
@@ -1559,7 +1606,7 @@ const Register = () => {
                   )}
 
                   {/* Team Size Selection */}
-                  {selectedEvent && (isTeamEvent || isStarOfKapricious) && (
+                  {selectedEvent && (isTeamEvent || isStarOfKapricious || isGameExperienceZone) && (
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -1646,6 +1693,35 @@ const Register = () => {
                             </select>
                           </div>
                           {errors.studentType && <p className="text-xs text-destructive mt-1">{errors.studentType}</p>}
+                        </div>
+                      )}
+                      {isGameExperienceZone && (
+                        <div className="mt-4">
+                          <label className={labelClass}>Gaming Experience</label>
+                          <div className="relative">
+                            <Zap className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground/50" />
+                            <select
+                              value={gameExperienceOption}
+                              onChange={(e) => {
+                                setGameExperienceOption(e.target.value as GameExperienceOptionId | "");
+                                setErrors((prev) => {
+                                  if (!prev.gameExperienceOption) return prev;
+                                  const nextErrors = { ...prev };
+                                  delete nextErrors.gameExperienceOption;
+                                  return nextErrors;
+                                });
+                              }}
+                              className={selectClass}
+                            >
+                              <option value="">Select what you want to book</option>
+                              {GAME_EXPERIENCE_OPTIONS.map((option) => (
+                                <option key={option.id} value={option.id}>
+                                  {option.label} - {option.duration} - ₹{option.amount}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                          {errors.gameExperienceOption && <p className="text-xs text-destructive mt-1">{errors.gameExperienceOption}</p>}
                         </div>
                       )}
                     </motion.div>
@@ -1813,6 +1889,14 @@ const Register = () => {
                       <div><span className="text-muted-foreground">Email:</span> <span className="font-medium text-foreground">{form.email}</span></div>
                       <div><span className="text-muted-foreground">Phone:</span> <span className="font-medium text-foreground">{form.phone}</span></div>
                       <div><span className="text-muted-foreground">College:</span> <span className="font-medium text-foreground">{form.college}</span></div>
+                      {isGameExperienceZone && selectedGameExperience && (
+                        <div className="col-span-2">
+                          <span className="text-muted-foreground">Selected Experience:</span>{" "}
+                          <span className="font-medium text-foreground">
+                            {selectedGameExperience.label} ({selectedGameExperience.duration})
+                          </span>
+                        </div>
+                      )}
                     </div>
                     <button
                       type="button"
@@ -1836,16 +1920,16 @@ const Register = () => {
                     </div>
                     <h3 className="font-display text-xs font-bold text-foreground mb-1">PAYMENT GATEWAY</h3>
                     <p className="text-[10px] text-muted-foreground mb-3 uppercase tracking-wider">
-                      {payableAmountInPaise > 0 ? "Razorpay Checkout Ready" : "No Payment Required"}
+                      {effectivePayableAmountInPaise > 0 ? "Razorpay Checkout Ready" : "No Payment Required"}
                     </p>
                     <div className="mb-4">
                       <p className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Amount Payable</p>
                       <p className="mt-1 font-display text-3xl font-bold text-foreground">
-                        {payableAmountInPaise > 0 ? `₹${payableRupees.toLocaleString("en-IN")}` : "Free"}
+                        {effectivePayableAmountInPaise > 0 ? `₹${effectivePayableRupees.toLocaleString("en-IN")}` : "Free"}
                       </p>
                     </div>
                     <div className="flex justify-center gap-2">
-                      {[payableAmountInPaise > 0 ? "Razorpay" : "Free Entry", "Secure Checkout"].map((g) => (
+                      {[effectivePayableAmountInPaise > 0 ? "Razorpay" : "Free Entry", "Secure Checkout"].map((g) => (
                         <span key={g} className="rounded-full bg-card border border-border px-2.5 py-0.5 text-[9px] tracking-wider text-muted-foreground">{g}</span>
                       ))}
                     </div>
@@ -1853,7 +1937,7 @@ const Register = () => {
                       <ShieldCheck className="w-3 h-3" />
                       <span>256-bit SSL Encrypted</span>
                     </div>
-                    {payableAmountInPaise > 0 && (
+                    {effectivePayableAmountInPaise > 0 && (
                       <div className="mt-3 space-y-2">
                         <p className="text-xs text-muted-foreground">
                           Clicking the button below will open Razorpay checkout.
@@ -1882,7 +1966,7 @@ const Register = () => {
                       </span>
                     ) : (
                       <>
-                        {payableAmountInPaise > 0 ? "Pay & Confirm Registration" : "Confirm Registration"}
+                        {effectivePayableAmountInPaise > 0 ? "Pay & Confirm Registration" : "Confirm Registration"}
                         <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </>
                     )}

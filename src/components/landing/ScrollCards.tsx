@@ -6,6 +6,7 @@ import CountdownTimer from "@/components/CountdownTimer";
 import { ceEvents } from "@/data/events/ce";
 import { cseEvents } from "@/data/events/cse";
 import { eceEvents } from "@/data/events/ece";
+import { esportsEvents } from "@/data/events/esports";
 import { eeeEvents } from "@/data/events/eee";
 import { mainEvents } from "@/data/events/main";
 import { managerialEvents } from "@/data/events/managerial";
@@ -24,6 +25,7 @@ const departmentSections: Array<{
   events: DepartmentEvent[];
 }> = [
   { code: "SPORTS", label: "Sports Fiesta", events: sportsEvents },
+  { code: "ESPORTS", label: "Esports", events: esportsEvents },
   { code: "MANAGERIAL", label: "Managerial Events", events: managerialEvents },
   { code: "CSE", label: "Computer Science", events: cseEvents },
   { code: "CE", label: "Civil", events: ceEvents },
