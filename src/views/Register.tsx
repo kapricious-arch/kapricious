@@ -15,7 +15,7 @@ import { flagshipEvents, getEventById, mainEvents, managerialEvents, sportsEvent
 
 const FLAGSHIP_DEPT_ID = "flagship";
 const SPORTS_DEPT_ID = "sports";
-const HIDDEN_REGISTER_EVENT_IDS = new Set(["hackathon"]);
+const HIDDEN_REGISTER_EVENT_IDS = new Set(["hackathon", "spot-photography"]);
 const CLOSED_EVENT_MESSAGE =
   "Registrations are closed for this event because it is already over. Please browse another event.";
 const DB_EVENT_TITLE_ALIASES: Record<string, string[]> = {
@@ -39,8 +39,9 @@ const DB_EVENT_TITLE_ALIASES: Record<string, string[]> = {
   "hazard-hunt": ["Hazard Hunt"],
   "gear-up-challenge": ["PPE Race"],
 };
-const LIMITED_EVENT_IDS = new Set(["bug-bounty", "build-a-pc", "hackathon", "tech-escape-room"]);
+const LIMITED_EVENT_IDS = new Set(["arduino-crafters", "bug-bounty", "build-a-pc", "hackathon", "tech-escape-room"]);
 const DEFAULT_SLOT_LIMIT_BY_EVENT: Record<string, number> = {
+  "arduino-crafters": 6,
   "bug-bounty": 30,
   "build-a-pc": 15,
   "code-catastrophe": 10,

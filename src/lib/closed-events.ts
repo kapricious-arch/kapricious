@@ -1,5 +1,4 @@
 export const CLOSED_EVENT_IDS = new Set([
-  "arduino-crafters",
   "bridgit",
   "bug-bounty",
   "css-royale",
@@ -7,4 +6,5 @@ export const CLOSED_EVENT_IDS = new Set([
   "hackathon",
   "innovatex",
   "sevens-football-tournament",
+  "spot-photography",
 ]);
