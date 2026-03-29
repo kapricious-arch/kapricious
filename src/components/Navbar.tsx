@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, Home, Calendar, ClipboardList, Award, Sun, Moon, Search } from "lucide-react";
+import { Menu, X, Home, Calendar, Award, Sun, Moon, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/hooks/use-theme";
 import { allDepartmentEvents } from "@/data/events/index";
@@ -11,8 +11,7 @@ import { allDepartmentEvents } from "@/data/events/index";
 const navLinks = [
   { label: "Home", path: "/", icon: Home },
   { label: "Events", path: "/events", icon: Calendar },
-  { label: "Register", path: "/register", icon: ClipboardList },
-  { label: "Certificate", path: "/certificate", icon: Award },
+  { label: "Certificates", path: "/certificate", icon: Award },
 ];
 
 const Navbar = () => {

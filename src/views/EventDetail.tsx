@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { getDepartmentEventById } from "@/data/events/index";
 import type { CoordinatorContact, DepartmentEvent } from "@/data/events/types";
-import { CLOSED_EVENT_IDS } from "@/lib/closed-events";
+import { REGISTRATIONS_CLOSED_DETAIL, isEventRegistrationClosed } from "@/lib/closed-events";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -60,7 +60,7 @@ const EventDetail = () => {
   const searchParams = useSearchParams();
   const eventId = Array.isArray(params?.eventId) ? params.eventId[0] : params?.eventId;
   const event = eventId ? getDepartmentEventById(eventId) : null;
-  const isRegistrationClosed = event ? CLOSED_EVENT_IDS.has(event.id) : false;
+  const isRegistrationClosed = event ? isEventRegistrationClosed(event.id) : false;
   const activeDepartment = searchParams.get("department")?.toUpperCase();
   const backHref =
     activeDepartment && event
@@ -174,7 +174,7 @@ const EventDetail = () => {
                 <div className="mb-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-4">
                   <p className="text-sm font-bold text-foreground">Registrations Closed</p>
                   <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                    Registrations are closed for {event.title} because the event is already over.
+                    {event.title} is no longer accepting registrations. {REGISTRATIONS_CLOSED_DETAIL}
                   </p>
                 </div>
               ) : null}
@@ -319,7 +319,7 @@ const EventDetail = () => {
                 <div className="space-y-3">
                   <div className="rounded-2xl border border-black/15 bg-black/5 px-4 py-4">
                     <p className="text-sm font-bold text-black">Registrations are closed for this event.</p>
-                    <p className="mt-1 text-xs text-black/65">This event is already over. Please browse another event.</p>
+                    <p className="mt-1 text-xs text-black/65">{REGISTRATIONS_CLOSED_DETAIL}</p>
                   </div>
                   <Link
                     href="/events"

@@ -5,7 +5,7 @@ import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight, Play, Sparkles } from "lucide-react";
-import { CLOSED_EVENT_IDS } from "@/lib/closed-events";
+import { REGISTRATIONS_CLOSED_DETAIL, isEventRegistrationClosed } from "@/lib/closed-events";
 import {
   cseEvents,
   ceEvents,
@@ -73,7 +73,7 @@ const EventCard = memo(
     activeFilter !== "ALL"
       ? `/events/${event.id}?department=${activeFilter}`
       : `/events/${event.id}`;
-  const isRegistrationClosed = CLOSED_EVENT_IDS.has(event.id);
+  const isRegistrationClosed = isEventRegistrationClosed(event.id);
 
   return (
     <motion.div
@@ -140,7 +140,7 @@ const EventCard = memo(
           <div className="mb-4 rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-3">
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-amber-300">Registrations Closed</p>
             <p className="mt-1 text-xs leading-5 text-muted-foreground">
-              This event is closed. You can still open the event page to view the full description.
+              {REGISTRATIONS_CLOSED_DETAIL}
             </p>
           </div>
         ) : null}

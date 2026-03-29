@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { normalizeDepartmentCode } from "@/lib/departments";
+import { REGISTRATIONS_CLOSED, REGISTRATIONS_CLOSED_DETAIL } from "@/lib/closed-events";
 import { motion } from "framer-motion";
 import { Calendar, MapPin, ArrowLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { format } from "date-fns";
@@ -75,7 +76,9 @@ const DepartmentEvents = () => {
             )}
           </h1>
           <p className="text-sm text-muted-foreground max-w-lg mx-auto">
-            Explore and register for events under {department?.name || "this department"}.
+            {REGISTRATIONS_CLOSED
+              ? REGISTRATIONS_CLOSED_DETAIL
+              : `Explore and register for events under ${department?.name || "this department"}.`}
           </p>
         </motion.div>
 
@@ -114,13 +117,22 @@ const DepartmentEvents = () => {
                     <MapPin className="w-3 h-3" /> {event.venue}
                   </div>
                 )}
-                <Link
-                  href={`/register?department=${deptId}&event=${event.id}`}
-                  className="group/btn inline-flex items-center gap-2 bg-foreground text-background px-5 py-3 rounded-2xl text-xs font-bold tracking-wider uppercase hover:opacity-90 transition-all"
-                >
-                  Register
-                  <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" />
-                </Link>
+                {REGISTRATIONS_CLOSED ? (
+                  <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 px-4 py-3">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-amber-300">
+                      Registrations Closed
+                    </p>
+                    <p className="mt-1 text-xs leading-5 text-muted-foreground">{REGISTRATIONS_CLOSED_DETAIL}</p>
+                  </div>
+                ) : (
+                  <Link
+                    href={`/register?department=${deptId}&event=${event.id}`}
+                    className="group/btn inline-flex items-center gap-2 bg-foreground text-background px-5 py-3 rounded-2xl text-xs font-bold tracking-wider uppercase hover:opacity-90 transition-all"
+                  >
+                    Register
+                    <ArrowRight className="w-3 h-3 group-hover/btn:translate-x-1 transition-transform" />
+                  </Link>
+                )}
               </motion.div>
             ))}
           </div>

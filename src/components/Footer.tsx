@@ -3,6 +3,35 @@ import Link from "next/link";
 const Footer = () => (
   <footer className="border-t border-border bg-card/50 py-16">
     <div className="container mx-auto px-4">
+      <div className="mb-12 overflow-hidden rounded-[32px] border border-border bg-gradient-to-r from-accent/10 via-card to-foreground/5 p-8 md:p-10">
+        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div className="max-w-2xl">
+            <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-accent">Next Edition</p>
+            <h3 className="mt-3 font-display text-2xl font-bold text-foreground md:text-4xl">
+              See you at Kapricious 2027
+            </h3>
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
+              Kapricious 2026 concluded on March 28, 2026. Thank you to every participant, coordinator, and supporter
+              who made the fest unforgettable. Until the next edition, you can explore events and download certificates here.
+            </p>
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Link
+              href="/events"
+              className="inline-flex items-center justify-center rounded-full border border-border bg-background px-5 py-3 text-xs font-bold uppercase tracking-[0.2em] text-foreground transition-opacity hover:opacity-80"
+            >
+              Browse Events
+            </Link>
+            <Link
+              href="/certificate"
+              className="inline-flex items-center justify-center rounded-full bg-foreground px-5 py-3 text-xs font-bold uppercase tracking-[0.2em] text-background transition-opacity hover:opacity-90"
+            >
+              Download Certificates
+            </Link>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1.4fr_0.8fr_1.2fr]">
         <div>
           <div className="flex items-center gap-3 mb-4">
@@ -20,7 +49,6 @@ const Footer = () => (
           <div className="grid gap-2">
             {[
               { l: "Events", p: "/events" },
-              { l: "Register", p: "/register" },
               { l: "Certificates", p: "/certificate" },
             ].map((x) => (
               <Link key={x.p} href={x.p} className="text-sm text-foreground/60 hover:text-foreground transition-colors">
@@ -77,7 +105,7 @@ const Footer = () => (
         </p>
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-accent animate-pulse" />
-          <span className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">All Systems Operational</span>
+          <span className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground">Archive Mode Live</span>
         </div>
       </div>
     </div>

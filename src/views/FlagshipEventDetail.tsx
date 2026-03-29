@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { getEventById } from "@/data/events/index";
 import type { CoordinatorContact, FlagshipEvent } from "@/data/events/types";
+import { REGISTRATIONS_CLOSED_DETAIL, isEventRegistrationClosed } from "@/lib/closed-events";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -53,6 +54,7 @@ const FlagshipEventDetail = () => {
   const router = useRouter();
   const eventId = Array.isArray(params?.eventId) ? params.eventId[0] : params?.eventId;
   const event = eventId ? getEventById(eventId) : null;
+  const isRegistrationClosed = event ? isEventRegistrationClosed(event.id) : false;
 
   if (!event) {
     return (
@@ -207,7 +209,9 @@ const FlagshipEventDetail = () => {
               animate="visible"
               className="bg-foreground text-background rounded-large p-8 sticky top-28"
             >
-              <h3 className="font-display text-lg font-bold mb-6">Register Now</h3>
+              <h3 className="font-display text-lg font-bold mb-6">
+                {isRegistrationClosed ? "Registrations Closed" : "Register Now"}
+              </h3>
 
               <div className="space-y-4 mb-6">
                 <div className="flex items-center justify-between pb-4 border-b border-background/20">
@@ -232,13 +236,29 @@ const FlagshipEventDetail = () => {
                 </div>
               </div>
 
-              <Link
-                href={`/register?event=${event.id}`}
-                className="w-full flex items-center justify-center gap-2 bg-background text-foreground px-6 py-4 rounded-2xl font-bold hover:opacity-90 transition-all group"
-              >
-                Register for this Event
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </Link>
+              {isRegistrationClosed ? (
+                <div className="space-y-3">
+                  <div className="rounded-2xl border border-background/20 bg-background/10 px-4 py-4">
+                    <p className="text-sm font-bold">Registrations Closed</p>
+                    <p className="mt-1 text-xs opacity-80">{REGISTRATIONS_CLOSED_DETAIL}</p>
+                  </div>
+                  <Link
+                    href="/events"
+                    className="w-full flex items-center justify-center gap-2 bg-background text-foreground px-6 py-4 rounded-2xl font-bold hover:opacity-90 transition-all group"
+                  >
+                    Browse Other Events
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </div>
+              ) : (
+                <Link
+                  href={`/register?event=${event.id}`}
+                  className="w-full flex items-center justify-center gap-2 bg-background text-foreground px-6 py-4 rounded-2xl font-bold hover:opacity-90 transition-all group"
+                >
+                  Register for this Event
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              )}
 
               <div className="mt-6 pt-6 border-t border-background/20">
                 <p className="text-[10px] uppercase tracking-wider opacity-60 mb-2">

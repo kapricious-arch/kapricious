@@ -9,15 +9,13 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { toast } from "sonner";
 import { z } from "zod";
 import { formatDepartmentOptionLabel, normalizeDepartmentCode } from "@/lib/departments";
-import { CLOSED_EVENT_IDS } from "@/lib/closed-events";
+import { REGISTRATIONS_CLOSED_DETAIL, REGISTRATIONS_CLOSED_MESSAGE, isEventRegistrationClosed } from "@/lib/closed-events";
 import { User, Mail, Phone, GraduationCap, Layers, Calendar, CheckCircle2, CreditCard, ShieldCheck, ArrowRight, Trophy, Sparkles, Zap, Users, AlertTriangle, Loader2 } from "lucide-react";
 import { flagshipEvents, getEventById, mainEvents, managerialEvents, sportsEvents, esportsEvents, cseEvents, ceEvents, meEvents, eeeEvents, raEvents, sfEvents, eceEvents, sortDepartmentEventsByPrizePool } from "@/data/events/index";
 
 const FLAGSHIP_DEPT_ID = "flagship";
 const SPORTS_DEPT_ID = "sports";
 const HIDDEN_REGISTER_EVENT_IDS = new Set(["hackathon", "spot-photography"]);
-const CLOSED_EVENT_MESSAGE =
-  "Registrations are closed for this event because it is already over. Please browse another event.";
 const DB_EVENT_TITLE_ALIASES: Record<string, string[]> = {
   "fashion-show": ["Fashion Show"],
   "group-dance": ["Group Dance"],
@@ -578,7 +576,7 @@ const Register = () => {
   };
 
   const selectedEventDetails = getSelectedEventDetails();
-  const isSelectedEventClosed = CLOSED_EVENT_IDS.has(selectedEvent);
+  const isSelectedEventClosed = isEventRegistrationClosed(selectedEvent);
   const isCapacityLimitedEvent = LIMITED_EVENT_IDS.has(selectedEvent);
   const isFashionShow = selectedEvent === "fashion-show";
   const isStarOfKapricious = selectedEvent === "star-of-kapricious";
@@ -804,7 +802,7 @@ const Register = () => {
       return;
     }
     if (isSelectedEventClosed) {
-      toast.error(CLOSED_EVENT_MESSAGE);
+      toast.error(REGISTRATIONS_CLOSED_MESSAGE);
       return;
     }
     setSlotCheckLoading(true);
@@ -882,7 +880,7 @@ const Register = () => {
   const mutation = useMutation({
     mutationFn: async () => {
       if (isSelectedEventClosed) {
-        throw new Error(CLOSED_EVENT_MESSAGE);
+        throw new Error(REGISTRATIONS_CLOSED_MESSAGE);
       }
 
       const teamErrors = getTeamValidationErrors();
@@ -976,7 +974,7 @@ const Register = () => {
 
   const createOrRefreshPendingRegistration = async () => {
     if (isSelectedEventClosed) {
-      throw new Error(CLOSED_EVENT_MESSAGE);
+      throw new Error(REGISTRATIONS_CLOSED_MESSAGE);
     }
 
     const teamErrors = getTeamValidationErrors();
@@ -1150,7 +1148,7 @@ const Register = () => {
     if (mutation.isPending || paymentLoading) return;
 
     if (isSelectedEventClosed) {
-      toast.error(CLOSED_EVENT_MESSAGE);
+      toast.error(REGISTRATIONS_CLOSED_MESSAGE);
       return;
     }
 
@@ -1489,6 +1487,16 @@ const Register = () => {
                     <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-muted-foreground">Event Selection</span>
                   </div>
 
+                  <div className="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4">
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="mt-0.5 h-5 w-5 shrink-0 text-amber-300" />
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-foreground">Registrations Closed</p>
+                        <p className="mt-1 text-xs leading-5 text-muted-foreground">{REGISTRATIONS_CLOSED_DETAIL}</p>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className={labelClass}>Category</label>
@@ -1591,8 +1599,8 @@ const Register = () => {
                         <div className="min-w-0">
                           <p className="text-sm font-bold text-foreground">Registrations Closed</p>
                           <p className="mt-1 text-xs leading-5 text-muted-foreground">
-                            Registrations are closed for <span className="font-bold text-foreground">{selectedEventDetails.title}</span>
-                            {" "}because the event is already over. Please browse another event.
+                            <span className="font-bold text-foreground">{selectedEventDetails.title}</span> is no longer accepting registrations.
+                            {" "}{REGISTRATIONS_CLOSED_DETAIL}
                           </p>
                           <Link
                             href="/events"

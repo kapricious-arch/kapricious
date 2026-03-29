@@ -4,11 +4,10 @@ import { useRef, useEffect, useState, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Search, X, ArrowRight } from "lucide-react";
+import { Search, X, ArrowRight, Award, CalendarCheck2 } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import ScrollRobot from "@/components/ScrollRobot";
 import { allDepartmentEvents, sortDepartmentEventsByPrizePool } from "@/data/events/index";
-
 const FEATURED_EVENTS_AUTOPLAY_MS = 4000;
 
 const HeroSection = () => {
@@ -270,7 +269,7 @@ const HeroSection = () => {
                         <div className="flex items-start justify-between gap-3">
                           <div>
                             <span className="inline-flex items-center rounded-full border border-white/20 bg-black/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/80 backdrop-blur-sm">
-                              Open Event
+                              Archive
                             </span>
                           </div>
                           <div className="featured-event-card__icon shrink-0 rounded-full border border-white/20 bg-black/30 p-2 text-white backdrop-blur-sm">
@@ -310,23 +309,54 @@ const HeroSection = () => {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.5 }}
-                className="absolute bottom-6 left-0 right-0 md:bottom-10 md:left-10 md:right-auto z-10 text-center md:text-left"
+                className="absolute bottom-10 left-4 right-4 z-10 text-center md:hidden"
               >
-                <Link
-                  href="/register"
-                  className="inline-flex items-center gap-2 bg-foreground text-background px-5 py-2.5 md:px-6 md:py-3 rounded-full font-bold text-xs md:text-sm tracking-tight hover:opacity-90 active:scale-95 transition-all mb-3 md:mb-4 border border-border/20 shadow-lg"
-                >
-                  REGISTER NOW
-                  <ArrowRight className="w-3.5 h-3.5 md:w-4 md:h-4" />
-                </Link>
+                <h1 className="text-3xl font-bold font-display leading-[1.1] hero-gradient-text">
+                  KAPRICIOUS'26
+                </h1>
+                <p className="mx-auto mt-2 max-w-xs text-[11px] uppercase tracking-[0.22em] text-white/55">
+                  Official Event Archive
+                </p>
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+                className="absolute bottom-6 left-0 right-0 hidden md:block md:bottom-10 md:left-10 md:right-auto z-10 text-left"
+              >
+                <div className="mb-4 inline-flex max-w-2xl items-start gap-3 rounded-[26px] border border-white/10 bg-white/8 px-4 py-3 text-left backdrop-blur-md">
+                  <CalendarCheck2 className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-accent">Festival Concluded</p>
+                    <p className="mt-1 text-sm leading-relaxed text-white/80">
+                      Kapricious 2026 concluded on March 28, 2026. Thank you for being part of it.
+                    </p>
+                  </div>
+                </div>
                 <h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-bold font-display leading-[1.1] hero-gradient-text">
                   KAPRICIOUS'26
                 </h1>
                 <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white/70 md:mx-0 md:text-base">
-                  Kapricious 2026 is the flagship tech fest of KMEA Engineering College, Edathala, Aluva,
-                  bringing together flagship challenges, sports events, department competitions, and cultural events on March
-                  27-28, 2026.
+                  The flagship tech fest of KMEA Engineering College has wrapped up after two vibrant days of flagship
+                  challenges, department competitions, sports events, and cultural showcases. The site now serves as the
+                  official archive for events and certificates.
                 </p>
+                <div className="mt-5 flex flex-col items-center gap-3 md:flex-row md:items-start">
+                  <Link
+                    href="/certificate"
+                    className="inline-flex items-center justify-center gap-2 rounded-full bg-foreground px-5 py-3 text-xs font-bold tracking-[0.18em] text-background transition-all hover:opacity-90 active:scale-95 md:px-6"
+                  >
+                    <Award className="h-4 w-4" />
+                    Download Certificates
+                  </Link>
+                  <Link
+                    href="/events"
+                    className="inline-flex items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-5 py-3 text-xs font-bold tracking-[0.18em] text-white transition-all hover:bg-white/10 active:scale-95 md:px-6"
+                  >
+                    View Event Archive
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
               </motion.div>
             </div>
           </div>
@@ -334,8 +364,41 @@ const HeroSection = () => {
       </div>
     </div>
 
+      <div className="md:hidden relative z-10 -mt-16 px-4 pb-4">
+        <div className="rounded-[28px] border border-border bg-card/95 p-5 shadow-[0_20px_50px_rgba(2,5,19,0.12)] backdrop-blur">
+          <div className="inline-flex items-start gap-3 rounded-[22px] border border-accent/20 bg-accent/5 px-4 py-3 text-left">
+            <CalendarCheck2 className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-accent">Festival Concluded</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                Kapricious 2026 concluded on March 28, 2026. Thank you for being part of it.
+              </p>
+            </div>
+          </div>
+          <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+            The site now serves as the official archive for events and certificates.
+          </p>
+          <div className="mt-4 flex flex-col gap-3">
+            <Link
+              href="/certificate"
+              className="inline-flex items-center justify-center gap-2 rounded-full bg-foreground px-5 py-3 text-xs font-bold tracking-[0.18em] text-background transition-all hover:opacity-90 active:scale-95"
+            >
+              <Award className="h-4 w-4" />
+              Download Certificates
+            </Link>
+            <Link
+              href="/events"
+              className="inline-flex items-center justify-center gap-2 rounded-full border border-border bg-background px-5 py-3 text-xs font-bold tracking-[0.18em] text-foreground transition-all hover:opacity-90 active:scale-95"
+            >
+              View Event Archive
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </div>
+
       {/* Mobile Featured Events - swipeable single card */}
-      <div className="md:hidden relative z-10 -mt-4 pb-6 px-4">
+      <div className="md:hidden relative z-10 pb-6 px-4">
         <div className="flex items-center justify-between mb-3 px-1">
           <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-widest">Featured Events</h3>
           <div className="flex gap-1.5">
@@ -364,7 +427,7 @@ const HeroSection = () => {
               >
                 <div className="flex items-start justify-between gap-3">
                   <span className="inline-flex items-center rounded-full border border-white/20 bg-black/30 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-white/80 backdrop-blur-sm">
-                    Featured Link
+                    Archive Pick
                   </span>
                   <div className="featured-event-card__icon shrink-0 rounded-full border border-white/20 bg-black/30 p-2 text-white backdrop-blur-sm">
                     <ArrowRight className="h-4 w-4" />
