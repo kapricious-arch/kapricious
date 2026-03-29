@@ -133,6 +133,42 @@ export type Database = {
           },
         ]
       }
+      payment_reconciliation_notes: {
+        Row: {
+          amount_paid: number
+          created_at: string
+          event_title: string
+          id: string
+          note: string | null
+          note_type: string
+          order_id: string | null
+          participant_email: string
+          payment_id: string
+        }
+        Insert: {
+          amount_paid: number
+          created_at?: string
+          event_title: string
+          id?: string
+          note?: string | null
+          note_type: string
+          order_id?: string | null
+          participant_email: string
+          payment_id: string
+        }
+        Update: {
+          amount_paid?: number
+          created_at?: string
+          event_title?: string
+          id?: string
+          note?: string | null
+          note_type?: string
+          order_id?: string | null
+          participant_email?: string
+          payment_id?: string
+        }
+        Relationships: []
+      }
       registrations: {
         Row: {
           amount_paid: number | null

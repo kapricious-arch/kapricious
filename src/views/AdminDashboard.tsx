@@ -96,6 +96,18 @@ const AdminDashboard = () => {
     },
   });
 
+  const { data: reconciliationNotes } = useQuery({
+    queryKey: ["admin-payment-reconciliation-notes"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("payment_reconciliation_notes")
+        .select("*")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+
   const departmentOptions = useMemo(() => {
     if (!events) return [{ code: "ALL", name: "All Departments" }];
 
@@ -202,6 +214,11 @@ const AdminDashboard = () => {
 
     return [...matchingGroups, ...nonMatchingGroups];
   }, [registrations, events, registrationQuery, selectedDepartment]);
+
+  const reconciliationTotal = useMemo(
+    () => reconciliationNotes?.reduce((sum, row) => sum + (Number(row.amount_paid) || 0), 0) || 0,
+    [reconciliationNotes],
+  );
 
   const toggleEvent = (eventId: string) => {
     setExpandedEvents((prev) => ({ ...prev, [eventId]: !prev[eventId] }));
@@ -613,6 +630,77 @@ const AdminDashboard = () => {
             <p className="text-2xl font-bold text-yellow-500 mt-1">
               {registrations?.filter((r) => r.payment_status === "pending").length || 0}
             </p>
+          </div>
+        </div>
+
+        <div className="mb-8 rounded-xl border border-border bg-card overflow-hidden">
+          <div className="border-b border-border px-6 py-4">
+            <h2 className="font-display text-lg font-bold text-foreground">Duplicate Captured Payments</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Razorpay captures that should be tracked for reconciliation without creating duplicate registrations.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-4 border-b border-border px-6 py-4 md:grid-cols-3">
+            <div className="rounded-xl border border-border bg-muted/20 p-4">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Logged Notes</p>
+              <p className="mt-1 text-2xl font-bold text-foreground">{reconciliationNotes?.length || 0}</p>
+            </div>
+            <div className="rounded-xl border border-border bg-muted/20 p-4">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Tracked Amount</p>
+              <p className="mt-1 text-2xl font-bold text-foreground">
+                INR {reconciliationTotal.toLocaleString("en-IN")}
+              </p>
+            </div>
+            <div className="rounded-xl border border-border bg-muted/20 p-4">
+              <p className="text-xs text-muted-foreground uppercase tracking-wider">Purpose</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Keep duplicate captured payments visible in admin without bypassing the unique registration constraint.
+              </p>
+            </div>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-muted/20">
+                  <th className="text-left px-4 py-3 font-medium text-xs uppercase tracking-wider text-muted-foreground">Email</th>
+                  <th className="text-left px-4 py-3 font-medium text-xs uppercase tracking-wider text-muted-foreground">Event</th>
+                  <th className="text-left px-4 py-3 font-medium text-xs uppercase tracking-wider text-muted-foreground">Amount</th>
+                  <th className="text-left px-4 py-3 font-medium text-xs uppercase tracking-wider text-muted-foreground">Payment ID</th>
+                  <th className="text-left px-4 py-3 font-medium text-xs uppercase tracking-wider text-muted-foreground">Order ID</th>
+                  <th className="text-left px-4 py-3 font-medium text-xs uppercase tracking-wider text-muted-foreground">Type</th>
+                  <th className="text-left px-4 py-3 font-medium text-xs uppercase tracking-wider text-muted-foreground">Note</th>
+                  <th className="text-left px-4 py-3 font-medium text-xs uppercase tracking-wider text-muted-foreground">Logged</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reconciliationNotes?.length ? (
+                  reconciliationNotes.map((row) => (
+                    <tr key={row.id} className="border-t border-border/30 hover:bg-muted/10">
+                      <td className="px-4 py-3 text-muted-foreground text-xs">{row.participant_email}</td>
+                      <td className="px-4 py-3 text-foreground whitespace-nowrap">{row.event_title}</td>
+                      <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
+                        INR {Number(row.amount_paid).toLocaleString("en-IN")}
+                      </td>
+                      <td className="px-4 py-3 text-foreground text-xs font-mono whitespace-nowrap">{row.payment_id}</td>
+                      <td className="px-4 py-3 text-foreground text-xs font-mono whitespace-nowrap">{row.order_id || "-"}</td>
+                      <td className="px-4 py-3 text-muted-foreground text-xs whitespace-nowrap">{row.note_type}</td>
+                      <td className="px-4 py-3 text-muted-foreground text-xs min-w-[260px]">{row.note || "-"}</td>
+                      <td className="px-4 py-3 text-muted-foreground text-xs whitespace-nowrap">
+                        {new Date(row.created_at).toLocaleString()}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={8} className="px-4 py-8 text-center text-muted-foreground">
+                      No duplicate captured payments logged yet.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
 
