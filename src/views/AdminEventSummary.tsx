@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { BarChart3, ChevronLeft, Filter, Layers3, LogOut, Wallet } from "lucide-react";
+import { BarChart3, ChevronLeft, Download, Filter, Layers3, LogOut, Wallet } from "lucide-react";
+import { toast } from "sonner";
 
 import { supabase } from "@/integrations/supabase/client";
 import { normalizeDepartmentCode } from "@/lib/departments";
@@ -15,7 +16,160 @@ const formatCurrency = (value: number) =>
     maximumFractionDigits: 2,
   })}`;
 
-type SortMode = "amount_desc" | "registrations_desc" | "verified_desc" | "event_asc";
+type SortMode = "amount_desc" | "registrations_desc" | "verified_desc" | "event_asc" | "department_asc";
+
+const escapeHtml = (value: unknown) =>
+  String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+
+const openPdfPreview = ({
+  title,
+  subtitle,
+  headers,
+  rows,
+}: {
+  title: string;
+  subtitle: string;
+  headers: string[];
+  rows: string[][];
+}) => {
+  const iframe = document.createElement("iframe");
+  iframe.style.position = "fixed";
+  iframe.style.right = "0";
+  iframe.style.bottom = "0";
+  iframe.style.width = "0";
+  iframe.style.height = "0";
+  iframe.style.border = "0";
+  document.body.appendChild(iframe);
+
+  const iframeWindow = iframe.contentWindow;
+  const iframeDocument = iframe.contentDocument ?? iframeWindow?.document;
+
+  if (!iframeWindow || !iframeDocument) {
+    document.body.removeChild(iframe);
+    toast.error("Unable to prepare the PDF preview. Please try again.");
+    return;
+  }
+
+  const tableHead = headers
+    .map((header) => `<th>${escapeHtml(header)}</th>`)
+    .join("");
+
+  const tableBody = rows
+    .map(
+      (row) => `
+        <tr>
+          ${row.map((value) => `<td>${escapeHtml(value)}</td>`).join("")}
+        </tr>
+      `,
+    )
+    .join("");
+
+  iframeDocument.open();
+  iframeDocument.write(`
+    <!DOCTYPE html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>${escapeHtml(title)}</title>
+        <style>
+          :root {
+            color-scheme: light;
+            --ink: #0f172a;
+            --muted: #475569;
+            --line: #cbd5e1;
+            --panel: #f8fafc;
+            --accent: #0f766e;
+          }
+
+          * {
+            box-sizing: border-box;
+          }
+
+          body {
+            margin: 0;
+            padding: 28px;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: var(--ink);
+            background: white;
+          }
+
+          .hero {
+            margin-bottom: 18px;
+            padding: 20px 22px;
+            border: 1px solid var(--line);
+            border-radius: 16px;
+            background: linear-gradient(135deg, #ecfeff 0%, #f8fafc 60%, #f0fdfa 100%);
+          }
+
+          h1 {
+            margin: 0;
+            font-size: 24px;
+          }
+
+          p {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 13px;
+          }
+
+          table {
+            width: 100%;
+            border-collapse: collapse;
+          }
+
+          th, td {
+            border: 1px solid var(--line);
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 13px;
+          }
+
+          th {
+            background: var(--panel);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+          }
+
+          @media print {
+            body {
+              padding: 0;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <section class="hero">
+          <h1>${escapeHtml(title)}</h1>
+          <p>${escapeHtml(subtitle)}</p>
+        </section>
+        <table>
+          <thead>
+            <tr>${tableHead}</tr>
+          </thead>
+          <tbody>
+            ${tableBody}
+          </tbody>
+        </table>
+      </body>
+    </html>
+  `);
+  iframeDocument.close();
+
+  iframe.onload = () => {
+    iframeWindow.focus();
+    iframeWindow.print();
+    setTimeout(() => {
+      document.body.removeChild(iframe);
+    }, 1000);
+  };
+};
 
 const AdminEventSummary = () => {
   const router = useRouter();
@@ -187,6 +341,13 @@ const AdminEventSummary = () => {
       if (sortMode === "event_asc") {
         return a.eventName.localeCompare(b.eventName);
       }
+      if (sortMode === "department_asc") {
+        return (
+          a.departmentCode.localeCompare(b.departmentCode) ||
+          a.departmentName.localeCompare(b.departmentName) ||
+          a.eventName.localeCompare(b.eventName)
+        );
+      }
       return b.totalAmount - a.totalAmount || b.registrationCount - a.registrationCount || a.eventName.localeCompare(b.eventName);
     });
   }, [eventRows, selectedDepartment, sortMode]);
@@ -222,6 +383,61 @@ const AdminEventSummary = () => {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push("/admin");
+  };
+
+  const selectedDepartmentLabel =
+    departmentOptions.find((department) => department.code === selectedDepartment)?.name || "All Departments";
+
+  const reportDate = new Date().toISOString().slice(0, 10);
+
+  const exportEventSummary = () => {
+    openPdfPreview({
+      title: "Event Summary",
+      subtitle: `${reportDate} | Department: ${
+        selectedDepartment === "ALL" ? "All Departments" : `${selectedDepartment} - ${selectedDepartmentLabel}`
+      }`,
+      headers: ["Summary", "Registrations", "Amount"],
+      rows: [
+        ["Overall", String(overallTotals.registrations), formatCurrency(overallTotals.amount)],
+        ["Current View", String(filteredTotals.registrations), formatCurrency(filteredTotals.amount)],
+      ],
+    });
+
+    toast.success("PDF preview opened. Choose 'Save as PDF' to download.");
+  };
+
+  const exportDepartmentSummary = () => {
+    openPdfPreview({
+      title: "Department Summary",
+      subtitle: `${reportDate} | Sorted by total amount`,
+      headers: ["Department Name", "No. of Events", "Registrations", "Amount"],
+      rows: departmentRows.map((row) => [
+        `${row.departmentCode} - ${row.departmentName}`,
+        String(row.eventCount),
+        String(row.registrationCount),
+        formatCurrency(row.totalAmount),
+      ]),
+    });
+
+    toast.success("PDF preview opened. Choose 'Save as PDF' to download.");
+  };
+
+  const exportPerEventCollection = () => {
+    openPdfPreview({
+      title: "Per Event Collection",
+      subtitle: `${reportDate} | Department: ${
+        selectedDepartment === "ALL" ? "All Departments" : `${selectedDepartment} - ${selectedDepartmentLabel}`
+      } | Sort: ${sortMode}`,
+      headers: ["Event Name", "Department Name", "Registrations", "Amount"],
+      rows: filteredEventRows.map((row) => [
+        row.eventName,
+        `${row.departmentCode} - ${row.departmentName}`,
+        String(row.registrationCount),
+        formatCurrency(row.totalAmount),
+      ]),
+    });
+
+    toast.success("PDF preview opened. Choose 'Save as PDF' to download.");
   };
 
   return (
@@ -287,7 +503,7 @@ const AdminEventSummary = () => {
               </p>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2">
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
               <label className="block">
                 <span className="mb-2 inline-flex items-center gap-2 text-xs font-medium uppercase tracking-wider text-muted-foreground">
                   <Filter className="h-3.5 w-3.5" />
@@ -320,8 +536,18 @@ const AdminEventSummary = () => {
                   <option value="registrations_desc">Most Registrations</option>
                   <option value="verified_desc">Most Verified Payments</option>
                   <option value="event_asc">Event Name</option>
+                  <option value="department_asc">Department</option>
                 </select>
               </label>
+
+              <button
+                type="button"
+                onClick={exportEventSummary}
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+              >
+                <Download className="h-4 w-4" />
+                Export PDF
+              </button>
             </div>
           </div>
 
@@ -350,9 +576,20 @@ const AdminEventSummary = () => {
         </div>
 
         <div className="mb-8 overflow-hidden rounded-xl border border-border bg-card">
-          <div className="flex items-center gap-2 border-b border-border px-6 py-4">
-            <Layers3 className="h-4 w-4 text-primary" />
-            <h2 className="font-display text-lg font-bold text-foreground">Department Summary</h2>
+          <div className="flex items-center justify-between gap-3 border-b border-border px-6 py-4">
+            <div className="flex items-center gap-2">
+              <Layers3 className="h-4 w-4 text-primary" />
+              <h2 className="font-display text-lg font-bold text-foreground">Department Summary</h2>
+            </div>
+
+            <button
+              type="button"
+              onClick={exportDepartmentSummary}
+              className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+            >
+              <Download className="h-4 w-4" />
+              Export PDF
+            </button>
           </div>
 
           {departmentRows.length > 0 ? (
@@ -396,9 +633,20 @@ const AdminEventSummary = () => {
         </div>
 
         <div className="overflow-hidden rounded-xl border border-border bg-card">
-          <div className="flex items-center gap-2 border-b border-border px-6 py-4">
-            <BarChart3 className="h-4 w-4 text-primary" />
-            <h2 className="font-display text-lg font-bold text-foreground">Per Event Collection</h2>
+          <div className="flex items-center justify-between gap-3 border-b border-border px-6 py-4">
+            <div className="flex items-center gap-2">
+              <BarChart3 className="h-4 w-4 text-primary" />
+              <h2 className="font-display text-lg font-bold text-foreground">Per Event Collection</h2>
+            </div>
+
+            <button
+              type="button"
+              onClick={exportPerEventCollection}
+              className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+            >
+              <Download className="h-4 w-4" />
+              Export PDF
+            </button>
           </div>
 
           {filteredEventRows.length > 0 ? (
